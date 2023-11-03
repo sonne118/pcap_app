@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <PcapPlusPlusHome>D:\repo\cpp\vcpkg\3\vs\pcapplusplus-20.08-windows-vs2019\pcapplusplus-20.08-windows-vs2019</PcapPlusPlusHome>
+    <PcapPlusPlusHome>D:\repo2\cpp\vcpkg\4\pcap_test\pcap_test</PcapPlusPlusHome>
     <PcapSdkHome>C:\WpdPack\WpdPack\WpdPack</PcapSdkHome>
     <PThreadWin32Home>C:\pthreads</PThreadWin32Home>
   </PropertyGroup>
