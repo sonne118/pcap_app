@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <PcapPlusPlusHome>D:\repo2\cpp\vcpkg\4\pcap_test\pcap_test</PcapPlusPlusHome>
+    <PcapPlusPlusHome>D:\repo\test2\pcap_test\pcap_app</PcapPlusPlusHome>
     <PcapSdkHome>C:\WpdPack\WpdPack\WpdPack</PcapSdkHome>
     <PThreadWin32Home>C:\pthreads</PThreadWin32Home>
   </PropertyGroup>

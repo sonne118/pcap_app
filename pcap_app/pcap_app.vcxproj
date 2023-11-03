@@ -135,8 +135,8 @@ xcopy "1_packet.pcap" "$(OutDir)" /Y</Command>
       <AdditionalDependencies>Ws2_32.lib;IPHLPAPI.lib;wpcap.lib;Packet.lib;pthreadVC2.lib;Common++.lib;Packet++.lib;Pcap++.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(PThreadWin32Home)\Pre-built.2\dll\x64\pthreadVC2.dll" "$(OutDir)" /Y
-xcopy "1_packet.pcap" "$(OutDir)" /Y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
