@@ -111,8 +111,6 @@ std::vector<myStruct> GetVector(int *size)
 			{
 				//std::string user_agent = httpRequestLayer->getFieldByName(PCPP_HTTP_USER_AGENT_FIELD)->getFieldValue().c_str();
 				//user_agent = getAgentAsString(httpRequestLayer);
-				//std::cerr << "http user-agent: " << user_agent << std::endl;
-				//delete httpRequestLayer;
 			}
 		}
 	}

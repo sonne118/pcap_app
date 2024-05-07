@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using static ConsoleApp.Program;
 
-namespace ConsoleApp
+namespace console
 {
     internal class Program
     {
