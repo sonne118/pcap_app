@@ -6,7 +6,7 @@ namespace console
 {
     internal class Program
     {
-        [StructLayout(LayoutKind.Sequential)]//, CharSet = CharSet.Ansi)]
+        [StructLayout(LayoutKind.Sequential)]
         public struct myStruct
         {          
             int id;

@@ -49,9 +49,10 @@ struct myStruct1
 
 #define API __declspec(dllexport)
 
+std::vector<myStruct> _result{};
+
 std::vector<myStruct> GetVector(int *size)
-{
-	std::vector<myStruct> result;
+{	
 	// open a pcap file for reading
 	std::string  path = "D:/repo/test2/pcap_app/pcap_app/pcap_reader/message2.pcap";
 
@@ -59,7 +60,7 @@ std::vector<myStruct> GetVector(int *size)
 	if (!reader.open())
 	{
 		printf("Error opening the pcap file\n");
-		return result;
+		return _result;
 	}
 
 	// read the first (and only) packet from the file
@@ -67,7 +68,7 @@ std::vector<myStruct> GetVector(int *size)
 	if (!reader.getNextPacket(rawPacket))
 	{
 		printf("Couldn't read the first packet in the file\n");
-		return result;
+		return _result;
 	}
 
 	int i = 1;
@@ -101,7 +102,7 @@ std::vector<myStruct> GetVector(int *size)
 			st.mac_source = ethernetLayer->getSourceMac().toString();
 			st.mac_destin = ethernetLayer->getDestMac().toString();
 
-			result.push_back(st);
+			_result.push_back(st);
 
 			if (httpRequestLayer == NULL)
 			{
@@ -115,11 +116,11 @@ std::vector<myStruct> GetVector(int *size)
 		}
 	}
 
-	*size = result.size();
+	*size = _result.size();
 	// close the file
 	reader.close();
 	
-	return result;
+	return _result;
 }
 
 std::string getAgentAsString(pcpp::HttpRequestLayer* httpRequestLayer)
