@@ -1,2 +1,3 @@
  realizing reader of *.pcap files using marshaling data from c++ code to .Net WPF application
-![pcap](https://github.com/sonne118/pcap_app/assets/66416341/922031bc-3af3-4fb1-9f77-207a74be8b72)
+![pcap2](https://github.com/sonne118/pcap_app/assets/66416341/e60b6eea-b678-4f6f-8d53-a74ff47cb253)
+
