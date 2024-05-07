@@ -145,9 +145,7 @@ std::vector<myStruct1> GetVector1(int *size1)
 	*size1 = size; 
 	std::vector<myStruct1> lresult; 
 
-	vector<myStruct>::iterator iter = vec.begin();
-	int i = 0;
-	
+	vector<myStruct>::iterator iter = vec.begin();		
     for (std::vector<myStruct>::size_type i = 0; i != vec.size(); i++) 
 	{
 		myStruct1 st{}; 
