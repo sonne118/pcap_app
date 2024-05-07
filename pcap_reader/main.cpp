@@ -24,9 +24,7 @@
 #include <combaseapi.h>
 #include <string>
 
-
 using namespace std;
-
 std::string getAgentAsString(pcpp::HttpRequestLayer* httpRequestLayer);
 
 struct myStruct
@@ -129,14 +127,11 @@ std::string getAgentAsString(pcpp::HttpRequestLayer* httpRequestLayer)
 	return agent;
 }
 
-
-
 const char* CopyToChar(const std::string& bar) {
 	char *tmp = new char[bar.length() + 1];
 	strcpy_s(tmp, strlen(tmp), bar.c_str());
 	return  tmp;
 }
-
 
 std::vector<myStruct1> GetVector1(int *size1)
 {	
@@ -159,7 +154,6 @@ std::vector<myStruct1> GetVector1(int *size1)
 	vec.erase(vec.begin(), vec.begin() + size-1);	
 	return lresult;	
 }
-
 
 std::vector<myStruct1> result{};
 
