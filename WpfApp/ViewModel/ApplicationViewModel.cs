@@ -54,7 +54,8 @@ namespace MVVM
                     Source_ip = item.source_ip,
                     Dest_ip = item.dest_ip,
                     Mac_source = item.mac_source,
-                    Mac_destin = item.mac_destin
+                    Mac_destin = item.mac_destin,
+                    User_agent = item.user_agent
                 });                
             }
             return source;

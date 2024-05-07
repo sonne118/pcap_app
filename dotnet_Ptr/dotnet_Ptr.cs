@@ -12,6 +12,7 @@ namespace dotnet_Ptr
           public string dest_ip;
           public string mac_source;
           public string mac_destin;
+          public string user_agent;
         }
 
         [DllImport("pcap_reader.dll", CallingConvention = CallingConvention.Cdecl)]

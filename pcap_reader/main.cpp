@@ -34,6 +34,7 @@ struct myStruct
 	string dest_ip;
 	string mac_source;
 	string mac_destin;
+	string user_agent;
 };
 
 struct myStruct1
@@ -43,6 +44,7 @@ struct myStruct1
 	const char* dest_ip;
 	const char* mac_source;
 	const char* mac_destin;
+	const char* user_agent;
 };
 
 #define API __declspec(dllexport)
@@ -100,17 +102,18 @@ std::vector<myStruct> GetVector(int *size)
 			st.mac_source = ethernetLayer->getSourceMac().toString();
 			st.mac_destin = ethernetLayer->getDestMac().toString();
 
-			_result.push_back(st);
+			
 
 			if (httpRequestLayer == NULL)
 			{
-				//std::cerr << "user_agent:" << "none" << std::endl;
+				st.user_agent = "none";
 			}
 			else
 			{
-				//std::string user_agent = httpRequestLayer->getFieldByName(PCPP_HTTP_USER_AGENT_FIELD)->getFieldValue().c_str();
-				//user_agent = getAgentAsString(httpRequestLayer);
+				std::string user_agent = httpRequestLayer->getFieldByName(PCPP_HTTP_USER_AGENT_FIELD)->getFieldValue().c_str();
+				st.user_agent = getAgentAsString(httpRequestLayer);
 			}
+			_result.push_back(st);
 		}
 	}
 
@@ -149,6 +152,7 @@ std::vector<myStruct1> GetVector1(int *size1)
 		st.dest_ip = CopyToChar(iter[i].dest_ip);
 		st.mac_source = CopyToChar(iter[i].mac_source);
 		st.mac_destin = CopyToChar(iter[i].mac_destin);
+		st.user_agent = CopyToChar(iter[i].user_agent);
 		lresult.push_back(st);		
 	}
 	vec.erase(vec.begin(), vec.begin() + size-1);	

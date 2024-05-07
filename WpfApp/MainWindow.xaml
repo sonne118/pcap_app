@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MVVM"
         mc:Ignorable="d"
-        Title="grid_pcap" Height="600" Width="580">
+        Title="grid_pcap" Height="600" Width="700">
     <Window.Resources>
         
         <Style TargetType="Grid">
@@ -31,6 +31,7 @@
                     <GridViewColumn Header="destination ip" Width="120" DisplayMemberBinding="{Binding Dest_ip}" />
                     <GridViewColumn Header="mac source" Width="120" DisplayMemberBinding="{Binding Mac_source}" />
                     <GridViewColumn Header="mac destination" Width="120" DisplayMemberBinding="{Binding Mac_destin}" />
+                    <GridViewColumn Header="user agent" Width="120" DisplayMemberBinding="{Binding User_agent}" />
                 </GridView>
             </ListView.View>
         </ListView>

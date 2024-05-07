@@ -14,6 +14,7 @@ namespace console
             string dest_ip;
             string mac_source;
             string mac_destin;
+            string user_agent;
         }
 
         [DllImport("pcap_reader.dll", CallingConvention = CallingConvention.Cdecl)]

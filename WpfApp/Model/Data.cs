@@ -10,6 +10,7 @@ namespace CoreModel.Model
         public string dest_ip;
         public string mac_source;
         public string mac_destin;
+        public string user_agent;
 
 
         public int Id
@@ -57,6 +58,16 @@ namespace CoreModel.Model
             {
                 mac_destin = value;
                 OnPropertyChanged("mac_destin");
+            }
+        }
+
+        public string User_agent
+        {
+            get { return user_agent; }
+            set
+            {
+                user_agent = value;
+                OnPropertyChanged("user_agent");
             }
         }
 
