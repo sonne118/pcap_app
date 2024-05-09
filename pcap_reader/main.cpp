@@ -119,8 +119,7 @@ std::vector<OneStruct> GetVectorOne(int *size)
 
 	*size = _result.size();
 	// close the file
-	reader.close();
-	
+	reader.close();	
 	return _result;
 }
 
