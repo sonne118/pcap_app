@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
 
 namespace console
 {
@@ -9,12 +10,12 @@ namespace console
         [StructLayout(LayoutKind.Sequential)]
         public struct myStruct
         {          
-            int id;
-            string source_ip;
-            string dest_ip;
-            string mac_source;
-            string mac_destin;
-            string user_agent;
+          public  int id;
+          public  string source_ip;
+          public  string dest_ip;
+          public  string mac_source;
+          public  string mac_destin;
+          public  string user_agent;
         }
 
         [DllImport("pcap_reader.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -24,8 +25,8 @@ namespace console
         {
             var result1 = GetPredict();
             Console.WriteLine($"list of {result1.Count} structures");
-            foreach (var o in result1)
-                Console.WriteLine(o);
+            foreach (var item in result1)
+                Console.WriteLine($"id: {item.id}  source_ip: {item.source_ip}"); 
             Console.ReadLine();
         }
 

@@ -27,7 +27,7 @@
 using namespace std;
 std::string getAgentAsString(pcpp::HttpRequestLayer* httpRequestLayer);
 
-struct myStruct
+struct OneStruct
 {
 	int id;
 	string source_ip;
@@ -37,7 +37,7 @@ struct myStruct
 	string user_agent;
 };
 
-struct myStruct1
+struct SecondStruct
 {
 	int id;
 	const char* source_ip;
@@ -49,9 +49,9 @@ struct myStruct1
 
 #define API __declspec(dllexport)
 
-std::vector<myStruct> _result{};
+std::vector<OneStruct> _result{};
 
-std::vector<myStruct> GetVector(int *size)
+std::vector<OneStruct> GetVectorOne(int *size)
 {	
 	// open a pcap file for reading
 	std::string  path = "D:/repo/test2/pcap_app/pcap_app/pcap_reader/message2.pcap";
@@ -95,7 +95,7 @@ std::vector<myStruct> GetVector(int *size)
 		if (parsedPacket.isPacketOfType(pcpp::IPv4))
 		{
 
-			myStruct st{};
+			OneStruct st{};
 			st.id = i;
 			st.source_ip  = parsedPacket.getLayerOfType<pcpp::IPv4Layer>()->getSrcIpAddress().toString();;
 			st.dest_ip = parsedPacket.getLayerOfType<pcpp::IPv4Layer>()->getDstIpAddress().toString();
@@ -110,7 +110,7 @@ std::vector<myStruct> GetVector(int *size)
 			}
 			else
 			{
-				std::string user_agent = httpRequestLayer->getFieldByName(PCPP_HTTP_USER_AGENT_FIELD)->getFieldValue().c_str();
+				std::string user_agentdbwz = httpRequestLayer->getFieldByName(PCPP_HTTP_USER_AGENT_FIELD)->getFieldValue().c_str();
 				st.user_agent = getAgentAsString(httpRequestLayer);
 			}
 			_result.push_back(st);
@@ -136,17 +136,17 @@ const char* CopyToChar(const std::string& bar) {
 	return  tmp;
 }
 
-std::vector<myStruct1> GetVector1(int *size1)
+std::vector<SecondStruct> GetVectorTwo(int *size1)
 {	
 	int size;	
-	std::vector<myStruct>vec = GetVector(&size);
+	std::vector<OneStruct>vec = GetVectorOne(&size);
 	*size1 = size; 
-	std::vector<myStruct1> lresult; 
+	std::vector<SecondStruct> lresult;
 
-	vector<myStruct>::iterator iter = vec.begin();		
-    for (std::vector<myStruct>::size_type i = 0; i != vec.size(); i++) 
+	vector<OneStruct>::iterator iter = vec.begin();
+    for (std::vector<OneStruct>::size_type i = 0; i != vec.size(); i++) 
 	{
-		myStruct1 st{}; 
+		SecondStruct st{};
 		st.id = iter[i].id;  		
 		st.source_ip = CopyToChar(iter[i].source_ip);
 		st.dest_ip = CopyToChar(iter[i].dest_ip);
@@ -159,12 +159,12 @@ std::vector<myStruct1> GetVector1(int *size1)
 	return lresult;	
 }
 
-std::vector<myStruct1> result{};
+std::vector<SecondStruct> result{};
 
-extern "C" __declspec(dllexport) myStruct1 * Predict(int* size1, const char* path2D)
+extern "C" __declspec(dllexport) SecondStruct * Predict(int* size1, const char* path2D)
 {
 	int size;
-	result = GetVector1(&size);	
+	result = GetVectorTwo(&size);
 	*size1 = size;
 	return result.data();
 }
