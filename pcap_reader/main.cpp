@@ -90,8 +90,8 @@ public:
 class Handler
 {
 public:
-	virtual	Handler* SetNext(Handler* handler) = 0;
-
+	virtual	 Handler* SetNext(Handler* handler) = 0;
+	virtual ~Handler() = default;
 	virtual	void Handle(std::vector<std::unique_ptr<vStruct>>& request) = 0;
 };
 
@@ -252,6 +252,7 @@ static std::vector<SecondStruct> convertPtrVec(int* size)
 	{
 	    std::vector<SecondStruct> vec{};
 		std::vector<std::unique_ptr<vStruct>> request{};
+		SecondStruct st{};
 		vStruct* tmpBase = nullptr;
 		SecondStruct* tmp;
 
@@ -264,8 +265,7 @@ static std::vector<SecondStruct> convertPtrVec(int* size)
 		for (auto& v : request) {
 
 			tmpBase = v.get();
-			tmp = static_cast<SecondStruct*>(tmpBase);
-			SecondStruct st{};
+			tmp = static_cast<SecondStruct*>(tmpBase);			
 			st.id = tmp->id;
 			st.source_ip = tmp->source_ip;
 			st.dest_ip = tmp->dest_ip;
