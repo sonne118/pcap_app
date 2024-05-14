@@ -45,7 +45,12 @@ struct OneStruct : public vStruct
 	string user_agent;
 
 public:
-	OneStruct(int _id, string _source_ip, string _dest_ip, string _mac_source, string _mac_destin, string _user_agent)
+	OneStruct(int _id, 
+		      string _source_ip,
+		      string _dest_ip,
+		      string _mac_source,
+		      string _mac_destin, 
+		      string _user_agent)
 	{
 		id = _id;
 		source_ip = _source_ip;
@@ -66,7 +71,12 @@ struct SecondStruct : public vStruct
 	const char* user_agent;
 
 public:
-	SecondStruct(int _id = 1000, const char* _source_ip = "", const char* _dest_ip = "", const char* _mac_source = "", const char* _mac_destin = "", const char* _user_agent = "none")
+	SecondStruct(int _id = 1000,
+		         const char* _source_ip = "", 
+		         const char* _dest_ip = "",
+		         const char* _mac_source = "", 
+		         const char* _mac_destin = "",
+		         const char* _user_agent = "none")
 	{
 		id = _id;
 		source_ip = _source_ip;
@@ -234,50 +244,47 @@ public:
 	}
 };
 
-std::vector<SecondStruct> vec{};
-std::vector<SecondStruct> convertPtrVecToList(int* size)
-{
-	std::vector<std::unique_ptr<vStruct>> request{};
-	vStruct* tmpBase = nullptr;
-	SecondStruct* tmp;
 
-	VectorOneHandler* vectorOne = new VectorOneHandler();
-	VectorTwoHandler* vectorTwo = new VectorTwoHandler();
+static std::vector<SecondStruct> convertPtrVec(int* size)
+	{
+	    std::vector<SecondStruct> vec{};
+		std::vector<std::unique_ptr<vStruct>> request{};
+		vStruct* tmpBase = nullptr;
+		SecondStruct* tmp;
 
-	vectorOne->SetNext(vectorTwo);
-	vectorOne->Handle(request);
+		VectorOneHandler* vectorOne = new VectorOneHandler();
+		VectorTwoHandler* vectorTwo = new VectorTwoHandler();
 
-	for (auto& v : request) {
+		vectorOne->SetNext(vectorTwo);
+		vectorOne->Handle(request);
 
-		tmpBase = v.get();
-		tmp = static_cast<SecondStruct*>(tmpBase);
-		SecondStruct st{};
-		st.id = tmp->id;
-		st.source_ip = tmp->source_ip;
-		st.dest_ip = tmp->dest_ip;
-		st.mac_source = tmp->mac_source;
-		st.mac_destin = tmp->mac_destin;
-		st.user_agent = tmp->user_agent;
-		vec.push_back(st);
-		v.reset();
-	}
-	*size = request.size();	
-	return vec;
+		for (auto& v : request) {
+
+			tmpBase = v.get();
+			tmp = static_cast<SecondStruct*>(tmpBase);
+			SecondStruct st{};
+			st.id = tmp->id;
+			st.source_ip = tmp->source_ip;
+			st.dest_ip = tmp->dest_ip;
+			st.mac_source = tmp->mac_source;
+			st.mac_destin = tmp->mac_destin;
+			st.user_agent = tmp->user_agent;
+			vec.push_back(st);
+			v.reset();
+		}
+		*size = request.size();
+		return vec;
 }
 
 std::vector<SecondStruct> result{};
 extern "C" __declspec(dllexport) SecondStruct * Predict(int* size1, const char* path2D)
 {
 	int size;
-	result = convertPtrVecToList(&size);
+	result = convertPtrVec(&size);
 	*size1 = size;
 
 	return result.data();
 }
-
-
-
-
 
 
 
