@@ -95,14 +95,15 @@ public:
 	virtual	void Handle(std::vector<std::unique_ptr<vStruct>>& request) = 0;
 };
 
-class AbstractHandler : public Handler {
+class AbstractHandler : public Handler {	
 
 protected:
 	Handler* next_handler_;
 
 public:
-	AbstractHandler() : next_handler_(nullptr) {
-	}
+	AbstractHandler() : next_handler_(nullptr) {}
+	
+   ~AbstractHandler() {}
 
 	Handler* SetNext(Handler* handler) override {
 		this->next_handler_ = handler;
@@ -136,8 +137,9 @@ protected:
 
 class VectorOneHandler : public AbstractHandler
 {
-	~VectorOneHandler() = default;
 	std::vector<std::unique_ptr<vStruct>> request;
+public:
+	~VectorOneHandler() {};
 
 public:
 	void Handle(std::vector<std::unique_ptr<vStruct>>& request)
@@ -208,9 +210,10 @@ public:
 
 
 class VectorTwoHandler : public AbstractHandler
-{
-	~VectorTwoHandler() = default;
+{	
 	std::vector<std::unique_ptr<vStruct>> _request;	
+public:
+	~VectorTwoHandler() {};
 
 public:
 	void Handle(std::vector<std::unique_ptr<vStruct>>& request) override {
@@ -273,8 +276,10 @@ static std::vector<SecondStruct> convertPtrVec(int* size)
 			v.reset();
 		}
 		*size = request.size();
+		delete vectorOne;
+		delete vectorTwo;
 		return vec;
-}
+	}
 
 std::vector<SecondStruct> result{};
 extern "C" __declspec(dllexport) SecondStruct * Predict(int* size1, const char* path2D)
