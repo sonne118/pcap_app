@@ -1,6 +1,5 @@
 #ifndef ABSTRACTHANDLER_H
 #define ABSTRACTHANDLER_H
-
 #include "HttpLayer.h"
 #include <string>
 #include<struct.h>

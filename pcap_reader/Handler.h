@@ -1,6 +1,5 @@
 #ifndef HANDLER_H
 #define HANDLER_H
-
 #include <vector>
 #include<struct.h>
 #include<Handler.h>
