@@ -46,7 +46,7 @@ public:
 		if (!reader.open())
 		{
 			printf("Error opening the pcap file\n");
-			//return request;
+			return;
 		}
 
 		// read the first (and only) packet from the file
@@ -54,9 +54,8 @@ public:
 		if (!reader.getNextPacket(rawPacket))
 		{
 			printf("Couldn't read the first packet in the file\n");
-			//return request;
+			return;
 		}
-
 		int i = 1;
 		std::string user_agent;
 		pcpp::Packet parsedPacket(&rawPacket);
