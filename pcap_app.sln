@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfApp", "WpfApp\WpfApp.csproj", "{7288FA7F-267F-4166-8108-DD04F56518EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{E986F67F-573F-441D-9FD8-66DB7B0180FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "output_data", "output_data\output_data.csproj", "{E986F67F-573F-441D-9FD8-66DB7B0180FC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{48A388AF-9D6D-48BC-9CBE-7D7F04B5C73C} = {48A388AF-9D6D-48BC-9CBE-7D7F04B5C73C}
 	EndProjectSection
