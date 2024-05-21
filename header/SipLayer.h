@@ -1,5 +1,4 @@
-#ifndef PACKETPP_SIP_LAYER
-#define PACKETPP_SIP_LAYER
+#pragma once
 
 #include "TextBasedProtocol.h"
 
@@ -87,15 +86,15 @@ namespace pcpp
 		 * The content-length field value. The method supports several cases:
 		 * - If the "Content-Length" field exists - the method will only replace the existing value with the new value
 		 * - If the "Content-Length" field doesn't exist - the method will create this field and put the value in it. Here are also 2 cases:
-		 * 		- If prevFieldName is specified - the new "Content-Length" field will be created after it
-		 * 		- If prevFieldName isn't specified or doesn't exist - the new "Content-Length" field will be created as the last field before
-		 * 		  end-of-header field
+		 *   - If prevFieldName is specified - the new "Content-Length" field will be created after it
+		 *   - If prevFieldName isn't specified or doesn't exist - the new "Content-Length" field will be created as the last field before
+		 *     end-of-header field
 		 *
 		 * @param[in] contentLength The content length value to set
 		 * @param[in] prevFieldName Optional parameter, if specified and "Content-Length" field doesn't exist, it will be created after this field
 		 * @return A pointer to the "Content-Length" field, or NULL if creation failed
 		 */
-		HeaderField* setContentLength(int contentLength, const std::string prevFieldName = "");
+		HeaderField* setContentLength(int contentLength, const std::string &prevFieldName = "");
 
 		// Overridden methods
 
@@ -199,7 +198,7 @@ namespace pcpp
 		 * @param[in] requestUri The URI of the request
 		 * @param[in] version SIP version to be used in this request. Default is "SIP/2.0"
 		 */
-		SipRequestLayer(SipMethod method, std::string requestUri, std::string version = "SIP/2.0");
+		SipRequestLayer(SipMethod method, const std::string& requestUri, const std::string& version = "SIP/2.0");
 
 		~SipRequestLayer();
 
@@ -329,6 +328,8 @@ namespace pcpp
 			Sip423IntervalTooBrief,
 			/** The request's location content was malformed or otherwise unsatisfactory */
 			Sip424BadLocationInformation,
+			/** The server rejected a non-interactive emergency call, indicating that the request was malformed enough that no reasonable emergency response to the alert can be determined */
+			Sip425BadAlertMessage,
 			/** The server policy requires an Identity header, and one has not been provided */
 			Sip428UseIdentityHeader,
 			/** The server did not receive a valid Referred-By token on the request */
@@ -391,6 +392,8 @@ namespace pcpp
 			Sip505VersionNotSupported,
 			/** The request message length is longer than the server can process */
 			Sip513MessageTooLarge,
+			/** The server does not support the push notification service identified in a 'pn-provider' SIP URI parameter */
+			Sip555PushNotificationServiceNotSupported,
 			/** The server is unable or unwilling to meet some constraints specified in the offer */
 			Sip580PreconditionFailure,
 			/** All possible destinations are busy. Unlike the 486 response, this response indicates the destination knows there are no alternative destinations (such as a voicemail server) able to accept the call */
@@ -403,6 +406,8 @@ namespace pcpp
 			Sip606NotAcceptable,
 			/** The called party did not want this call from the calling party. Future attempts from the calling party are likely to be similarly rejected */
 			Sip607Unwanted,
+			/** An intermediary machine or process rejected the call attempt */
+			Sip608Rejected,
 			/** Unknown SIP status code */
 			SipStatusCodeUnknown
 		};
@@ -425,7 +430,7 @@ namespace pcpp
 		 * @param[in] sipVersion SIP version to set, default is SIP/2.0
 		 *
 		 */
-		SipResponseLayer(SipResponseLayer::SipResponseStatusCode statusCode, std::string statusCodeString = "", std::string sipVersion = "SIP/2.0");
+		explicit SipResponseLayer(SipResponseLayer::SipResponseStatusCode statusCode, std::string statusCodeString = "", const std::string& sipVersion = "SIP/2.0");
 
 		virtual ~SipResponseLayer();
 
@@ -495,7 +500,7 @@ namespace pcpp
 		 * @param[in] newUri The URI to set
 		 * @return False if shortening/extending the SipRequestLayer data failed. True otherwise
 		 */
-		bool setUri(std::string newUri);
+		bool setUri(const std::string& newUri);
 
 		/**
 		 * @return The SIP version
@@ -508,7 +513,7 @@ namespace pcpp
 		 * @param[in] dataLen The raw data length
 		 * @return The parsed SIP method
 		 */
-		static SipRequestLayer::SipMethod parseMethod(char* data, size_t dataLen);
+		static SipRequestLayer::SipMethod parseMethod(const char* data, size_t dataLen);
 
 		/**
 		 * @return The size in bytes of the SIP request first line
@@ -533,7 +538,7 @@ namespace pcpp
 		{
 		public:
 			~SipRequestFirstLineException() throw() {}
-			void setMessage(std::string message) { m_Message = message; }
+			void setMessage(const std::string &message) { m_Message = message; }
 			virtual const char* what() const throw()
 			{
 				return m_Message.c_str();
@@ -544,8 +549,7 @@ namespace pcpp
 
 	private:
 		SipRequestFirstLine(SipRequestLayer* sipRequest);
-		SipRequestFirstLine(SipRequestLayer* sipRequest, SipRequestLayer::SipMethod method, std::string version, std::string uri);
-			//throw(SipRequestFirstLineException); // Deprecated in C++17
+		SipRequestFirstLine(SipRequestLayer* sipRequest, SipRequestLayer::SipMethod method, const std::string& version, const std::string& uri);
 
 		void parseVersion();
 
@@ -607,7 +611,7 @@ namespace pcpp
 		 * Set the SIP version. The version to set is expected to be in the format of SIP/x.y otherwise an error will be written to log
 		 * @param[in] newVersion The SIP version to set
 		 */
-		void setVersion(std::string newVersion);
+		void setVersion(const std::string& newVersion);
 
 		/**
 		 * A static method for parsing the SIP status code out of raw data
@@ -615,7 +619,7 @@ namespace pcpp
 		 * @param[in] dataLen The raw data length
 		 * @return The parsed SIP status code as enum
 		 */
-		static SipResponseLayer::SipResponseStatusCode parseStatusCode(char* data, size_t dataLen);
+		static SipResponseLayer::SipResponseStatusCode parseStatusCode(const char* data, size_t dataLen);
 
 		/**
 		 * A static method for parsing the SIP version out of raw data
@@ -623,7 +627,7 @@ namespace pcpp
 		 * @param[in] dataLen The raw data length
 		 * @return The parsed SIP version string or an empty string if version cannot be extracted
 		 */
-		static std::string parseVersion(char* data, size_t dataLen);
+		static std::string parseVersion(const char* data, size_t dataLen);
 
 		/**
 		 * @return The size in bytes of the SIP response first line
@@ -648,7 +652,7 @@ namespace pcpp
 		{
 		public:
 			~SipResponseFirstLineException() throw() {}
-			void setMessage(std::string message) { m_Message = message; }
+			void setMessage(const std::string &message) { m_Message = message; }
 			virtual const char* what() const throw()
 			{
 				return m_Message.c_str();
@@ -659,10 +663,7 @@ namespace pcpp
 
 	private:
 		SipResponseFirstLine(SipResponseLayer* sipResponse);
-		SipResponseFirstLine(SipResponseLayer* sipResponse,  std::string version, SipResponseLayer::SipResponseStatusCode statusCode, std::string statusCodeString = "");
-
-		static SipResponseLayer::SipResponseStatusCode validateStatusCode(char* data, size_t dataLen, SipResponseLayer::SipResponseStatusCode potentialCode);
-
+		SipResponseFirstLine(SipResponseLayer* sipResponse,  const std::string& version, SipResponseLayer::SipResponseStatusCode statusCode, std::string statusCodeString = "");
 
 		SipResponseLayer* m_SipResponse;
 		std::string m_Version;
@@ -673,5 +674,3 @@ namespace pcpp
 	};
 
 }
-
-#endif // PACKETPP_SIP_LAYER

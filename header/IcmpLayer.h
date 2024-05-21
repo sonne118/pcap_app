@@ -1,5 +1,4 @@
-#ifndef PACKETPP_ICMP_LAYER
-#define PACKETPP_ICMP_LAYER
+#pragma once
 
 #include "Layer.h"
 #include "IPv4Layer.h"
@@ -25,7 +24,7 @@ namespace pcpp
 	 * Represents ICMP basic protocol header (common for all ICMP message types)
 	 */
 #pragma pack(push, 1)
-	typedef struct
+	typedef struct icmphdr
 	{
 		/** message type */
 		uint8_t	 type;
@@ -127,7 +126,7 @@ namespace pcpp
 	 * ICMP echo (ping) request/reply message structure
 	 */
 #pragma pack(push, 1)
-	typedef struct : icmphdr
+	typedef struct icmp_echo_hdr : icmphdr
 	{
 		/** the echo (ping) request identifier */
 		uint16_t id;
@@ -143,7 +142,7 @@ namespace pcpp
 	 * @struct icmp_echo_request
 	 * ICMP echo (ping) request/reply message structure
 	 */
-	typedef struct
+	typedef struct icmp_echo_request
 	{
 		/** a pointer to the header data */
 		icmp_echo_hdr* header;
@@ -166,7 +165,7 @@ namespace pcpp
 	 * ICMP timestamp request message structure
 	 */
 #pragma pack(push, 1)
-	typedef struct : icmphdr
+	typedef struct icmp_timestamp_request : icmphdr
 	{
 		/** the timestamp request identifier */
 		uint16_t id;
@@ -194,7 +193,7 @@ namespace pcpp
 	 * ICMP destination unreachable message structure
 	 */
 #pragma pack(push, 1)
-	typedef struct : icmphdr
+	typedef struct icmp_destination_unreachable : icmphdr
 	{
 		/** unused 2 bytes */
 		uint16_t unused;
@@ -209,7 +208,7 @@ namespace pcpp
 	 * ICMP time-to-live exceeded message structure
 	 */
 #pragma pack(push, 1)
-	typedef struct : icmphdr
+	typedef struct icmp_time_exceeded : icmphdr
 	{
 		/** unused 4 bytes */
 		uint32_t unused;
@@ -229,7 +228,7 @@ namespace pcpp
 	 * ICMP parameter problem message structure
 	 */
 #pragma pack(push, 1)
-	typedef struct : icmphdr
+	typedef struct icmp_param_problem : icmphdr
 	{
 		/** in the case of an invalid IP header (Code 0), this field indicates the byte offset of the error in the header */
 		uint8_t  pointer;
@@ -252,7 +251,7 @@ namespace pcpp
 	 * ICMP redirect message structure
 	 */
 #pragma pack(push, 1)
-	typedef struct : icmphdr
+	typedef struct icmp_redirect : icmphdr
 	{
 		/** an IPv4 address of the gateway to which the redirection should be sent */
 		uint32_t gatewayAddress;
@@ -294,7 +293,7 @@ namespace pcpp
 	 * ICMP router advertisement message structure
 	 */
 #pragma pack(push, 1)
-	typedef struct : icmphdr
+	typedef struct icmp_router_advertisement_hdr : icmphdr
 	{
 		/** the number of router advertisements in this message. Each advertisement contains one router address/preference level pair */
 		uint8_t  advertisementCount;
@@ -331,7 +330,7 @@ namespace pcpp
 	 * ICMP address mask request message structure
 	 */
 #pragma pack(push, 1)
-	typedef struct : icmphdr
+	typedef struct icmp_address_mask_request : icmphdr
 	{
 		/** the address mask request identifier */
 		uint16_t id;
@@ -355,7 +354,7 @@ namespace pcpp
 	 * ICMP information request message structure
 	 */
 #pragma pack(push, 1)
-	typedef struct : icmphdr
+	typedef struct icmp_info_request : icmphdr
 	{
 		/** the information request identifier */
 		uint16_t id;
@@ -396,6 +395,7 @@ namespace pcpp
 		 * @param[in] prevLayer A pointer to the previous layer
 		 * @param[in] packet A pointer to the Packet instance where layer will be stored in
 		 */
+		// cppcheck-suppress uninitMemberVar
 		IcmpLayer(uint8_t* data, size_t dataLen, Layer* prevLayer, Packet* packet) : Layer(data, dataLen, prevLayer, packet) { m_Protocol = ICMP; }
 
 		/**
@@ -671,6 +671,13 @@ namespace pcpp
 		 */
 		icmp_info_reply* setInfoReplyData(uint16_t id, uint16_t sequence);
 
+		/**
+		 * The static method makes validation of input data
+		 * @param[in] data The pointer to the beginning of byte stream of ICMP packet
+		 * @param[in] dataLen The length of byte stream
+		 * @return True if the data is valid and can represent an ICMP packet
+		 */
+		static inline bool isDataValid(const uint8_t* data, size_t dataLen);
 
 		// implement abstract methods
 
@@ -698,6 +705,48 @@ namespace pcpp
 		OsiModelLayer getOsiModelLayer() const { return OsiModelNetworkLayer; }
 	};
 
-} // namespace pcpp
+	// implementation of inline methods
 
-#endif /* PACKETPP_ICMP_LAYER */
+	bool IcmpLayer::isDataValid(const uint8_t* data, size_t dataLen)
+	{
+		if (dataLen < sizeof(icmphdr))
+			return false;
+
+		uint8_t type = data[0];
+
+		// ICMP_ECHO_REQUEST, ICMP_ECHO_REPLY, ICMP_ROUTER_SOL, ICMP_INFO_REQUEST, ICMP_INFO_REPLY
+		if (type == 8 || type == 0 || type == 10 || type == 15 || type == 16)
+			return true;
+
+		// ICMP_TIMESTAMP_REQUEST, ICMP_TIMESTAMP_REPLY
+		if (type == 13 || type == 14)
+			return dataLen >= sizeof(icmp_timestamp_request);
+
+		// ICMP_ADDRESS_MASK_REPLY, ICMP_ADDRESS_MASK_REQUEST
+		if (type == 17 || type == 18)
+			return dataLen >= sizeof(icmp_address_mask_request);
+
+		// ICMP_DEST_UNREACHABLE
+		if (type == 3)
+			return dataLen >= sizeof(icmp_destination_unreachable);
+
+		// ICMP_REDIRECT
+		if (type == 5)
+			return dataLen >= sizeof(icmp_redirect);
+
+		// ICMP_TIME_EXCEEDED, ICMP_SOURCE_QUENCH
+		if (type == 4 || type == 11)
+			return dataLen >= sizeof(icmp_time_exceeded);
+
+		// ICMP_PARAM_PROBLEM
+		if (type == 12)
+			return dataLen >= sizeof(icmp_param_problem);
+
+		// ICMP_ROUTER_ADV
+		if (type == 9)
+			return dataLen >= sizeof(icmp_router_advertisement_hdr);
+
+		return false;
+	}
+
+} // namespace pcpp

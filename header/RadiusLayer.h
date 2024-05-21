@@ -1,5 +1,4 @@
-#ifndef PACKETPP_RADIUS_LAYER
-#define PACKETPP_RADIUS_LAYER
+#pragma once
 
 #include "Layer.h"
 #include "TLVData.h"
@@ -37,7 +36,7 @@ namespace pcpp
 	 * A wrapper class for RADIUS attributes. This class does not create or modify RADIUS attribute records, but rather
 	 * serves as a wrapper and provides useful methods for retrieving data from them
 	 */
-	class RadiusAttribute : public TLVRecord
+	class RadiusAttribute : public TLVRecord<uint8_t, uint8_t>
 	{
 	public:
 
@@ -45,7 +44,7 @@ namespace pcpp
 		 * A c'tor for this class that gets a pointer to the attribute raw data (byte array)
 		 * @param[in] attrRawData A pointer to the attribute raw data
 		 */
-		RadiusAttribute(uint8_t* attrRawData) : TLVRecord(attrRawData) { }
+		explicit RadiusAttribute(uint8_t* attrRawData) : TLVRecord(attrRawData) { }
 
 		/**
 		 * A d'tor for this class, currently does nothing
@@ -56,11 +55,17 @@ namespace pcpp
 
 		size_t getTotalSize() const
 		{
+			if (m_Data == nullptr)
+				return 0;
+
 			return (size_t)m_Data->recordLen;
 		}
 
 		size_t getDataSize() const
 		{
+			if (m_Data == nullptr)
+				return 0;
+
 			return (size_t)m_Data->recordLen - 2*sizeof(uint8_t);
 		}
 	};
@@ -202,7 +207,7 @@ namespace pcpp
 		 * packet's authenticator field will stay zero. If the hex string represents an array that is larger than 16 bytes,
 		 * only the first 16 bytes will be copied to the packet
 		 */
-		RadiusLayer(uint8_t code, uint8_t id, const std::string authenticator);
+		RadiusLayer(uint8_t code, uint8_t id, const std::string &authenticator);
 
 		/**
 		 * A d'tor for this layer, currently does nothing
@@ -325,7 +330,7 @@ namespace pcpp
 
 		std::string toString() const;
 
-		OsiModelLayer getOsiModelLayer() const { return OsiModelSesionLayer; }
+		OsiModelLayer getOsiModelLayer() const { return OsiModelApplicationLayer; }
 	};
 
 
@@ -345,5 +350,3 @@ namespace pcpp
 	} // isRadiusPort
 
 } // namespace pcpp
-
-#endif // PACKETPP_RADIUS_LAYER

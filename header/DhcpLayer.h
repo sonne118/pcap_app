@@ -1,5 +1,4 @@
-#ifndef PACKETPP_DHCP_LAYER
-#define PACKETPP_DHCP_LAYER
+#pragma once
 
 #include "Layer.h"
 #include "TLVData.h"
@@ -21,7 +20,8 @@ namespace pcpp
 	 * Represents a DHCP protocol header
 	 */
 	#pragma pack(push, 1)
-	struct dhcp_header {
+	struct dhcp_header
+	{
 		/** BootP opcode */
 		uint8_t opCode;
 		/** Hardware type, set to 1 (Ethernet) by default */
@@ -70,7 +70,8 @@ namespace pcpp
 	/**
 	 * DHCP message types
 	 */
-	enum DhcpMessageType {
+	enum DhcpMessageType
+	{
 		/** Unknown message type */
 		DHCP_UNKNOWN_MSG_TYPE = 0,
 		/** Discover message type */
@@ -94,7 +95,8 @@ namespace pcpp
 	/**
 	 * DHCP option types.
 	 */
-	enum DhcpOptionTypes {
+	enum DhcpOptionTypes
+	{
 		/** Unknown option type */
 		DHCPOPT_UNKNOWN = -1,
 		/** Pad */
@@ -395,7 +397,7 @@ namespace pcpp
 	 * A wrapper class for DHCP options. This class does not create or modify DHCP option records, but rather
 	 * serves as a wrapper and provides useful methods for setting and retrieving data to/from them
 	 */
-	class DhcpOption : public TLVRecord
+	class DhcpOption : public TLVRecord<uint8_t, uint8_t>
 	{
 	public:
 
@@ -403,7 +405,7 @@ namespace pcpp
 		 * A c'tor for this class that gets a pointer to the option raw data (byte array)
 		 * @param[in] optionRawData A pointer to the option raw data
 		 */
-		DhcpOption(uint8_t* optionRawData) : TLVRecord(optionRawData) { }
+		explicit DhcpOption(uint8_t* optionRawData) : TLVRecord(optionRawData) { }
 
 		/**
 		 * A d'tor for this class, currently does nothing
@@ -440,7 +442,7 @@ namespace pcpp
 		 */
 		std::string getValueAsString(int valueOffset = 0) const
 		{
-			if (m_Data->recordLen - valueOffset < 1)
+			if (m_Data == nullptr || m_Data->recordLen - valueOffset < 1)
 				return "";
 
 			return std::string((const char*)m_Data->recordValue + valueOffset, (int)m_Data->recordLen - valueOffset);
@@ -466,11 +468,34 @@ namespace pcpp
 			memcpy(m_Data->recordValue + valueOffset, stringValue.data(), len);
 		}
 
+		/**
+		 * Check if a pointer can be assigned to the TLV record data
+		 * @param[in] recordRawData A pointer to the TLV record raw data
+		 * @param[in] tlvDataLen The size of the TLV record raw data
+		 * @return True if data is valid and can be assigned
+		 */
+		static bool canAssign(const uint8_t* recordRawData, size_t tlvDataLen)
+		{
+			auto data = (TLVRawData*)recordRawData;
+			if (data == nullptr)
+				return false;
+
+			if (tlvDataLen < sizeof(TLVRawData::recordType))
+				return false;
+
+			if (data->recordType == (uint8_t)DHCPOPT_END || data->recordType == (uint8_t)DHCPOPT_PAD)
+				return true;
+
+			return TLVRecord<uint8_t, uint8_t>::canAssign(recordRawData, tlvDataLen);
+		}
 
 		// implement abstract methods
 
 		size_t getTotalSize() const
 		{
+			if (m_Data == nullptr)
+				return 0;
+
 			if (m_Data->recordType == (uint8_t)DHCPOPT_END || m_Data->recordType == (uint8_t)DHCPOPT_PAD)
 				return sizeof(uint8_t);
 
@@ -479,6 +504,9 @@ namespace pcpp
 
 		size_t getDataSize() const
 		{
+			if (m_Data == nullptr)
+				return 0;
+
 			if (m_Data->recordType == (uint8_t)DHCPOPT_END || m_Data->recordType == (uint8_t)DHCPOPT_PAD)
 				return 0;
 
@@ -561,6 +589,7 @@ namespace pcpp
 		/**
 		 * Assignment operator that copies all data from another instance of DhcpOptionBuilder
 		 * @param[in] other The instance to assign from
+		 * @return A reference to the assignee
 		 */
 		DhcpOptionBuilder& operator=(const DhcpOptionBuilder& other)
 		{
@@ -684,7 +713,7 @@ namespace pcpp
 		 * @return DHCP message type as extracted from ::DHCPOPT_DHCP_MESSAGE_TYPE option. If this option doesn't exist the value of
 		 * ::DHCP_UNKNOWN_MSG_TYPE is returned
 		 */
-		DhcpMessageType getMesageType() const;
+		DhcpMessageType getMessageType() const;
 
 		/**
 		 * Set DHCP message type. This method searches for existing ::DHCPOPT_DHCP_MESSAGE_TYPE option. If found, it sets the requested
@@ -694,7 +723,7 @@ namespace pcpp
 		 * @return True if message type was set successfully or false if msgType is ::DHCP_UNKNOWN_MSG_TYPE or if failed to add
 		 * ::DHCPOPT_DHCP_MESSAGE_TYPE option
 		 */
-		bool setMesageType(DhcpMessageType msgType);
+		bool setMessageType(DhcpMessageType msgType);
 
 		/**
 		 * @return The first DHCP option in the packet. If there are no DHCP options the returned value will contain
@@ -792,5 +821,3 @@ namespace pcpp
 		DhcpOption addOptionAt(const DhcpOptionBuilder& optionBuilder, int offset);
 	};
 }
-
-#endif /* PACKETPP_DHCP_LAYER */

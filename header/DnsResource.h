@@ -1,5 +1,4 @@
-#ifndef PACKETPP_DNS_RESOURCE
-#define PACKETPP_DNS_RESOURCE
+#pragma once
 
 #include "DnsLayer.h"
 #include "DnsLayerEnums.h"
@@ -132,7 +131,7 @@ namespace pcpp
 	private:
 		DnsQuery(DnsLayer* dnsLayer, size_t offsetInLayer) : IDnsResource(dnsLayer, offsetInLayer) {}
 
-		DnsQuery(uint8_t* emptyRawData) : IDnsResource(emptyRawData) {}
+		explicit DnsQuery(uint8_t* emptyRawData) : IDnsResource(emptyRawData) {}
 
 	public:
 		virtual ~DnsQuery() {}
@@ -233,5 +232,3 @@ namespace pcpp
 	};
 
 }
-
-#endif // PACKETPP_DNS_RESOURCE

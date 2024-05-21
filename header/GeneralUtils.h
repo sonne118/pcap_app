@@ -1,5 +1,4 @@
-#ifndef PCAPPP_GENERAL_UTILS
-#define PCAPPP_GENERAL_UTILS
+#pragma once
 
 #include <string>
 #include <stdint.h>
@@ -39,6 +38,30 @@ namespace pcpp
 	 * Illegal hex string means odd number of characters or a string that contains non-hex characters
 	 */
 	size_t hexStringToByteArray(const std::string& hexString, uint8_t* resultByteArr, size_t resultByteArrSize);
-}
 
-#endif // PCAPPP_GENERAL_UTILS
+	/**
+	 * This is a cross platform version of memmem (https://man7.org/linux/man-pages/man3/memmem.3.html) which is not supported
+	 * on all platforms.
+	 * @param[in] haystack A pointer to the buffer to be searched
+	 * @param[in] haystackLen Length of the haystack buffer
+	 * @param[in] needle A pointer to a buffer that will be searched for
+	 * @param[in] needleLen Length of the needle buffer
+	 * @return A pointer to the beginning of the substring, or NULL if the substring is not found
+	 */
+	char* cross_platform_memmem(const char* haystack, size_t haystackLen, const char* needle, size_t needleLen);
+
+	/**
+	 * Calculates alignment.
+	 * @param[in] number Given number
+	 * @return The aligned number
+	*/
+	template <int alignment>
+	static int align(int number)
+	{
+		// Only works for alignment with power of 2
+		constexpr bool isPowerOfTwo = alignment && ((alignment & (alignment - 1)) == 0);
+		static_assert(isPowerOfTwo, "Alignment must be a power of 2");
+		int mask = alignment - 1;
+		return (number + mask) & ~mask;
+	}
+}

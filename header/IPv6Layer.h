@@ -1,7 +1,7 @@
-#ifndef PACKETPP_IPV6_LAYER
-#define PACKETPP_IPV6_LAYER
+#pragma once
 
 #include "Layer.h"
+#include "IPLayer.h"
 #include "IPv6Extensions.h"
 #include "IpAddress.h"
 
@@ -19,7 +19,8 @@ namespace pcpp
 	 * Represents IPv6 protocol header
 	 */
 #pragma pack(push, 1)
-	struct ip6_hdr {
+	struct ip6_hdr
+	{
 		#if (BYTE_ORDER == LITTLE_ENDIAN)
 		/** Traffic class */
 		uint8_t trafficClass:4,
@@ -51,7 +52,7 @@ namespace pcpp
 	 * @class IPv6Layer
 	 * Represents an IPv6 protocol layer
 	 */
-	class IPv6Layer : public Layer
+	class IPv6Layer : public Layer, public IPLayer
 	{
 	public:
 		/**
@@ -81,7 +82,7 @@ namespace pcpp
 		IPv6Layer(const IPv6Layer& other);
 
 		/**
-		 * A destrcutor for this layer
+		 * A destructor for this layer
 		 */
 		~IPv6Layer();
 
@@ -97,16 +98,43 @@ namespace pcpp
 		ip6_hdr* getIPv6Header() const { return (ip6_hdr*)m_Data; }
 
 		/**
+		 * Get the source IP address in the form of IPAddress. This method is very similar to getSrcIPv6Address(),
+		 * but adds a level of abstraction because IPAddress can be used for both IPv4 and IPv6 addresses
+		 * @return An IPAddress containing the source address
+		 */
+		IPAddress getSrcIPAddress() const { return getSrcIPv6Address(); }
+
+		/**
 		 * Get the source IP address in the form of IPv6Address
 		 * @return An IPv6Address containing the source address
 		 */
-		IPv6Address getSrcIpAddress() const { return getIPv6Header()->ipSrc; }
+		IPv6Address getSrcIPv6Address() const { return getIPv6Header()->ipSrc; }
+
+		/**
+		 * Set the source IP address
+		 * @param[in] ipAddr The IP address to set
+		 */
+		void setSrcIPv6Address(const IPv6Address& ipAddr) { ipAddr.copyTo(getIPv6Header()->ipSrc); }
+
+
+		/**
+		 * Set the dest IP address
+		 * @param[in] ipAddr The IP address to set
+		 */
+		void setDstIPv6Address(const IPv6Address& ipAddr) { ipAddr.copyTo(getIPv6Header()->ipDst); }
+
+		/**
+		 * Get the destination IP address in the form of IPAddress. This method is very similar to getDstIPv6Address(),
+		 * but adds a level of abstraction because IPAddress can be used for both IPv4 and IPv6 addresses
+		 * @return An IPAddress containing the destination address
+		 */
+		IPAddress getDstIPAddress() const { return getDstIPv6Address(); }
 
 		/**
 		 * Get the destination IP address in the form of IPv6Address
 		 * @return An IPv6Address containing the destination address
 		 */
-		IPv6Address getDstIpAddress() const { return getIPv6Header()->ipDst; }
+		IPv6Address getDstIPv6Address() const { return getIPv6Header()->ipDst; }
 
 		/**
 		 * @return Number of IPv6 extensions in this layer
@@ -155,7 +183,16 @@ namespace pcpp
 		// implement abstract methods
 
 		/**
-		 * Currently identifies the following next layers: UdpLayer, TcpLayer. Otherwise sets PayloadLayer
+		 * Currently identifies the following next layers:
+		 * - UdpLayer
+		 * - TcpLayer
+		 * - IPv4Layer (IP-in-IP)
+		 * - IPv6Layer (IP-in-IP)
+		 * - GreLayer
+		 * - AuthenticationHeaderLayer (IPSec)
+		 * - ESPLayer (IPSec)
+		 *
+		 * Otherwise sets PayloadLayer
 		 */
 		void parseNextLayer();
 
@@ -233,9 +270,7 @@ namespace pcpp
 
 	bool IPv6Layer::isDataValid(const uint8_t* data, size_t dataLen)
 	{
-		return dataLen >= sizeof(ip6_hdr);
+		return data && dataLen >= sizeof(ip6_hdr);
 	}
 
 } // namespace pcpp
-
-#endif /* PACKETPP_IPV6_LAYER */

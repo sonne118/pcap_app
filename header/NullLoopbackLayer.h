@@ -1,5 +1,4 @@
-#ifndef PACKETPP_NULL_LOOPBACK_LAYER
-#define PACKETPP_NULL_LOOPBACK_LAYER
+#pragma once
 
 /// @file
 
@@ -43,7 +42,7 @@ namespace pcpp
 		 * A constructor that allocates a new Null/Loopback header
 		 * @param[in] family The family protocol to set
 		 */
-		NullLoopbackLayer(uint32_t family);
+		explicit NullLoopbackLayer(uint32_t family);
 
 		/**
 		 * A destructor for this layer (does nothing)
@@ -88,5 +87,3 @@ namespace pcpp
 	};
 
 } // namespace pcpp
-
-#endif /* PACKETPP_NULL_LOOPBACK_LAYER */

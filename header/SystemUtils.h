@@ -1,14 +1,8 @@
-#ifndef PCAPPP_SYSTEM_UTILS
-#define PCAPPP_SYSTEM_UTILS
+#pragma once
 
 #include <stdint.h>
 #include <string>
 #include <vector>
-#if defined(WIN32) || defined(WINx64) || defined(PCAPPP_MINGW_ENV)
-#include <windows.h>
-#else
-#include <pthread.h>
-#endif
 
 /// @file
 
@@ -33,8 +27,9 @@ namespace pcpp
 	{
 		/**
 		 * Core position in a 32-bit mask. For each core this attribute holds a 4B integer where only 1 bit is set, according to the core ID.
-		 * For example: in core #0 the right-most bit will be set (meaning the number 0x01);
-		 * 				in core #5 the 5th right-most bit will be set (meaning the number 0x20)...
+		 * For example:
+		 * - In core #0 the right-most bit will be set (meaning the number 0x01);
+		 * - in core #5 the 5th right-most bit will be set (meaning the number 0x20)
 		 */
 		uint32_t Mask;
 
@@ -211,7 +206,7 @@ namespace pcpp
 	 * @param[in] cores A vector of SystemCore instances
 	 * @return A core mask representing these cores
 	 */
-	CoreMask createCoreMaskFromCoreVector(std::vector<SystemCore> cores);
+	CoreMask createCoreMaskFromCoreVector(const std::vector<SystemCore> &cores);
 
 
 	/**
@@ -219,11 +214,11 @@ namespace pcpp
 	 * @param[in] coreIds A vector of core IDs
 	 * @return A core mask representing these cores
 	 */
-	CoreMask createCoreMaskFromCoreIds(std::vector<int> coreIds);
+	CoreMask createCoreMaskFromCoreIds(const std::vector<int> &coreIds);
 
 
 	/**
-	 * Covert a core mask into a vector of its appropriate system cores
+	 * Convert a core mask into a vector of its appropriate system cores
 	 * @param[in] coreMask The input core mask
 	 * @param[out] resultVec The vector that will contain the system cores
 	 */
@@ -234,14 +229,14 @@ namespace pcpp
 	 * @param[in] command The command to run
 	 * @return The output of the command (both stdout and stderr)
 	 */
-	std::string executeShellCommand(const std::string command);
+	std::string executeShellCommand(const std::string &command);
 
 	/**
 	 * Check if a directory exists
 	 * @param[in] dirPath Full path of the directory to search
 	 * @return True if directory exists, false otherwise
 	 */
-	bool directoryExists(std::string dirPath);
+	bool directoryExists(const std::string &dirPath);
 
 	/**
 	 * Retrieve a system-wide real-time accurate clock. It's actually a multi-platform version of clock_gettime() which is
@@ -251,6 +246,48 @@ namespace pcpp
 	 * @return 0 for success, or -1 for failure
 	 */
 	int clockGetTime(long& sec, long& nsec);
+
+	/**
+	 * A multi-platform version of the popular sleep method. This method simply runs the right sleep method, according to the platform
+	 * it is running on.
+	 * @param[in] seconds Number of seconds to sleep
+	 */
+	void multiPlatformSleep(uint32_t seconds);
+
+	/**
+	 * A multi-platform version of sleep in milliseconds resolution. This method simply runs the right sleep method, according to the platform
+	 * it is running on.
+	 * @param[in] milliseconds Number of milliseconds to sleep
+	 */
+	void multiPlatformMSleep(uint32_t milliseconds);
+
+	/**
+	 * A multi-platform version of `htons` which convert host to network byte order
+	 * @param[in] host Value in host byte order
+	 * @return Value in network byte order
+	 */
+	uint16_t hostToNet16(uint16_t host);
+
+	/**
+	 * A multi-platform version of `ntohs` which convert network to host byte order
+	 * @param[in] net Value in network byte order
+	 * @return Value in host byte order
+	 */
+	uint16_t netToHost16(uint16_t net);
+
+	/**
+	 * A multi-platform version of `htonl` which convert host to network byte order
+	 * @param[in] host Value in host byte order
+	 * @return Value in network byte order
+	 */
+	uint32_t hostToNet32(uint32_t host);
+
+	/**
+	 * A multi-platform version of `ntohl` which convert network to host byte order
+	 * @param[in] net Value in network byte order
+	 * @return Value in host byte order
+	 */
+	uint32_t netToHost32(uint32_t net);
 
 	/**
 	 * @class AppName
@@ -268,6 +305,7 @@ namespace pcpp
 		 * @param[in] argc The argc param from main()
 		 * @param[in] argv The argv param from main()
 		 */
+		// cppcheck-suppress constParameter
 		static void init(int argc, char* argv[])
 		{
 			if (argc == 0)
@@ -293,7 +331,10 @@ namespace pcpp
 			}
 
 			// remove file extension
-			m_AppName = m_AppName.substr(0, m_AppName.rfind('.'));
+			lastPos = m_AppName.rfind('.');
+			if (lastPos != std::string::npos) {
+				m_AppName.resize(lastPos);
+			}
 		}
 
 		/**
@@ -342,14 +383,11 @@ namespace pcpp
 		// private c'tor
 		ApplicationEventHandler();
 
-#ifdef WIN32
-		static BOOL WINAPI handlerRoutine(DWORD fdwCtrlType);
+#if defined(_WIN32)
+		static int handlerRoutine(unsigned long fdwCtrlType);
 #else
-		pthread_mutex_t m_HandlerRoutineMutex;
 		static void handlerRoutine(int signum);
 #endif
 	};
 
 } // namespace pcpp
-
-#endif /* PCAPPP_SYSTEM_UTILS */

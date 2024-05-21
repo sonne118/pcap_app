@@ -1,5 +1,4 @@
-#ifndef PACKETPP_DNS_LAYER
-#define PACKETPP_DNS_LAYER
+#pragma once
 
 #include "DnsLayerEnums.h"
 #include "DnsResource.h"
@@ -29,41 +28,41 @@ namespace pcpp
 		uint16_t
 		/** Recursion desired flag */
 			recursionDesired:1,
-		/**	Truncated flag */
+		/** Truncated flag */
 			truncation:1,
-		/**	Authoritative answer flag */
+		/** Authoritative answer flag */
 			authoritativeAnswer:1,
 		/** Operation Code */
 			opcode:4,
-		/**	Query/Response flag */
+		/** Query/Response flag */
 			queryOrResponse:1,
 		/** Return Code */
 			responseCode:4,
 		/** Checking disabled flag */
 			checkingDisabled:1,
-		/**	Authenticated data flag */
+		/** Authenticated data flag */
 			authenticData:1,
-		/**	Zero flag (Reserved) */
+		/** Zero flag (Reserved) */
 			zero:1,
-		/**	Recursion available flag */
+		/** Recursion available flag */
 			recursionAvailable:1;
 #elif (BYTE_ORDER == BIG_ENDIAN)
 		uint16_t
-		/**	Query/Response flag */
+		/** Query/Response flag */
 			queryOrResponse:1,
 		/** Operation Code */
 			opcode:4,
-		/**	Authoritative answer flag */
+		/** Authoritative answer flag */
 			authoritativeAnswer:1,
-		/**	Truncated flag */
+		/** Truncated flag */
 			truncation:1,
 		/** Recursion desired flag */
 			recursionDesired:1,
-		/**	Recursion available flag */
+		/** Recursion available flag */
 			recursionAvailable:1,
-		/**	Zero flag (Reserved) */
+		/** Zero flag (Reserved) */
 			zero:1,
-		/**	Authenticated data flag */
+		/** Authenticated data flag */
 			authenticData:1,
 		/** Checking disabled flag */
 			checkingDisabled:1,
@@ -91,8 +90,7 @@ namespace pcpp
 
 	/**
 	 * @class DnsLayer
-	 * Represents the DNS protocol layer.<BR>
-	 * CURRENTLY ONLY DNS PARSING IS AVAILABLE. CREATING AND EDITING DNS ATTRIBUTES WILL BE ADDED LATER
+	 * Represents the DNS protocol layer
 	 */
 	class DnsLayer : public Layer
 	{
@@ -118,11 +116,14 @@ namespace pcpp
 
 		/**
 		 * A copy constructor for this layer
+		 * @param[in] other The DNS layer to copy from
 		 */
 		DnsLayer(const DnsLayer& other);
 
 		/**
 		 * An assignment operator for this layer
+		 * @param[in] other The DNS layer to assign
+		 * @return A reference to the assignee
 		 */
 		DnsLayer& operator=(const DnsLayer& other);
 
@@ -133,7 +134,7 @@ namespace pcpp
 		 * other methods of this layer. Notice the return value points directly to the data, so every change will change the actual packet data
 		 * @return A pointer to the @ref dnshdr
 		 */
-		dnshdr* getDnsHeader() const { return (dnshdr*)m_Data; }
+		dnshdr* getDnsHeader() const;
 
 		/**
 		 * Searches for a DNS query by its name field. Notice this method returns only a query which its name equals to the requested name. If
@@ -173,7 +174,7 @@ namespace pcpp
 
 		/**
 		 * Add a new DNS query similar to an already existing DNS query. All query fields will be copied from the existing query
-		 * param[in] copyQuery The record to create the new record from. copyQuery won't be changed in any way
+		 * @param[in] copyQuery The record to create the new record from. copyQuery won't be changed in any way
 		 * @return A pointer to the newly created DNS query or NULL if query could not be created (an appropriate error log message will be
 		 * printed in this case)
 		 */
@@ -236,7 +237,7 @@ namespace pcpp
 
 		/**
 		 * Add a new DNS answer similar to an already existing DNS answer. All answer fields will be copied from the existing answer
-		 * param[in] copyAnswer The record to create the new record from. copyAnswer won't be changed in any way
+		 * @param[in] copyAnswer The record to create the new record from. copyAnswer won't be changed in any way
 		 * @return A pointer to the newly created DNS answer or NULL if query could not be created (an appropriate error log message will be
 		 * printed in this case)
 		 */
@@ -300,7 +301,7 @@ namespace pcpp
 
 		/**
 		 * Add a new DNS authority similar to an already existing DNS authority. All authority fields will be copied from the existing authority
-		 * param[in] copyAuthority The record to create the new record from. copyAuthority won't be changed in any way
+		 * @param[in] copyAuthority The record to create the new record from. copyAuthority won't be changed in any way
 		 * @return A pointer to the newly created DNS authority or NULL if query could not be created (an appropriate error log message will be
 		 * printed in this case)
 		 */
@@ -382,7 +383,7 @@ namespace pcpp
 		/**
 		 * Add a new DNS additional record similar to an already existing DNS additional record. All additional record fields will be copied from the
 		 * existing additional record
-		 * param[in] copyAdditionalRecord The record to create the new record from. copyAdditionalRecord won't be changed in any way
+		 * @param[in] copyAdditionalRecord The record to create the new record from. copyAdditionalRecord won't be changed in any way
 		 * @return A pointer to the newly created DNS additional record or NULL if query could not be created (an appropriate error log message will
 		 * be printed in this case)
 		 */
@@ -411,7 +412,7 @@ namespace pcpp
 		void parseNextLayer() {}
 
 		/**
-		 * Return the size of the DNS data in the packet including he DNS header and size of all queries, answers, authorities and additional
+		 * @return The size of the DNS data in the packet including he DNS header and size of all queries, answers, authorities and additional
 		 * records
 		 */
 		size_t getHeaderLen() const { return m_DataLen; } //No layer above DNS
@@ -419,7 +420,7 @@ namespace pcpp
 		/**
 		 * Does nothing for this layer
 		 */
-		void computeCalculateFields() {}
+		virtual void computeCalculateFields() {}
 
 		std::string toString() const;
 
@@ -428,8 +429,23 @@ namespace pcpp
 		/**
 		 * A static method that checks whether the port is considered as DNS
 		 * @param[in] port The port number to be checked
+		 * @return True if the port is associated with the DNS protocol
 		 */
 		static inline bool isDnsPort(uint16_t port);
+
+		/**
+		 * A static method that validates the input data
+		 * @param[in] data The pointer to the beginning of a byte stream of a DNS packet
+		 * @param[in] dataLen The length of the byte stream
+		 * @param[in] dnsOverTcp Should be set to "true" if this is DNS is over TCP, otherwise set to "false"
+		 * (which is also the default value)
+		 * @return True if the data is valid and can represent a DNS packet
+		 */
+		static inline bool isDataValid(const uint8_t* data, size_t dataLen, bool dnsOverTcp = false);
+
+	protected:
+		DnsLayer(uint8_t* data, size_t dataLen, Layer* prevLayer, Packet* packet, size_t offsetAdjustment);
+		explicit DnsLayer(size_t offsetAdjustment);
 
 	private:
 		IDnsResource* m_ResourceList;
@@ -437,6 +453,11 @@ namespace pcpp
 		DnsResource*  m_FirstAnswer;
 		DnsResource*  m_FirstAuthority;
 		DnsResource*  m_FirstAdditional;
+		uint16_t      m_OffsetAdjustment;
+
+		size_t getBasicHeaderSize();
+		void init(size_t offsetAdjustment, bool callParseResource);
+		void initNewLayer(size_t offsetAdjustment);
 
 		IDnsResource* getFirstResource(DnsResourceType resType) const;
 		void setFirstResource(DnsResourceType resType, IDnsResource* resource);
@@ -459,6 +480,63 @@ namespace pcpp
 	};
 
 
+
+	/**
+	 * @class DnsOverTcpLayer
+	 * Represents the DNS over TCP layer.
+	 * DNS over TCP is described here: https://tools.ietf.org/html/rfc7766 .
+	 * It is very similar to DNS over UDP, except for one field: TCP message length which is added in the beginning of the message
+	 * before the other DNS data properties. The rest of the data is similar.
+	 *
+	 * Note: DNS over TCP can spread over more than one packet, but this implementation doesn't support this use-case and assumes
+	 * the whole message fits in a single packet.
+	 */
+	class DnsOverTcpLayer : public DnsLayer
+	{
+	public:
+
+		/**
+		 * A constructor that creates the layer from an existing packet raw data
+		 * @param[in] data A pointer to the raw data
+		 * @param[in] dataLen Size of the data in bytes
+		 * @param[in] prevLayer A pointer to the previous layer
+		 * @param[in] packet A pointer to the Packet instance where layer will be stored in
+		 */
+		DnsOverTcpLayer(uint8_t* data, size_t dataLen, Layer* prevLayer, Packet* packet)
+			: DnsLayer(data, dataLen, prevLayer, packet, sizeof(uint16_t)) {}
+
+		/**
+		 * A constructor that creates an empty DNS layer: all members of dnshdr are set to 0 and layer will contain no records
+		 */
+		DnsOverTcpLayer() : DnsLayer(sizeof(uint16_t)) {}
+
+		/**
+		 * A copy constructor for this layer
+		 * @param[in] other The DNS over TCP layer to copy from
+		 */
+		DnsOverTcpLayer(const DnsOverTcpLayer& other) : DnsLayer(other) {}
+
+		/**
+		 * @return The value of the TCP message length as described in https://tools.ietf.org/html/rfc7766#section-8
+		 */
+		uint16_t getTcpMessageLength();
+
+		/**
+		 * Set the TCP message length value as described in https://tools.ietf.org/html/rfc7766#section-8
+		 * @param[in] value The value to set
+		 */
+		void setTcpMessageLength(uint16_t value);
+
+
+		// overridden methods
+
+		/**
+		 * Calculate the TCP message length field
+		 */
+		void computeCalculateFields();
+	};
+
+
 	// implementation of inline methods
 
 	bool DnsLayer::isDnsPort(uint16_t port)
@@ -474,6 +552,10 @@ namespace pcpp
 		}
 	}
 
-} // namespace pcpp
+	bool DnsLayer::isDataValid(const uint8_t* data, size_t dataLen, bool dnsOverTcp)
+	{
+		size_t minSize = sizeof(dnshdr) + (dnsOverTcp ? sizeof(uint16_t) : 0);
+		return data && dataLen >= minSize;
+	}
 
-#endif /* PACKETPP_DNS_LAYER */
+} // namespace pcpp

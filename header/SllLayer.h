@@ -1,5 +1,4 @@
-#ifndef PACKETPP_SLL_LAYER
-#define PACKETPP_SLL_LAYER
+#pragma once
 
 #include "MacAddress.h"
 #include "Layer.h"
@@ -51,7 +50,7 @@ namespace pcpp
 		 * @param[in] dataLen Size of the data in bytes
 		 * @param[in] packet A pointer to the Packet instance where layer will be stored in
 		 */
-		SllLayer(uint8_t* data, size_t dataLen, Packet* packet) : Layer(data, dataLen, NULL, packet) { m_Protocol = SLL; }
+		SllLayer(uint8_t* data, size_t dataLen, Packet* packet) : Layer(data, dataLen, nullptr, packet) { m_Protocol = SLL; }
 
 		/**
 		 * A constructor that creates a new SLL header and allocates the data
@@ -81,7 +80,7 @@ namespace pcpp
 		 * @param[in] macAddr MAC address to set
 		 * @return True if address was set successfully, false if MAC address isn't valid or if set failed
 		 */
-		bool setMacAddressAsLinkLayer(MacAddress macAddr);
+		bool setMacAddressAsLinkLayer(const MacAddress& macAddr);
 
 		/**
 		 * Currently identifies the following next layers: IPv4Layer, IPv6Layer, ArpLayer, VlanLayer, PPPoESessionLayer, PPPoEDiscoveryLayer,
@@ -106,6 +105,3 @@ namespace pcpp
 	};
 
 } // namespace pcpp
-
-#endif /* PACKETPP_SLL_LAYER */
-

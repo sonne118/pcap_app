@@ -1,5 +1,4 @@
-#ifndef PACKETPP_GRE_LAYER
-#define PACKETPP_GRE_LAYER
+#pragma once
 
 #include "Layer.h"
 
@@ -148,7 +147,8 @@ namespace pcpp
 		// implement abstract methods
 
 		/**
-		 * Currently identifies the following next layers: IPv4Layer, IPv6Layer, VlanLayer, MplsLayer and PPP_PPTPLayer.
+		 * Currently identifies the following next layers:
+		 *   IPv4Layer, IPv6Layer, VlanLayer, MplsLayer, PPP_PPTPLayer, EthLayer, EthDot3Layer
 		 * Otherwise sets PayloadLayer
 		 */
 		void parseNextLayer();
@@ -275,6 +275,16 @@ namespace pcpp
 		 */
 		bool unsetKey();
 
+		/**
+		 * A static method that validates the input data
+		 * @param[in] data The pointer to the beginning of a byte stream of an GREv0 layer
+		 * @param[in] dataLen The length of the byte stream
+		 * @return True if the data is valid and can represent an GREv0 layer
+		 */
+		static inline bool isDataValid(const uint8_t* data, size_t dataLen)
+		{
+			return data && dataLen >= sizeof(gre_basic_header);
+		}
 
 		// implement abstract methods
 
@@ -311,7 +321,7 @@ namespace pcpp
 		 * A constructor that creates a new GREv1 header and allocates the data
 		 * @param[in] callID The call ID to set
 		 */
-		GREv1Layer(uint16_t callID);
+		explicit GREv1Layer(uint16_t callID);
 
 		virtual ~GREv1Layer() {}
 
@@ -349,6 +359,16 @@ namespace pcpp
 		 */
 		bool unsetAcknowledgmentNum();
 
+		/**
+		 * A static method that validates the input data
+		 * @param[in] data The pointer to the beginning of a byte stream of an GREv1 layer
+		 * @param[in] dataLen The length of the byte stream
+		 * @return True if the data is valid and can represent an GREv1 layer
+		 */
+		static inline bool isDataValid(const uint8_t* data, size_t dataLen)
+		{
+			return data && dataLen >= sizeof(gre1_header);
+		}
 
 		// implement abstract methods
 
@@ -421,5 +441,3 @@ namespace pcpp
 	};
 
 } // namespace pcpp
-
-#endif /* PACKETPP_GRE_LAYER */

@@ -1,11 +1,7 @@
-#ifndef PACKETPP_VLAN_LAYER
-#define PACKETPP_VLAN_LAYER
+#pragma once
 
 #include "Layer.h"
 #include "EthLayer.h"
-#if defined(WIN32) || defined(WINx64)
-#include <winsock2.h>
-#endif
 
 /// @file
 
@@ -21,15 +17,16 @@ namespace pcpp
 	 * Represents a VLAN header
 	 */
 #pragma pack(push, 1)
-	struct vlan_header {
+	struct vlan_header
+	{
 		/**
-		   @verbatim
-		   0                 1
-		   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
-		   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-		   |Prio |C|         VLAN ID     |
-		   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-		   @endverbatim
+		 @verbatim
+		 0               1               2
+		 0 1 2 3 4 5 6 7 0 1 2 3 4 5 6 7 0
+		 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		 |Prio |C|         VLAN ID       |
+		 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+		 @endverbatim
 		 */
 		uint16_t vlan;
 		/** Ethernet type for next layer */
@@ -58,9 +55,9 @@ namespace pcpp
 		 * @param[in] vlanID VLAN ID
 		 * @param[in] cfi CFI value
 		 * @param[in] priority Priority value
-		 * @param[in] etherType Protocol EtherType of the next layer
+		 * @param[in] etherType Protocol EtherType of the next layer. It's an optional parameter, a value of 0 will be set if not provided
 		 */
-		VlanLayer(const uint16_t vlanID, bool cfi, uint8_t priority, uint16_t etherType);
+		VlanLayer(const uint16_t vlanID, bool cfi, uint8_t priority, uint16_t etherType = 0);
 
 		~VlanLayer() {}
 
@@ -125,9 +122,9 @@ namespace pcpp
 		size_t getHeaderLen() const { return sizeof(vlan_header); }
 
 		/**
-		 * Does nothing for this layer
+		 * Calculate the EtherType for known protocols: IPv4, IPv6, ARP, VLAN
 		 */
-		void computeCalculateFields() {}
+		void computeCalculateFields();
 
 		std::string toString() const;
 
@@ -135,5 +132,3 @@ namespace pcpp
 	};
 
 } // namespace pcpp
-
-#endif /* PACKETPP_VLAN_LAYER */

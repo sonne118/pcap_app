@@ -1,5 +1,4 @@
-#ifndef PACKETPP_SDP_LAYER
-#define PACKETPP_SDP_LAYER
+#pragma once
 
 #include "IpAddress.h"
 #include "TextBasedProtocol.h"
@@ -93,7 +92,7 @@ namespace pcpp
 		 * @param[in] startTime The start time of the session
 		 * @param[in] stopTime The stop time of the session
 		 */
-		SdpLayer(std::string username, long sessionID, long sessionVersion, IPv4Address ipAddress, std::string sessionName, long startTime, long stopTime);
+		SdpLayer(const std::string& username, long sessionID, long sessionVersion, IPv4Address ipAddress, const std::string& sessionName, long startTime, long stopTime);
 
 		~SdpLayer() {}
 
@@ -116,7 +115,7 @@ namespace pcpp
 		 * This IP address can be used to track the RTP data relevant for the call. This method extracts this IP address from the 'originator' field and returns it.
 		 * A value of IPv4Address#Zero will be returned in the following cases: (1) if 'originator' field doesn't exist; (2) if it doesn't contain the IP address;
 		 * (3) if it contains a non-IPv4 address
-		 * @return Te IP address of the the machine from which the session is created
+		 * @return The IP address of the the machine from which the session is created
 		 */
 		IPv4Address getOwnerIPv4Address() const;
 
@@ -128,7 +127,7 @@ namespace pcpp
 		 * @param[in] mediaType The media type to search in
 		 * @return The transport port to which the media stream is sent
 		 */
-		uint16_t getMediaPort(std::string mediaType) const;
+		uint16_t getMediaPort(const std::string& mediaType) const;
 
 		/**
 		 * Adds a 'media-description' field (m=) with all necessary data and attribute fields (a=) with data relevant for this media.<BR>
@@ -149,7 +148,7 @@ namespace pcpp
 		 * translated into a 'media-attribute' field (a=)
 		 * @return True if all fields were added properly or false if at least one field was failed to be added
 		 */
-		bool addMediaDescription(std::string mediaType, uint16_t mediaPort, std::string mediaProtocol, std::string mediaFormat, std::vector<std::string> mediaAttributes);
+		bool addMediaDescription(const std::string& mediaType, uint16_t mediaPort, const std::string& mediaProtocol, const std::string& mediaFormat, const std::vector<std::string> &mediaAttributes);
 
 		// overridden methods
 
@@ -165,5 +164,3 @@ namespace pcpp
 
 	};
 }
-
-#endif // PACKETPP_SDP_LAYER

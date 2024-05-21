@@ -1,5 +1,4 @@
-#ifndef PACKETPP_PAYLOAD_LAYER
-#define PACKETPP_PAYLOAD_LAYER
+#pragma once
 
 #include "Layer.h"
 
@@ -31,19 +30,17 @@ namespace pcpp
 		 * A constructor that allocates a new payload
 		 * @param[in] data A raw buffer that will be used as a payload. This data will be copied to the layer
 		 * @param[in] dataLen The raw buffer length
-		 * @param[in] dummy A dummy parameter to separate the constructor signature from the other constructor. Its value isn't used anywhere
-		 * @todo dummy is probably not necessary anymore. Remove it
 		 */
-		PayloadLayer(const uint8_t* data, size_t dataLen, bool dummy);
+		PayloadLayer(const uint8_t* data, size_t dataLen);
 
 		/**
 		 * A constructor that allocates a new payload from an hex stream
 		 * @param[in] payloadAsHexStream A string that represents an hex stream of the payload. For example: 0001080006040002842b2b774c56c0a80078000000000000c0a8.
 		 * In order for the hex stream to be valid it has to contain valid hex chars only (which means, for example, that it can't begin with "0x") and it also has
 		 * to have an even number of chars (each char represents one nibble). If the string is not a valid hex stream an error will be printed to log and the payload
-		 * layer will be empty (no data) 
+		 * layer will be empty (no data)
 		 */
-		PayloadLayer(const std::string& payloadAsHexStream);
+		explicit PayloadLayer(const std::string& payloadAsHexStream);
 
 		~PayloadLayer() {}
 
@@ -90,5 +87,3 @@ namespace pcpp
 	};
 
 } // namespace pcpp
-
-#endif /* PACKETPP_PAYLOAD_LAYER */

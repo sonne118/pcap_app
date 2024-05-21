@@ -1,9 +1,9 @@
-#ifndef PACKETPP_TCP_REASSEMBLY
-#define PACKETPP_TCP_REASSEMBLY
+#pragma once
 
 #include "Packet.h"
 #include "IpAddress.h"
 #include "PointerVector.h"
+#include <unordered_map>
 #include <map>
 #include <list>
 #include <time.h>
@@ -61,6 +61,7 @@
  * - pcpp#TcpReassemblyConfiguration#doNotRemoveConnInfo - if this member is set to false the automatic cleanup mode is applied
  * - pcpp#TcpReassemblyConfiguration#closedConnectionDelay - the value of delay expressed in seconds. The minimum value is 1
  * - pcpp#TcpReassemblyConfiguration#maxNumToClean - to avoid performance overhead when the cleanup is being performed, this parameter is used. It defines the maximum number of items to be removed per one call of pcpp#TcpReassembly#purgeClosedConnections
+ * - pcpp#TcpReassemblyConfiguration#maxOutOfOrderFragments - the maximum number of unmatched fragments to keep per flow before missed fragments are considered lost. A value of 0 means unlimited
  *
  */
 
@@ -95,19 +96,19 @@ struct ConnectionData
 	/**
 	 * A c'tor for this struct that basically zeros all members
 	 */
-	ConnectionData() : srcPort(0), dstPort(0), flowKey(0), startTime(), endTime()  {}
+	ConnectionData() : srcPort(0), dstPort(0), flowKey(0), startTime(), endTime() {}
 
 	/**
 	 * Set startTime of Connection
-	 * @param[in] startTime integer value
+	 * @param[in] startTimeValue integer value
 	 */
-	void setStartTime(const timeval &startTime) { this->startTime = startTime; }
+	void setStartTime(const timeval &startTimeValue) { startTime = startTimeValue; }
 
 	/**
 	 * Set endTime of Connection
-	 * @param[in] endTime integer value
+	 * @param[in] endTimeValue integer value
 	 */
-	void setEndTime(const timeval &endTime) { this->endTime = endTime; }
+	void setEndTime(const timeval &endTimeValue) { endTime = endTimeValue; }
 };
 
 
@@ -126,10 +127,12 @@ public:
 	 * A c'tor for this class that get data from outside and set the internal members
 	 * @param[in] tcpData A pointer to buffer containing the TCP data piece
 	 * @param[in] tcpDataLength The length of the buffer
+	 * @param[in] missingBytes The number of missing bytes due to packet loss.
 	 * @param[in] connData TCP connection information for this TCP data
+	 * @param[in] timestamp when this packet was received
 	 */
-	TcpStreamData(const uint8_t* tcpData, size_t tcpDataLength, const ConnectionData& connData)
-		: m_Data(tcpData), m_DataLen(tcpDataLength), m_Connection(connData)
+	TcpStreamData(const uint8_t* tcpData, size_t tcpDataLength, size_t missingBytes, const ConnectionData& connData, timeval timestamp)
+		: m_Data(tcpData), m_DataLen(tcpDataLength), m_MissingBytes(missingBytes), m_Connection(connData), m_Timestamp(timestamp)
 	{
 	}
 
@@ -146,15 +149,35 @@ public:
 	size_t getDataLength() const { return m_DataLen; }
 
 	/**
+	 * A getter for missing byte count due to packet loss.
+	 * @return Missing byte count
+	 */
+	size_t getMissingByteCount() const { return m_MissingBytes; }
+
+	/**
+	 * Determine if bytes are missing. getMissingByteCount can be called to determine the number of missing bytes.
+	 * @return true if bytes are missing.
+	 */
+	bool isBytesMissing() const { return getMissingByteCount() > 0; }
+
+	/**
 	 * A getter for the connection data
 	 * @return The const reference to connection data
 	 */
 	const ConnectionData& getConnectionData() const { return m_Connection; }
 
+	/**
+	 * A getter for the timestamp of this packet
+	 * @return The const timeval object with timestamp of this packet
+	 */
+	timeval getTimeStamp() const { return m_Timestamp; }
+
 private:
 	const uint8_t* m_Data;
 	size_t m_DataLen;
+	size_t m_MissingBytes;
 	const ConnectionData& m_Connection;
+	timeval m_Timestamp;
 };
 
 
@@ -177,14 +200,25 @@ struct TcpReassemblyConfiguration
 	 */
 	uint32_t maxNumToClean;
 
+	/** The maximum number of fragments with a non-matching sequence-number to store per connection flow before packets are assumed permanently missed.
+	    If the value is 0, TcpReassembly should keep out of order fragments indefinitely, or until a message from the paired side is seen.
+	 */
+	uint32_t maxOutOfOrderFragments;
+
+	/**  To enable to clear buffer once packet contains data from a different side than the side seen before
+	 */
+	bool enableBaseBufferClearCondition;
+
 	/**
 	 * A c'tor for this struct
 	 * @param[in] removeConnInfo The flag indicating whether to remove the connection data after a connection is closed. The default is true
 	 * @param[in] closedConnectionDelay How long the closed connections will not be cleaned up. The value is expressed in seconds. If it's set to 0 the default value will be used. The default is 5.
 	 * @param[in] maxNumToClean The maximum number of items to be cleaned up per one call of purgeClosedConnections. If it's set to 0 the default value will be used. The default is 30.
+	 * @param[in] maxOutOfOrderFragments The maximum number of unmatched fragments to keep per flow before missed fragments are considered lost. The default is unlimited.
+	 * @param[in] enableBaseBufferClearCondition To enable to clear buffer once packet contains data from a different side than the side seen before
 	 */
-	TcpReassemblyConfiguration(bool removeConnInfo = true, uint32_t closedConnectionDelay = 5, uint32_t maxNumToClean = 30) :
-		removeConnInfo(removeConnInfo), closedConnectionDelay(closedConnectionDelay), maxNumToClean(maxNumToClean)
+	explicit TcpReassemblyConfiguration(bool removeConnInfo = true, uint32_t closedConnectionDelay = 5, uint32_t maxNumToClean = 30, uint32_t maxOutOfOrderFragments = 0,
+		bool enableBaseBufferClearCondition = true) : removeConnInfo(removeConnInfo), closedConnectionDelay(closedConnectionDelay), maxNumToClean(maxNumToClean), maxOutOfOrderFragments(maxOutOfOrderFragments), enableBaseBufferClearCondition(enableBaseBufferClearCondition)
 	{
 	}
 };
@@ -212,60 +246,60 @@ public:
 	/**
 	 * An enum for providing reassembly status for each processed packet
 	 */
-	enum ReassemblyStatus 
+	enum ReassemblyStatus
 	{
-		/** 
+		/**
 		 * The processed packet contains valid TCP payload, and its payload is processed by `OnMessageReadyCallback` callback function.
 		 * The packet may be:
-		 * 1. An in-order TCP packet, meaning `packet_sequence == sequence_expected`. 
+		 * 1. An in-order TCP packet, meaning `packet_sequence == sequence_expected`.
 		 *    Note if there's any buffered out-of-order packet waiting for this packet, their associated callbacks are called in this `reassemblePacket` call.
-		 * 2. An out-of-order TCP packet which satisfy `packet_sequence < sequence_expected && packet_sequence + packet_payload_length > sequence_expected`. 
-		 *    Note only the new data (the `[sequence_expected, packet_sequence + packet_payload_length]` part ) is processed by `OnMessageReadyCallback` callback funtion.
+		 * 2. An out-of-order TCP packet which satisfy `packet_sequence < sequence_expected && packet_sequence + packet_payload_length > sequence_expected`.
+		 *    Note only the new data (the `[sequence_expected, packet_sequence + packet_payload_length]` part ) is processed by `OnMessageReadyCallback` callback function.
 		 */
 		TcpMessageHandled,
-		/** 
-		 * The processed packet is an out-of-order TCP packet, meaning `packet_sequence > sequence_expected`. It's buffered so no `OnMessageReadyCallback` callback function is called. 
+		/**
+		 * The processed packet is an out-of-order TCP packet, meaning `packet_sequence > sequence_expected`. It's buffered so no `OnMessageReadyCallback` callback function is called.
 		 * The callback function for this packet maybe called LATER, under different circumstances:
 		 * 1. When an in-order packet which is right before this packet arrives(case 1 and case 2 described in `TcpMessageHandled` section above).
-		 * 2. When a FIN or RST packet arrives, which will clear the buffered out-of-order packets of this side. 
+		 * 2. When a FIN or RST packet arrives, which will clear the buffered out-of-order packets of this side.
 		 *    If this packet contains "new data", meaning `(packet_sequence <= sequence_expected) && (packet_sequence + packet_payload_length > sequence_expected)`, the new data is processed by `OnMessageReadyCallback` callback.
 		 */
 		OutOfOrderTcpMessageBuffered,
-		/** 
-		 * The processed packet is a FIN or RST packet with no payload. 
-		 * Buffered out-of-order packets will be cleared. 
+		/**
+		 * The processed packet is a FIN or RST packet with no payload.
+		 * Buffered out-of-order packets will be cleared.
 		 * If they contain "new data", the new data is processed by `OnMessageReadyCallback` callback.
 		 */
 		FIN_RSTWithNoData,
-		/** 
-		 * The processed packet is not a SYN/SYNACK/FIN/RST packet and has no payload. 
+		/**
+		 * The processed packet is not a SYN/SYNACK/FIN/RST packet and has no payload.
 		 * Normally it's just a bare ACK packet.
-		 * It's ignored and no callback function is called.  
+		 * It's ignored and no callback function is called.
 		 */
 		Ignore_PacketWithNoData,
-		/** 
-		 * The processed packet comes from a closed flow(an in-order FIN or RST is seen). 
-		 * It's ignored and no callback function is called. 
+		/**
+		 * The processed packet comes from a closed flow(an in-order FIN or RST is seen).
+		 * It's ignored and no callback function is called.
 		 */
 		Ignore_PacketOfClosedFlow,
-		/** 
+		/**
 		 * The processed packet is a restransmission packet with no new data, meaning the `packet_sequence + packet_payload_length < sequence_expected`.
-		 * It's ignored and no callback function is called. 
+		 * It's ignored and no callback function is called.
 		 */
 		Ignore_Retransimission,
-		/** 
-		 * The processed packet is not an IP packet. 
-		 * It's ignored and no callback function is called. 
+		/**
+		 * The processed packet is not an IP packet.
+		 * It's ignored and no callback function is called.
 		 */
 		NonIpPacket,
-		/** 
-		 * The processed packet is not a TCP packet. 
-		 * It's ignored and no callback function is called. 
+		/**
+		 * The processed packet is not a TCP packet.
+		 * It's ignored and no callback function is called.
 		 */
 		NonTcpPacket,
-		/** 
-		 * The processed packet does not belong to any known TCP connection. 
-		 * It's ignored and no callback function is called. 
+		/**
+		 * The processed packet does not belong to any known TCP connection.
+		 * It's ignored and no callback function is called.
 		 * Normally this will be happen.
 		 */
 		Error_PacketDoesNotMatchFlow,
@@ -274,7 +308,7 @@ public:
 	/**
 	 * The type for storing the connection information
 	 */
-	typedef std::map<uint32_t, ConnectionData> ConnectionInfoList;
+	typedef std::unordered_map<uint32_t, ConnectionData> ConnectionInfoList;
 
 	/**
 	 * @typedef OnTcpMessageReady
@@ -310,7 +344,7 @@ public:
 	 * @param[in] onConnectionEndCallback The callback to be invoked when a new connection is terminated (either by a FIN/RST packet or manually by the user). This parameter is optional
 	 * @param[in] config Optional parameter for defining special configuration parameters. If not set the default parameters will be set
 	 */
-	TcpReassembly(OnTcpMessageReady onMessageReadyCallback, void* userCookie = NULL, OnTcpConnectionStart onConnectionStartCallback = NULL, OnTcpConnectionEnd onConnectionEndCallback = NULL, const TcpReassemblyConfiguration &config = TcpReassemblyConfiguration());
+	explicit TcpReassembly(OnTcpMessageReady onMessageReadyCallback, void* userCookie = NULL, OnTcpConnectionStart onConnectionStartCallback = NULL, OnTcpConnectionEnd onConnectionEndCallback = NULL, const TcpReassemblyConfiguration &config = TcpReassemblyConfiguration());
 
 	/**
 	 * The most important method of this class which gets a packet from the user and processes it. If this packet opens a new connection, ends a connection or contains new data on an
@@ -367,6 +401,7 @@ private:
 		uint32_t sequence;
 		size_t dataLength;
 		uint8_t* data;
+		timeval timestamp;
 
 		TcpFragment() : sequence(0), dataLength(0), data(NULL) {}
 		~TcpFragment() { delete [] data; }
@@ -393,8 +428,8 @@ private:
 
 		TcpReassemblyData() : closed(false), numOfSides(0), prevSide(-1) {}
 	};
-	
-	typedef std::map<uint32_t, TcpReassemblyData> ConnectionList;
+
+	typedef std::unordered_map<uint32_t, TcpReassemblyData> ConnectionList;
 	typedef std::map<time_t, std::list<uint32_t> > CleanupList;
 
 	OnTcpMessageReady m_OnMessageReadyCallback;
@@ -407,11 +442,13 @@ private:
 	bool m_RemoveConnInfo;
 	uint32_t m_ClosedConnectionDelay;
 	uint32_t m_MaxNumToClean;
+	size_t m_MaxOutOfOrderFragments;
 	time_t m_PurgeTimepoint;
+	bool m_EnableBaseBufferClearCondition;
 
 	void checkOutOfOrderFragments(TcpReassemblyData* tcpReassemblyData, int8_t sideIndex, bool cleanWholeFragList);
 
-	void handleFinOrRst(TcpReassemblyData* tcpReassemblyData, int8_t sideIndex, uint32_t flowKey);
+	void handleFinOrRst(TcpReassemblyData* tcpReassemblyData, int8_t sideIndex, uint32_t flowKey, bool isRst);
 
 	void closeConnectionInternal(uint32_t flowKey, ConnectionEndReason reason);
 
@@ -419,5 +456,3 @@ private:
 };
 
 }
-
-#endif /* PACKETPP_TCP_REASSEMBLY */

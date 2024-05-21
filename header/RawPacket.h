@@ -1,5 +1,4 @@
-#ifndef PCAPPP_RAW_PACKET
-#define PCAPPP_RAW_PACKET
+#pragma once
 
 #include <stdint.h>
 #ifdef _MSC_VER
@@ -235,7 +234,11 @@ namespace pcpp
 		/** Formats for WattStopper Digital Lighting Management (DLM) and Legrand Nitoo Open protocol common packet structure captures */
 		LINKTYPE_WATTSTOPPER_DLM = 263,
 		/** Messages between ISO 14443 contactless smartcards (Proximity Integrated Circuit Card, PICC) and card readers (Proximity Coupling Device, PCD), with the message format specified by the PCAP format for ISO14443 specification */
-		LINKTYPE_ISO_14443 = 264
+		LINKTYPE_ISO_14443 = 264,
+		/** Linux "cooked" capture encapsulation v2 */
+		LINKTYPE_LINUX_SLL2 = 276,
+		/** Set if interface ID for a packet of a pcapng file is too high */
+		LINKTYPE_INVALID = 0xFFFF
 	};
 
 	/**
@@ -328,7 +331,7 @@ namespace pcpp
 		 * @param[in] rawDataLen The new raw data length in bytes
 		 * @param[in] timestamp The timestamp packet was received by the NIC (in usec precision)
 		 * @param[in] layerType The link layer type for this raw data
-		 * @param[in] frameLength When reading from pcap files, sometimes the captured length is different from the actual packet length. This parameter represents the packet 
+		 * @param[in] frameLength When reading from pcap files, sometimes the captured length is different from the actual packet length. This parameter represents the packet
 		 * length. This parameter is optional, if not set or set to -1 it is assumed both lengths are equal
 		 * @return True if raw data was set successfully, false otherwise
 		 */
@@ -345,6 +348,18 @@ namespace pcpp
 		 * @return True if raw data was set successfully, false otherwise
 		 */
 		virtual bool setRawData(const uint8_t* pRawData, int rawDataLen, timespec timestamp, LinkLayerType layerType = LINKTYPE_ETHERNET, int frameLength = -1);
+
+		/**
+		 * Initialize a raw packet with data. The main difference between this method and setRawData() is that setRawData()
+		 * is meant for replacing the data in an existing raw packet, whereas this method is meant to be used right after
+		 * constructing a raw packet using the default c'tor, before setting any data
+		 * @param pRawData A pointer to the new raw data
+		 * @param rawDataLen The new raw data length in bytes
+		 * @param timestamp The timestamp packet was received by the NIC (in nsec precision)
+		 * @param layerType The link layer type for this raw data
+		 * @return True if raw data was set successfully, false otherwise
+		 */
+		bool initWithRawData(const uint8_t* pRawData, int rawDataLen, timespec timestamp, LinkLayerType layerType = LINKTYPE_ETHERNET);
 
 		/**
 		 * Get raw data pointer
@@ -451,5 +466,3 @@ namespace pcpp
 	};
 
 } // namespace pcpp
-
-#endif

@@ -1,9 +1,9 @@
-#ifndef PACKETPP_IPV4_LAYER
-#define PACKETPP_IPV4_LAYER
+#pragma once
 
 #include "Layer.h"
 #include "TLVData.h"
 #include "IpAddress.h"
+#include "IPLayer.h"
 #include <string.h>
 #include <vector>
 
@@ -21,7 +21,8 @@ namespace pcpp
 	 * Represents an IPv4 protocol header
 	 */
 #pragma pack(push, 1)
-	struct iphdr {
+	struct iphdr
+	{
 #if (BYTE_ORDER == LITTLE_ENDIAN)
 		/** IP header length, has the value of 5 for IPv4 */
 		uint8_t internetHeaderLength:4,
@@ -60,45 +61,47 @@ namespace pcpp
 	 */
 	enum IPProtocolTypes
 	{
-		/** Dummy protocol for TCP		*/
+		/** Dummy protocol for TCP */
 		PACKETPP_IPPROTO_IP = 0,
-		/** IPv6 Hop-by-Hop options		*/
+		/** IPv6 Hop-by-Hop options */
 		PACKETPP_IPPROTO_HOPOPTS = 0,
-		/** Internet Control Message Protocol	*/
+		/** Internet Control Message Protocol */
 		PACKETPP_IPPROTO_ICMP = 1,
 		/** Internet Gateway Management Protocol */
 		PACKETPP_IPPROTO_IGMP = 2,
 		/** IPIP tunnels (older KA9Q tunnels use 94) */
 		PACKETPP_IPPROTO_IPIP = 4,
-		/** Transmission Control Protocol	*/
+		/** Transmission Control Protocol */
 		PACKETPP_IPPROTO_TCP = 6,
-		/** Exterior Gateway Protocol		*/
+		/** Exterior Gateway Protocol */
 		PACKETPP_IPPROTO_EGP = 8,
-		/** PUP protocol				*/
+		/** PUP protocol */
 		PACKETPP_IPPROTO_PUP = 12,
-		/** User Datagram Protocol		*/
+		/** User Datagram Protocol */
 		PACKETPP_IPPROTO_UDP = 17,
-		/** XNS IDP protocol			*/
+		/** XNS IDP protocol */
 		PACKETPP_IPPROTO_IDP = 22,
-		/** IPv6 header				*/
+		/** IPv6 header */
 		PACKETPP_IPPROTO_IPV6 = 41,
-		/** IPv6 Routing header			*/
+		/** IPv6 Routing header */
 		PACKETPP_IPPROTO_ROUTING = 43,
-		/** IPv6 fragmentation header		*/
+		/** IPv6 fragmentation header */
 		PACKETPP_IPPROTO_FRAGMENT = 44,
 		/** GRE protocol */
 		PACKETPP_IPPROTO_GRE = 47,
-		/** encapsulating security payload	*/
+		/** encapsulating security payload */
 		PACKETPP_IPPROTO_ESP = 50,
-		/** authentication header		*/
+		/** authentication header */
 		PACKETPP_IPPROTO_AH = 51,
-		/** ICMPv6				*/
+		/** ICMPv6 */
 		PACKETPP_IPPROTO_ICMPV6 = 58,
-		/** IPv6 no next header			*/
+		/** IPv6 no next header */
 		PACKETPP_IPPROTO_NONE = 59,
-		/** IPv6 Destination options		*/
+		/** IPv6 Destination options */
 		PACKETPP_IPPROTO_DSTOPTS = 60,
-		/** Raw IP packets			*/
+		/** VRRP protocol */
+		PACKETPP_IPPROTO_VRRP = 112,
+		/** Raw IP packets */
 		PACKETPP_IPPROTO_RAW = 255,
 		/** Maximum value */
 		PACKETPP_IPPROTO_MAX
@@ -207,7 +210,7 @@ namespace pcpp
 	 * A wrapper class for IPv4 options. This class does not create or modify IPv4 option records, but rather
 	 * serves as a wrapper and provides useful methods for retrieving data from them
 	 */
-	class IPv4Option : public TLVRecord
+	class IPv4Option : public TLVRecord<uint8_t, uint8_t>
 	{
 	public:
 
@@ -215,7 +218,7 @@ namespace pcpp
 		 * A c'tor for this class that gets a pointer to the option raw data (byte array)
 		 * @param[in] optionRawData A pointer to the IPv4 option raw data
 		 */
-		IPv4Option(uint8_t* optionRawData) : TLVRecord(optionRawData) { }
+		explicit IPv4Option(uint8_t* optionRawData) : TLVRecord(optionRawData) { }
 
 		/**
 		 * A d'tor for this class, currently does nothing
@@ -232,7 +235,7 @@ namespace pcpp
 		{
 			std::vector<IPv4Address> res;
 
-			if (m_Data == NULL)
+			if (m_Data == nullptr)
 				return res;
 
 			size_t dataSize = getDataSize();
@@ -268,7 +271,7 @@ namespace pcpp
 			IPv4TimestampOptionValue res;
 			res.clear();
 
-			if (m_Data == NULL)
+			if (m_Data == nullptr)
 				return res;
 
 			if (getIPv4OptionType() != IPV4OPT_Timestamp)
@@ -309,18 +312,35 @@ namespace pcpp
 		 */
 		IPv4OptionTypes getIPv4OptionType() const
 		{
-			if (m_Data == NULL)
-				return IPV4OPT_Unknown;
-
-			return (IPv4OptionTypes)m_Data->recordType;
+			return getIPv4OptionType(m_Data);
 		}
 
+		/**
+		 * Check if a pointer can be assigned to the TLV record data
+		 * @param[in] recordRawData A pointer to the TLV record raw data
+		 * @param[in] tlvDataLen The size of the TLV record raw data
+		 * @return True if data is valid and can be assigned
+		 */
+		static bool canAssign(const uint8_t* recordRawData, size_t tlvDataLen)
+		{
+			auto data = (TLVRawData*)recordRawData;
+			if (data == nullptr)
+				return false;
+
+			if (tlvDataLen < sizeof(TLVRawData::recordType))
+				return false;
+
+			if (getIPv4OptionType(data) == (uint8_t)IPV4OPT_EndOfOptionsList || data->recordType == (uint8_t)IPV4OPT_NOP)
+				return true;
+
+			return TLVRecord<uint8_t, uint8_t>::canAssign(recordRawData, tlvDataLen);
+		}
 
 		// implement abstract methods
 
 		size_t getTotalSize() const
 		{
-			if (m_Data == NULL)
+			if (m_Data == nullptr)
 				return 0;
 
 			if (getIPv4OptionType() == (uint8_t)IPV4OPT_EndOfOptionsList || m_Data->recordType == (uint8_t)IPV4OPT_NOP)
@@ -331,13 +351,25 @@ namespace pcpp
 
 		size_t getDataSize() const
 		{
-			if (m_Data == NULL)
+			if (m_Data == nullptr)
 				return 0;
 
 			if (getIPv4OptionType() == (uint8_t)IPV4OPT_EndOfOptionsList || m_Data->recordType == (uint8_t)IPV4OPT_NOP)
 				return (size_t)0;
 
 			return (size_t)m_Data->recordLen - (2*sizeof(uint8_t));
+		}
+
+	private:
+		/**
+		 * @return IPv4 option type casted as pcpp::IPv4OptionTypes enum
+		 */
+		static IPv4OptionTypes getIPv4OptionType(const TLVRawData* data)
+		{
+			if (data == nullptr)
+				return IPV4OPT_Unknown;
+
+			return (IPv4OptionTypes)data->recordType;
 		}
 	};
 
@@ -353,7 +385,7 @@ namespace pcpp
 		bool m_BuilderParamsValid;
 
 	public:
-		
+
 		/**
 		 * A c'tor for building IPv4 options which their value is a byte array. The IPv4Option object can be later
 		 * retrieved by calling build()
@@ -376,7 +408,7 @@ namespace pcpp
 			TLVRecordBuilder((uint8_t)optionType, optionValue) { m_BuilderParamsValid = true; }
 
 		/**
-		 * A c'tor for building IPv4 options which their value is a list of IPv4 addresses, for example: 
+		 * A c'tor for building IPv4 options which their value is a list of IPv4 addresses, for example:
 		 * ::IPV4OPT_RecordRoute, ::IPV4OPT_StrictSourceRoute, ::IPV4OPT_LooseSourceRoute. The IPv4Option object can be later retrieved
 		 * by calling build()
 		 * @param[in] optionType IPv4 option type
@@ -388,7 +420,7 @@ namespace pcpp
 		 * A c'tor for building IPv4 timestamp option (::IPV4OPT_Timestamp). The IPv4Option object can be later retrieved by calling build()
 		 * @param[in] timestampValue The timestamp value to build the IPv4 option with
 		 */
-		IPv4OptionBuilder(const IPv4TimestampOptionValue& timestampValue);
+		explicit IPv4OptionBuilder(const IPv4TimestampOptionValue& timestampValue);
 
 		/**
 		 * Build the IPv4Option object out of the parameters defined in the c'tor
@@ -402,7 +434,7 @@ namespace pcpp
 	 * @class IPv4Layer
 	 * Represents an IPv4 protocol layer
 	 */
-	class IPv4Layer : public Layer
+	class IPv4Layer : public Layer, public IPLayer
 	{
 	public:
 		/**
@@ -457,28 +489,42 @@ namespace pcpp
 		iphdr* getIPv4Header() const { return (iphdr*)m_Data; }
 
 		/**
+		 * Get the source IP address in the form of IPAddress. This method is very similar to getSrcIPv4Address(),
+		 * but adds a level of abstraction because IPAddress can be used for both IPv4 and IPv6 addresses
+		 * @return An IPAddress containing the source address
+		 */
+		IPAddress getSrcIPAddress() const { return getSrcIPv4Address(); }
+
+		/**
 		 * Get the source IP address in the form of IPv4Address
 		 * @return An IPv4Address containing the source address
 		 */
-		IPv4Address getSrcIpAddress() const { return getIPv4Header()->ipSrc; }
+		IPv4Address getSrcIPv4Address() const { return getIPv4Header()->ipSrc; }
 
 		/**
 		 * Set the source IP address
 		 * @param[in] ipAddr The IP address to set
 		 */
-		void setSrcIpAddress(const IPv4Address& ipAddr) { getIPv4Header()->ipSrc = ipAddr.toInt(); }
+		void setSrcIPv4Address(const IPv4Address& ipAddr) { getIPv4Header()->ipSrc = ipAddr.toInt(); }
+
+		/**
+		 * Get the destination IP address in the form of IPAddress. This method is very similar to getDstIPv4Address(),
+		 * but adds a level of abstraction because IPAddress can be used for both IPv4 and IPv6 addresses
+		 * @return An IPAddress containing the destination address
+		 */
+		IPAddress getDstIPAddress() const { return getDstIPv4Address(); }
 
 		/**
 		 * Get the destination IP address in the form of IPv4Address
 		 * @return An IPv4Address containing the destination address
 		 */
-		IPv4Address getDstIpAddress() const { return getIPv4Header()->ipDst; }
+		IPv4Address getDstIPv4Address() const { return getIPv4Header()->ipDst; }
 
 		/**
 		 * Set the dest IP address
 		 * @param[in] ipAddr The IP address to set
 		 */
-		void setDstIpAddress(const IPv4Address& ipAddr) { getIPv4Header()->ipDst = ipAddr.toInt(); }
+		void setDstIPv4Address(const IPv4Address& ipAddr) { getIPv4Header()->ipDst = ipAddr.toInt(); }
 
 		/**
 		 * @return True if this packet is a fragment (in sense of IP fragmentation), false otherwise
@@ -573,7 +619,18 @@ namespace pcpp
 		// implement abstract methods
 
 		/**
-		 * Currently identifies the following next layers: UdpLayer, TcpLayer. Otherwise sets PayloadLayer
+		 * Currently identifies the following next layers:
+		 * - UdpLayer
+		 * - TcpLayer
+		 * - IcmpLayer
+		 * - IPv4Layer (IP-in-IP)
+		 * - IPv6Layer (IP-in-IP)
+		 * - GreLayer
+		 * - IgmpLayer
+		 * - AuthenticationHeaderLayer (IPSec)
+		 * - ESPLayer (IPSec)
+		 *
+		 * Otherwise sets PayloadLayer
 		 */
 		void parseNextLayer();
 
@@ -596,10 +653,10 @@ namespace pcpp
 		OsiModelLayer getOsiModelLayer() const { return OsiModelNetworkLayer; }
 
 		/**
-		 * The static method makes validation of input data
-		 * @param[in] data The pointer to the beginning of byte stream of IP packet
-		 * @param[in] dataLen The length of byte stream
-		 * @return True if the data is valid and can represent the IPv4 packet
+		 * A static method that validates the input data
+		 * @param[in] data The pointer to the beginning of a byte stream of IP packet
+		 * @param[in] dataLen The length of the byte stream
+		 * @return True if the data is valid and can represent an IPv4 packet
 		 */
 		static inline bool isDataValid(const uint8_t* data, size_t dataLen);
 
@@ -613,7 +670,7 @@ namespace pcpp
 		IPv4Option addOptionAt(const IPv4OptionBuilder& optionBuilder, int offset);
 		void adjustOptionsTrailer(size_t totalOptSize);
 		void initLayer();
-		void initLayerInPacket(uint8_t* data, size_t dataLen, Layer* prevLayer, Packet* packet, bool setTotalLenAsDataLen);
+		void initLayerInPacket(bool setTotalLenAsDataLen);
 	};
 
 
@@ -626,5 +683,3 @@ namespace pcpp
 	}
 
 } // namespace pcpp
-
-#endif /* PACKETPP_IPV4_LAYER */

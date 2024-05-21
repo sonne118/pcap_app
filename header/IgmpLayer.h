@@ -1,5 +1,4 @@
-#ifndef PACKETPP_IGMP_LAYER
-#define PACKETPP_IGMP_LAYER
+#pragma once
 
 #include "Layer.h"
 #include "IpAddress.h"
@@ -253,7 +252,7 @@ public:
 	 * @param[in] groupAddr The multicast address to set. This is an optional parameter and has a default value of IPv4Address#Zero
 	 * if not provided
 	 */
-	IgmpV1Layer(IgmpType type, const IPv4Address& groupAddr = IPv4Address())
+	explicit IgmpV1Layer(IgmpType type, const IPv4Address& groupAddr = IPv4Address())
 		: IgmpLayer(type, groupAddr, 0, IGMPv1) {}
 
 	/**
@@ -294,7 +293,7 @@ public:
 	 * @param[in] groupAddr The multicast address to set. This is an optional parameter and has a default value of unspecified/zero IPv4 address
 	 * @param[in] maxResponseTime The max response time to set. This is an optional parameter and has a default value of 0 if not provided
 	 */
-	IgmpV2Layer(IgmpType type, const IPv4Address& groupAddr = IPv4Address(), uint8_t maxResponseTime = 0)
+	explicit IgmpV2Layer(IgmpType type, const IPv4Address& groupAddr = IPv4Address(), uint8_t maxResponseTime = 0)
 		: IgmpLayer(type, groupAddr, maxResponseTime, IGMPv2) {}
 
 	/**
@@ -336,7 +335,7 @@ public:
 	 * @param[in] s_qrv A 1-byte value representing the value in Suppress Router-side Processing Flag + Querier's Robustness Variable
 	 * (igmpv3_query_header#s_qrv field). This is an optional parameter and has a default value of 0 if not provided
 	 */
-	IgmpV3QueryLayer(const IPv4Address& multicastAddr = IPv4Address(), uint8_t maxResponseTime = 0, uint8_t s_qrv = 0);
+	explicit IgmpV3QueryLayer(const IPv4Address& multicastAddr = IPv4Address(), uint8_t maxResponseTime = 0, uint8_t s_qrv = 0);
 
 	/**
 	 * Get a pointer to the raw IGMPv3 membership query header. Notice this points directly to the data, so every change will change the
@@ -510,5 +509,3 @@ public:
 };
 
 }
-
-#endif // PACKETPP_IGMP_LAYER

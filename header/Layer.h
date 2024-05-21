@@ -1,5 +1,4 @@
-#ifndef PACKETPP_LAYER
-#define PACKETPP_LAYER
+#pragma once
 
 #include <stdint.h>
 #include <stdio.h>
@@ -42,32 +41,31 @@ namespace pcpp
 	 * For example: a pointer to a structured header (e.g tcphdr, iphdr, etc.), protocol header size, payload size, compute
 	 * fields that can be automatically computed, print protocol data to string, etc.
 	 * Each protocol instance is obviously part of a protocol stack (which construct a packet). This protocol stack is represented
-	 * in PcapPlusPlus in a linked list, and each layer is an element in this list. That's why each layer has proprties to the next and previous
+	 * in PcapPlusPlus in a linked list, and each layer is an element in this list. That's why each layer has properties to the next and previous
 	 * layer in the protocol stack
 	 * The Layer class, as a base class, is abstract and the user can't create an instance of it (it has a private constructor)
 	 * Each layer holds a pointer to the relevant place in the packet. The layer sees all the data from this pointer forward until the
 	 * end of the packet. Here is an example packet showing this concept:
 	 *
-	  @verbatim
+	 @verbatim
+	 ====================================================
+	 |Eth       |IPv4       |TCP       |Packet          |
+	 |Header    |Header     |Header    |Payload         |
+	 ====================================================
 
-	  ====================================================
-	  |Eth       |IPv4       |TCP       |Packet          |
-	  |Header    |Header     |Header    |Payload         |
-	  ====================================================
-
-	  |--------------------------------------------------|
-	  EthLayer data
-				 |---------------------------------------|
-				 IPv4Layer data
-							 |---------------------------|
-							 TcpLayer data
-										|----------------|
-										PayloadLayer data
-
-	  @endverbatim
+	 |--------------------------------------------------|
+ 	 EthLayer data
+	            |---------------------------------------|
+	            IPv4Layer data
+	                        |---------------------------|
+	                        TcpLayer data
+	                                   |----------------|
+	                                   PayloadLayer data
+	 @endverbatim
 	 *
 	*/
-	class Layer : public IDataContainer {
+	class Layer : public IDataContainer
+	{
 		friend class Packet;
 	public:
 		/**
@@ -89,6 +87,13 @@ namespace pcpp
 		 * @return The protocol enum
 		 */
 		ProtocolType getProtocol() const { return m_Protocol; }
+
+		/**
+		 * Check if the layer's protocol matches a protocol family
+		 * @param protocolTypeFamily The protocol family to check
+		 * @return True if the layer's protocol matches the protocol family, false otherwise
+		 */
+		bool isMemberOfProtocolFamily(ProtocolTypeFamily protocolTypeFamily) const;
 
 		/**
 		 * @return A pointer to the layer raw data. In most cases it'll be a pointer to the first byte of the header
@@ -125,7 +130,6 @@ namespace pcpp
 		 * @param[out] toArr The destination byte array
 		 */
 		void copyData(uint8_t* toArr) const;
-
 
 		// implement abstract methods
 
@@ -188,4 +192,8 @@ namespace pcpp
 
 } // namespace pcpp
 
-#endif /* PACKETPP_LAYER */
+inline std::ostream& operator<<(std::ostream& os, const pcpp::Layer &layer)
+{
+	os << layer.toString();
+	return os;
+}

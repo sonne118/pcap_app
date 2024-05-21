@@ -1,5 +1,4 @@
-#ifndef PACKETPP_ETH_DOT3_LAYER
-#define PACKETPP_ETH_DOT3_LAYER
+#pragma once
 
 #include "Layer.h"
 #include "MacAddress.h"
@@ -18,7 +17,8 @@ namespace pcpp
 	 * Represents an IEEE 802.3 Ethernet header
 	 */
 #pragma pack(push, 1)
-	struct ether_dot3_header {
+	struct ether_dot3_header
+	{
 		/** Destination MAC */
 		uint8_t dstMac[6];
 		/** Source MAC */
@@ -43,6 +43,15 @@ namespace pcpp
 		 * @param[in] packet A pointer to the Packet instance where layer will be stored in
 		 */
 		EthDot3Layer(uint8_t* data, size_t dataLen, Packet* packet) : Layer(data, dataLen, NULL, packet) { m_Protocol = EthernetDot3; }
+
+		/**
+		 * A constructor that creates the layer from an existing packet raw data
+		 * @param[in] data A pointer to the raw data (will be casted to ether_header)
+		 * @param[in] dataLen Size of the data in bytes
+		 * @param[in] prevLayer A pointer to the previous layer
+		 * @param[in] packet A pointer to the Packet instance where layer will be stored in
+		 */
+		EthDot3Layer(uint8_t* data, size_t dataLen, Layer* prevLayer, Packet* packet) : Layer(data, dataLen, prevLayer, packet) { m_Protocol = EthernetDot3; }
 
 		/**
 		 * A constructor that creates a new IEEE 802.3 Ethernet header and allocates the data
@@ -87,7 +96,7 @@ namespace pcpp
 		// implement abstract methods
 
 		/**
-		 * Currently doesn't identify any particular layer (because LLC is not supported yet) so the payload will always be of type PayloadLayer.
+		 * Parses next layer
 		 */
 		void parseNextLayer();
 
@@ -104,7 +113,14 @@ namespace pcpp
 		std::string toString() const;
 
 		OsiModelLayer getOsiModelLayer() const { return OsiModelDataLinkLayer; }
-	};
-}
 
-#endif // PACKETPP_ETH_DOT3_LAYER
+		/**
+		 * A static method that validates the input data
+		 * @param[in] data The pointer to the beginning of a byte stream of an IEEE 802.3 Eth packet
+		 * @param[in] dataLen The length of the byte stream
+		 * @return True if the data is valid and can represent an IEEE 802.3 Eth packet
+		 */
+		static bool isDataValid(const uint8_t* data, size_t dataLen);
+	};
+
+} // namespace pcpp

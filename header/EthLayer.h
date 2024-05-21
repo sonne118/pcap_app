@@ -1,5 +1,4 @@
-#ifndef PACKETPP_ETH_LAYER
-#define PACKETPP_ETH_LAYER
+#pragma once
 
 #include "Layer.h"
 #include "MacAddress.h"
@@ -18,7 +17,8 @@ namespace pcpp
 	 * Represents an Ethernet II header
 	 */
 #pragma pack(push, 1)
-	struct ether_header {
+	struct ether_header
+	{
 		/** Destination MAC */
 		uint8_t dstMac[6];
 		/** Source MAC */
@@ -31,31 +31,39 @@ namespace pcpp
 	/* Ethernet protocol ID's */
 
 	/** IP */
-#define	PCPP_ETHERTYPE_IP		0x0800
+#define PCPP_ETHERTYPE_IP            0x0800
 	/** Address resolution */
-#define	PCPP_ETHERTYPE_ARP		0x0806
+#define PCPP_ETHERTYPE_ARP           0x0806
+	/** Transparent Ethernet Bridging */
+#define PCPP_ETHERTYPE_ETHBRIDGE     0x6558
 	/** Reverse ARP */
-#define	PCPP_ETHERTYPE_REVARP	0x8035
+#define PCPP_ETHERTYPE_REVARP        0x8035
 	/** AppleTalk protocol */
-#define PCPP_ETHERTYPE_AT		0x809B
+#define PCPP_ETHERTYPE_AT            0x809B
 	/** AppleTalk ARP */
-#define PCPP_ETHERTYPE_AARP		0x80F3
+#define PCPP_ETHERTYPE_AARP          0x80F3
 	/** IEEE 802.1Q VLAN tagging */
-#define	PCPP_ETHERTYPE_VLAN		0x8100
+#define PCPP_ETHERTYPE_VLAN          0x8100
 	/** IPX */
-#define PCPP_ETHERTYPE_IPX		0x8137
+#define PCPP_ETHERTYPE_IPX           0x8137
 	/** IP protocol version 6 */
-#define	PCPP_ETHERTYPE_IPV6		0x86dd
+#define PCPP_ETHERTYPE_IPV6          0x86dd
 	/** used to test interfaces */
-#define PCPP_ETHERTYPE_LOOPBACK	0x9000
+#define PCPP_ETHERTYPE_LOOPBACK      0x9000
 	/** PPPoE discovery */
-#define PCPP_ETHERTYPE_PPPOED	0x8863
+#define PCPP_ETHERTYPE_PPPOED        0x8863
 	/** PPPoE session */
-#define PCPP_ETHERTYPE_PPPOES	0x8864
+#define PCPP_ETHERTYPE_PPPOES        0x8864
 	/** MPLS */
-#define PCPP_ETHERTYPE_MPLS		0x8847
+#define PCPP_ETHERTYPE_MPLS          0x8847
 	/** Point-to-point protocol (PPP) */
-#define PCPP_ETHERTYPE_PPP		0x880B
+#define PCPP_ETHERTYPE_PPP           0x880B
+	/** RDMA over Converged Ethernet (RoCEv1) */
+#define PCPP_ETHERTYPE_ROCEV1        0x8915
+	/** IEEE 802.1ad Provider Bridge, Q-in-Q */
+#define PCPP_ETHERTYPE_IEEE_802_1AD  0x88A8
+	/** Wake on LAN */
+#define PCPP_ETHERTYPE_WAKE_ON_LAN   0x0842
 
 
 	/**
@@ -96,31 +104,31 @@ namespace pcpp
 		 * Get a pointer to the Ethernet header. Notice this points directly to the data, so every change will change the actual packet data
 		 * @return A pointer to the ether_header
 		 */
-		ether_header* getEthHeader() const { return (ether_header*)m_Data; }
+		inline ether_header* getEthHeader() const { return (ether_header*)m_Data; }
 
 		/**
 		 * Get the source MAC address
 		 * @return The source MAC address
 		 */
-		MacAddress getSourceMac() const { return MacAddress(getEthHeader()->srcMac); }
+		inline MacAddress getSourceMac() const { return MacAddress(getEthHeader()->srcMac); }
 
 		/**
 		 * Set source MAC address
 		 * @param sourceMac Source MAC to set
 		 */
-		void setSourceMac(const MacAddress& sourceMac) { sourceMac.copyTo(getEthHeader()->srcMac); }
+		inline void setSourceMac(const MacAddress& sourceMac) { sourceMac.copyTo(getEthHeader()->srcMac); }
 
 		/**
 		 * Get the destination MAC address
 		 * @return The destination MAC address
 		 */
-		MacAddress getDestMac() const { return MacAddress(getEthHeader()->dstMac); }
+		inline MacAddress getDestMac() const { return MacAddress(getEthHeader()->dstMac); }
 
 		/**
 		 * Set destination MAC address
 		 * @param destMac Destination MAC to set
 		 */
-		void setDestMac(const MacAddress& destMac) { destMac.copyTo(getEthHeader()->dstMac); }
+		inline void setDestMac(const MacAddress& destMac) { destMac.copyTo(getEthHeader()->dstMac); }
 
 		// implement abstract methods
 
@@ -144,8 +152,14 @@ namespace pcpp
 		std::string toString() const;
 
 		OsiModelLayer getOsiModelLayer() const { return OsiModelDataLinkLayer; }
+
+		/**
+		 * A static method that validates the input data
+		 * @param[in] data The pointer to the beginning of a byte stream of an Ethernet II packet
+		 * @param[in] dataLen The length of the byte stream
+		 * @return True if the data is valid and can represent an Ethernet II packet
+		 */
+		static bool isDataValid(const uint8_t* data, size_t dataLen);
 	};
 
 } // namespace pcpp
-
-#endif /* PACKETPP_ETH_LAYER */

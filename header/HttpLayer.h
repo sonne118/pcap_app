@@ -1,6 +1,6 @@
-#ifndef PACKETPP_HTTP_LAYER
-#define PACKETPP_HTTP_LAYER
+#pragma once
 
+#include "DeprecationUtils.h"
 #include "TextBasedProtocol.h"
 #include <string>
 #include <exception>
@@ -59,6 +59,12 @@ namespace pcpp
 #define PCPP_HTTP_SERVER_FIELD				"Server"
 
 
+	// -------- classes to be defined later -----------------
+
+
+	class HttpRequestFirstLine;
+	class HttpResponseFirstLine;
+
 
 	// -------- Class HttpMessage -----------------
 
@@ -76,10 +82,11 @@ namespace pcpp
 		/**
 		 * A static method that checks whether the port is considered as HTTP
 		 * @param[in] port The port number to be checked
+		 * @return True if the port matches those associated with the HTTP protocol
 		 */
 		static bool isHttpPort(uint16_t port) { return port == 80 || port == 8080; }
 
-		// overriden methods
+		// overridden methods
 
 		virtual HeaderField* addField(const std::string& fieldName, const std::string& fieldValue);
 		virtual HeaderField* addField(const HeaderField& newField);
@@ -98,12 +105,6 @@ namespace pcpp
 		char getHeaderFieldNameValueSeparator() const { return ':'; }
 		bool spacesAllowedBetweenHeaderFieldNameAndValue() const { return true; }
 	};
-
-
-
-
-	class HttpRequestFirstLine;
-
 
 
 	// -------- Class HttpRequestLayer -----------------
@@ -166,7 +167,7 @@ namespace pcpp
 		 * @param[in] uri The URI of the first line
 		 * @param[in] version HTTP version to be used in this request
 		 */
-		HttpRequestLayer(HttpMethod method, std::string uri, HttpVersion version);
+		HttpRequestLayer(HttpMethod method, const std::string& uri, HttpVersion version);
 
 		virtual ~HttpRequestLayer();
 
@@ -181,6 +182,7 @@ namespace pcpp
 		 * An assignment operator overload for this layer. This method inherits base assignment operator HttpMessage#operator=() and add the functionality
 		 * of copying the first line as well
 		 * @param[in] other The instance to copy from
+		 * @return A reference to the assignee
 		 */
 		HttpRequestLayer& operator=(const HttpRequestLayer& other);
 
@@ -205,14 +207,275 @@ namespace pcpp
 		HttpRequestFirstLine* m_FirstLine;
 	};
 
+	// -------- Class HttpResponseStatusCode -----------------
 
+	/**
+	 * @struct HttpResponseStatusCode
+	 * @brief The enum wrapper class of HTTP response status codes
+	 */
+	class HttpResponseStatusCode
+	{
+	public:
+		/**
+		 * @brief Define enum types and the corresponding int values
+		 */
+		enum Value: int
+		{
+			/** 100 Continue*/
+			Http100Continue = 100,
+			/** 101 Switching Protocols*/
+			Http101SwitchingProtocols = 101,
+			/** 102 Processing */
+			Http102Processing = 102,
+			/** 103 Early Hints */
+			Http103EarlyHints = 103,
+			/** 104-199 Unassigned */
 
+			/** 200 OK */
+			Http200OK= 200,
+			/** 201 Created */
+			Http201Created = 201,
+			/** 202 Accepted */
+			Http202Accepted = 202,
+			/** 203 Non-Authoritative Information */
+			Http203NonAuthoritativeInformation = 203,
+			/** 204 No Content*/
+			Http204NoContent = 204,
+			/** 205 Reset Content*/
+			Http205ResetContent = 205,
+			/** 206 Partial Content */
+			Http206PartialContent = 206,
+			/** 207 Multi-Status */
+			Http207MultiStatus = 207,
+			/** 208 Already Reported */
+			Http208AlreadyReported = 208,
+			/** 209-225 Unassigned */
+			/** 226 IM Used */
+			Http226IMUsed = 226,
+			/** 227-299 Unassigned */
 
+			/** 300 Multiple Choices */
+			Http300MultipleChoices = 300,
+			/** 301 Moved Permanently */
+			Http301MovedPermanently = 301,
+			/** 302 (various messages) */
+			Http302 = 302,
+			/** 303 See Other */
+			Http303SeeOther = 303,
+			/** 304 Not Modified */
+			Http304NotModified = 304,
+			/** 305 Use Proxy */
+			Http305UseProxy = 305,
+			/** 306 Switch Proxy */
+			Http306SwitchProxy = 306,
+			/** 307 Temporary Redirect */
+			Http307TemporaryRedirect = 307,
+			/** 308 Permanent Redirect, */
+			Http308PermanentRedirect = 308,
+			/** 309-399 Unassigned */
+
+			/** 400 Bad Request */
+			Http400BadRequest = 400,
+			/** 401 Unauthorized */
+			Http401Unauthorized = 401,
+			/** 402 Payment Required */
+			Http402PaymentRequired = 402,
+			/** 403 Forbidden */
+			Http403Forbidden = 403,
+			/** 404 Not Found */
+			Http404NotFound = 404,
+			/** 405 Method Not Allowed */
+			Http405MethodNotAllowed = 405,
+			/** 406 Not Acceptable */
+			Http406NotAcceptable = 406,
+			/** 407 Proxy Authentication Required */
+			Http407ProxyAuthenticationRequired = 407,
+			/** 408 Request Timeout */
+			Http408RequestTimeout = 408,
+			/** 409 Conflict */
+			Http409Conflict = 409,
+			/** 410 Gone */
+			Http410Gone = 410,
+			/** 411 Length Required */
+			Http411LengthRequired = 411,
+			/** 412 Precondition Failed */
+			Http412PreconditionFailed = 412,
+			/** 413 RequestEntity Too Large */
+			Http413RequestEntityTooLarge = 413,
+			/** 414 Request-URI Too Long */
+			Http414RequestURITooLong = 414,
+			/** 415 Unsupported Media Type */
+			Http415UnsupportedMediaType = 415,
+			/** 416 Requested Range Not Satisfiable */
+			Http416RequestedRangeNotSatisfiable = 416,
+			/** 417 Expectation Failed */
+			Http417ExpectationFailed = 417,
+			/** 418 I'm a teapot */
+			Http418ImATeapot = 418,
+			/** 419 Authentication Timeout */
+			Http419AuthenticationTimeout = 419,
+			/** 420 (various messages) */
+			Http420 = 420,
+			/** 421 Misdirected Request */
+			Http421MisdirectedRequest = 421,
+			/** 422 Unprocessable Entity */
+			Http422UnprocessableEntity = 422,
+			/** 423 Locked */
+			Http423Locked = 423,
+			/** 424 Failed Dependency */
+			Http424FailedDependency = 424,
+			/** 425 Too Early */
+			Http425TooEarly = 425,
+			/** 426 Upgrade Required */
+			Http426UpgradeRequired = 426,
+			/** 427 Unassigned */
+			/** 428 Precondition Required */
+			Http428PreconditionRequired = 428,
+			/** 429 Too Many Requests */
+			Http429TooManyRequests = 429,
+			/** 430 Unassigned */
+			/** 431 Request Header Fields Too Large */
+			Http431RequestHeaderFieldsTooLarge = 431,
+			/** 432-439 unassigned */
+			/** 440 Login Timeout */
+			Http440LoginTimeout = 440,
+			/** 441-443 unassigned */
+			/** 444 No Response */
+			Http444NoResponse = 444,
+			/** 445-448 unassigned */
+			/** 449 Retry With */
+			Http449RetryWith = 449,
+			/** 450 Blocked by Windows Parental Controls */
+			Http450BlockedByWindowsParentalControls = 450,
+			/** 451 (various messages) */
+			Http451 = 451,
+			/** 452-493 unassigned */
+			/** 494 Request Header Too Large */
+			Http494RequestHeaderTooLarge = 494,
+			/** 495 Cert Error */
+			Http495CertError = 495,
+			/** 496 No Cert */
+			Http496NoCert = 496,
+			/** 497 HTTP to HTTPS */
+			Http497HTTPtoHTTPS = 497,
+			/** 498 Token expired/invalid */
+			Http498TokenExpiredInvalid = 498,
+			/** 499 (various messages) */
+			Http499 = 499,
+
+			/** 500 Internal Server Error */
+			Http500InternalServerError = 500,
+			/** 501 Not Implemented */
+			Http501NotImplemented = 501,
+			/** 502 Bad Gateway */
+			Http502BadGateway = 502,
+			/** 503 Service Unavailable */
+			Http503ServiceUnavailable = 503,
+			/** 504 Gateway Timeout */
+			Http504GatewayTimeout = 504,
+			/** 505 HTTP Version Not Supported */
+			Http505HTTPVersionNotSupported = 505,
+			/** 506 Variant Also Negotiates */
+			Http506VariantAlsoNegotiates = 506,
+			/** 507 Insufficient Storage */
+			Http507InsufficientStorage = 507,
+			/** 508 Loop Detected */
+			Http508LoopDetected = 508,
+			/** 509 Bandwidth Limit Exceeded */
+			Http509BandwidthLimitExceeded = 509,
+			/** 510 Not Extended */
+			Http510NotExtended = 510,
+			/** 511 Network Authentication Required */
+			Http511NetworkAuthenticationRequired = 511,
+			/** 512-519 unassigned */
+			/** 520 Origin Error */
+			Http520OriginError = 520,
+			/** 521 Web server is down */
+			Http521WebServerIsDown = 521,
+			/** 522 Connection timed out */
+			Http522ConnectionTimedOut = 522,
+			/** 523 Proxy Declined Request */
+			Http523ProxyDeclinedRequest = 523,
+			/** 524 A timeout occurred */
+			Http524aTimeoutOccurred = 524,
+			/** 525-597 unassigned */
+			/** 598 Network read timeout error */
+			Http598NetworkReadTimeoutError = 598,
+			/** 599 Network connect timeout error */
+			Http599NetworkConnectTimeoutError = 599,
+
+			/** Unknown status code */
+			HttpStatus1xxCodeUnknown = 900001, // 1xx: Informational - Request received, continuing process
+			HttpStatus2xxCodeUnknown = 900002, // 2xx: Success - The action was successfully received, understood, and accepted
+			HttpStatus3xxCodeUnknown = 900003, // 3xx: Redirection - Further action must be taken in order to complete the request
+			HttpStatus4xxCodeUnknown = 900004, // 4xx: Client Error - The request contains bad syntax or cannot be fulfilled
+			HttpStatus5xxCodeUnknown = 900005, // 5xx: Server Error - The server failed to fulfill an apparently valid request
+			HttpStatusCodeUnknown = 999999, // other arbitrary number
+		};
+
+		HttpResponseStatusCode() = default;
+
+		// cppcheck-suppress noExplicitConstructor
+		/**
+		 * @brief Construct HttpResponseStatusCode from Value enum
+		 * @param[in] statusCode the status code enum
+		 */
+		HttpResponseStatusCode(Value statusCode) : m_Value(statusCode) { }
+
+		/**
+		 * @brief Construct HttpResponseStatusCode from the code number and the customized message
+		 * @param[in] statusCodeNumber the status code in number, e.g. 200, 404
+		 * @param[in] statusMessage the status message, optional, leave empty to use a default message
+		 */
+		explicit HttpResponseStatusCode(const int &statusCodeNumber, const std::string& statusMessage = "");
+
+		/**
+		 * @brief Construct HttpResponseStatusCode from Value enum and the customized message
+		 * @param[in] statusCode the status code enum
+		 * @param[in] statusMessage the customized status message, optional
+		 */
+		explicit HttpResponseStatusCode(const Value& statusCode, const std::string& statusMessage);
+
+ 		// Allow switch and comparisons.
+		operator Value() const { return m_Value; }
+		// Prevent usage: if(httpResponseStatusCode)
+		explicit operator bool() const = delete;
+
+		/**
+		 * @brief get status code number as string
+		 */
+		std::string toString() const
+		{
+			return std::to_string(m_Value);
+		}
+
+		/**
+		 * @brief get status code number as int
+		 */
+		int toInt() const
+		{
+			return static_cast<int>(m_Value);
+		}
+
+		/**
+		 * @brief get status code message, e.g. "OK", "Not Found"
+		 */
+		std::string getMessage() const;
+		/**
+		 * @return If this HttpResponseStatusCode a valid code
+		 * @note Any unknown or error code has an extreme large enum value
+		 */
+		bool isUnsupportedCode() const
+		{
+			return m_Value > 599;
+		}
+
+	private:
+  		Value m_Value = HttpStatusCodeUnknown;
+		std::string m_CustomizedMessage;
+	};
 
 	// -------- Class HttpResponseLayer -----------------
-
-	class HttpResponseFirstLine;
-
 
 	/**
 	 * @class HttpResponseLayer
@@ -230,175 +493,8 @@ namespace pcpp
 	{
 		friend class HttpResponseFirstLine;
 	public:
-		/**
-		 * Enum for HTTP response status codes
-		 */
-		enum HttpResponseStatusCode
-		{
-			/** 100 Continue*/
-			Http100Continue,
-			/** 101 Switching Protocols*/
-			Http101SwitchingProtocols,
-			/** 102 Processing */
-			Http102Processing,
-			/** 200 OK */
-			Http200OK,
-			/** 201 Created */
-			Http201Created,
-			/** 202 Accepted */
-			Http202Accepted,
-			/** 203 Non-Authoritative Information */
-			Http203NonAuthoritativeInformation,
-			/** 204 No Content*/
-			Http204NoContent,
-			/** 205 Reset Content*/
-			Http205ResetContent,
-			/** 206 Partial Content */
-			Http206PartialContent,
-			/** 207 Multi-Status */
-			Http207MultiStatus,
-			/** 208 Already Reported */
-			Http208AlreadyReported,
-			/** 226 IM Used */
-			Http226IMUsed,
-			/** 300 Multiple Choices */
-			Http300MultipleChoices,
-			/** 301 Moved Permanently */
-			Http301MovedPermanently,
-			/** 302 (various messages) */
-			Http302,
-			/** 303 See Other */
-			Http303SeeOther,
-			/** 304 Not Modified */
-			Http304NotModified,
-			/** 305 Use Proxy */
-			Http305UseProxy,
-			/** 306 Switch Proxy */
-			Http306SwitchProxy,
-			/** 307 Temporary Redirect */
-			Http307TemporaryRedirect,
-			/** 308 Permanent Redirect, */
-			Http308PermanentRedirect,
-			/** 400 Bad Request */
-			Http400BadRequest,
-			/** 401 Unauthorized */
-			Http401Unauthorized,
-			/** 402 Payment Required */
-			Http402PaymentRequired,
-			/** 403 Forbidden */
-			Http403Forbidden,
-			/** 404 Not Found */
-			Http404NotFound,
-			/** 405 Method Not Allowed */
-			Http405MethodNotAllowed,
-			/** 406 Not Acceptable */
-			Http406NotAcceptable,
-			/** 407 Proxy Authentication Required */
-			Http407ProxyAuthenticationRequired,
-			/** 408 Request Timeout */
-			Http408RequestTimeout,
-			/** 409 Conflict */
-			Http409Conflict,
-			/** 410 Gone */
-			Http410Gone,
-			/** 411 Length Required */
-			Http411LengthRequired,
-			/** 412 Precondition Failed */
-			Http412PreconditionFailed,
-			/** 413 RequestEntity Too Large */
-			Http413RequestEntityTooLarge,
-			/** 414 Request-URI Too Long */
-			Http414RequestURITooLong,
-			/** 415 Unsupported Media Type */
-			Http415UnsupportedMediaType,
-			/** 416 Requested Range Not Satisfiable */
-			Http416RequestedRangeNotSatisfiable,
-			/** 417 Expectation Failed */
-			Http417ExpectationFailed,
-			/** 418 I'm a teapot */
-			Http418Imateapot,
-			/** 419 Authentication Timeout */
-			Http419AuthenticationTimeout,
-			/** 420 (various messages) */
-			Http420,
-			/** 422 Unprocessable Entity */
-			Http422UnprocessableEntity,
-			/** 423 Locked */
-			Http423Locked,
-			/** 424 Failed Dependency */
-			Http424FailedDependency,
-			/** 426 Upgrade Required */
-			Http426UpgradeRequired,
-			/** 428 Precondition Required */
-			Http428PreconditionRequired,
-			/** 429 Too Many Requests */
-			Http429TooManyRequests,
-			/** 431 Request Header Fields Too Large */
-			Http431RequestHeaderFieldsTooLarge,
-			/** 440 Login Timeout */
-			Http440LoginTimeout,
-			/** 444 No Response */
-			Http444NoResponse,
-			/** 449 Retry With */
-			Http449RetryWith,
-			/** 450 Blocked by Windows Parental Controls */
-			Http450BlockedByWindowsParentalControls,
-			/** 451 (various messages) */
-			Http451,
-			/** 494 Request Header Too Large */
-			Http494RequestHeaderTooLarge,
-			/** 495 Cert Error */
-			Http495CertError,
-			/** 496 No Cert */
-			Http496NoCert,
-			/** 497 HTTP to HTTPS */
-			Http497HTTPtoHTTPS,
-			/** 498 Token expired/invalid */
-			Http498TokenExpiredInvalid,
-			/** 499 (various messages) */
-			Http499,
-			/** 500 Internal Server Error */
-			Http500InternalServerError,
-			/** 501 Not Implemented */
-			Http501NotImplemented,
-			/** 502 Bad Gateway */
-			Http502BadGateway,
-			/** 503 Service Unavailable */
-			Http503ServiceUnavailable,
-			/** 504 Gateway Timeout */
-			Http504GatewayTimeout,
-			/** 505 HTTP Version Not Supported */
-			Http505HTTPVersionNotSupported,
-			/** 506 Variant Also Negotiates */
-			Http506VariantAlsoNegotiates,
-			/** 507 Insufficient Storage */
-			Http507InsufficientStorage,
-			/** 508 Loop Detected */
-			Http508LoopDetected,
-			/** 509 Bandwidth Limit Exceeded */
-			Http509BandwidthLimitExceeded,
-			/** 510 Not Extended */
-			Http510NotExtended,
-			/** 511 Network Authentication Required */
-			Http511NetworkAuthenticationRequired,
-			/** 520 Origin Error */
-			Http520OriginError,
-			/** 521 Web server is down */
-			Http521WebServerIsDown,
-			/** 522 Connection timed out */
-			Http522ConnectionTimedOut,
-			/** 523 Proxy Declined Request */
-			Http523ProxyDeclinedRequest,
-			/** 524 A timeout occurred */
-			Http524aTimeoutOccurred,
-			/** 598 Network read timeout error */
-			Http598NetworkReadTimeoutError,
-			/** 599 Network connect timeout error */
-			Http599NetworkConnectTimeoutError,
-			/** Unknown status code */
-			HttpStatusCodeUnknown
-		};
-
+		// backward compatibility
+		using HttpResponseStatusCode = pcpp::HttpResponseStatusCode;
 
 		 /** A constructor that creates the layer from an existing packet raw data
 		 * @param[in] data A pointer to the raw data
@@ -416,8 +512,17 @@ namespace pcpp
 		 * @param[in] statusCodeString Most status codes have their default string, e.g 200 is usually "OK", 404 is usually "Not Found", etc.
 		 * But the user can set a non-default status code string and it will be written in the header first line. Empty string ("") means using the
 		 * default status code string
+		 * @deprecated Use other constructors instead.
 		 */
-		HttpResponseLayer(HttpVersion version, HttpResponseLayer::HttpResponseStatusCode statusCode, std::string statusCodeString = "");
+		PCPP_DEPRECATED explicit HttpResponseLayer(HttpVersion version, const HttpResponseStatusCode& statusCode, const std::string& statusCodeString);
+
+		/**
+		 * A constructor that allocates a new HTTP response header with only the first line filled. Object will be created without further fields.
+		 * The user can then add fields using addField() methods
+		 * @param[in] version HTTP version to be used
+		 * @param[in] statusCode Status code to be used
+		 */
+		explicit HttpResponseLayer(HttpVersion version, const HttpResponseStatusCode& statusCode);
 
 		virtual ~HttpResponseLayer();
 
@@ -432,6 +537,7 @@ namespace pcpp
 		 * An assignment operator overload for this layer. This method inherits base assignment operator HttpMessage#operator=() and adds the functionality
 		 * of copying the first line as well
 		 * @param[in] other The instance to copy from
+		 * @return A reference to the assignee
 		 */
 		HttpResponseLayer& operator=(const HttpResponseLayer& other);
 
@@ -445,14 +551,15 @@ namespace pcpp
 		 * The content-length field value. The method supports several cases:
 		 * - If the "Content-Length" field exists - the method will only replace the existing value with the new value
 		 * - If the "Content-Length" field doesn't exist - the method will create this field and put the value in it. Here are also 2 cases:
-		 * 		- If prevFieldName is specified - the new "Content-Length" field will be created after it
-		 * 		- If prevFieldName isn't specified or doesn't exist - the new "Content-Length" field will be created as the last field before
-		 * 		  end-of-header field
+		 *   - If prevFieldName is specified - the new "Content-Length" field will be created after it
+		 *   - If prevFieldName isn't specified or doesn't exist - the new "Content-Length" field will be created as the last field before
+		 *     end-of-header field
+		 *
 		 * @param[in] contentLength The content length value to set
 		 * @param[in] prevFieldName Optional field, if specified and "Content-Length" field doesn't exist, it will be created after it
 		 * @return A pointer to the "Content-Length" field, or NULL if creation failed for some reason
 		 */
-		HeaderField* setContentLength(int contentLength, const std::string prevFieldName = "");
+		HeaderField* setContentLength(int contentLength, const std::string &prevFieldName = "");
 
 		/**
 		 * The length of the body of many HTTP response messages is determined by a HTTP header field called "Content-Length". This method
@@ -533,7 +640,7 @@ namespace pcpp
 		 * @param[in] dataLen The raw data length
 		 * @return The parsed HTTP method
 		 */
-		static HttpRequestLayer::HttpMethod parseMethod(char* data, size_t dataLen);
+		static HttpRequestLayer::HttpMethod parseMethod(const char* data, size_t dataLen);
 
 		/**
 		 * @return The size in bytes of the HTTP first line
@@ -558,7 +665,7 @@ namespace pcpp
 		{
 		public:
 			~HttpRequestFirstLineException() throw() {}
-			void setMessage(std::string message) { m_Message = message; }
+			void setMessage(const std::string &message) { m_Message = message; }
 			virtual const char* what() const throw()
 			{
 				return m_Message.c_str();
@@ -568,8 +675,7 @@ namespace pcpp
 		};
 	private:
 		HttpRequestFirstLine(HttpRequestLayer* httpRequest);
-		HttpRequestFirstLine(HttpRequestLayer* httpRequest, HttpRequestLayer::HttpMethod method, HttpVersion version, std::string uri = "/");
-			//throw(HttpRequestFirstLineException); // Deprecated in C++17
+		HttpRequestFirstLine(HttpRequestLayer* httpRequest, HttpRequestLayer::HttpMethod method, HttpVersion version, const std::string& uri = "/");
 
 		void parseVersion();
 
@@ -604,9 +710,9 @@ namespace pcpp
 		friend class HttpResponseLayer;
 	public:
 		/**
-		 * @return The status code as HttpResponseLayer::HttpResponseStatusCode enum
+		 * @return The status code as HttpResponseStatusCode enum
 		 */
-		HttpResponseLayer::HttpResponseStatusCode getStatusCode() const { return m_StatusCode; }
+		HttpResponseStatusCode getStatusCode() const { return m_StatusCode; }
 
 		/**
 		 * @return The status code number as integer (e.g 200, 404, etc.)
@@ -623,8 +729,17 @@ namespace pcpp
 		 * @param[in] newStatusCode The new status code to set
 		 * @param[in] statusCodeString An optional parameter: set a non-default status code message (e.g "Bla Bla" instead of "Not Found"). If
 		 * this parameter isn't supplied or supplied as empty string (""), the default message for the status code will be set
+		 * @return True if setting the status code was completed successfully, false otherwise
+	     * @deprecated Use the other overload instead.
 		 */
-		bool setStatusCode(HttpResponseLayer::HttpResponseStatusCode newStatusCode, std::string statusCodeString = "");
+		PCPP_DEPRECATED bool setStatusCode(const HttpResponseStatusCode& newStatusCode, const std::string& statusCodeString);
+
+		/**
+		 * Set the status code
+		 * @param[in] newStatusCode The new status code to set
+		 * @return True if setting the status code was completed successfully, false otherwise
+		 */
+		bool setStatusCode(const HttpResponseStatusCode& newStatusCode);
 
 		/**
 		 * @return The HTTP version
@@ -644,7 +759,15 @@ namespace pcpp
 		 * @param[in] dataLen The raw data length
 		 * @return The parsed HTTP status code as enum
 		 */
-		static HttpResponseLayer::HttpResponseStatusCode parseStatusCode(char* data, size_t dataLen);
+		static HttpResponseStatusCode parseStatusCode(const char* data, size_t dataLen);
+
+		/**
+		 * A static method for parsing the HTTP version out of raw first line data (e.g "HTTP/x.y")
+		 * @param[in] data The raw data
+		 * @param[in] dataLen The raw data length
+		 * @return The parsed HTTP status code as enum
+		 */
+		static HttpVersion parseVersion(const char* data, size_t dataLen);
 
 		/**
 		 * @return The size in bytes of the HTTP first line
@@ -662,14 +785,14 @@ namespace pcpp
 		/**
 		 * @class HttpResponseFirstLineException
 		 * This exception can be thrown while constructing HttpResponseFirstLine (the constructor is private, so the construction happens
-		 * only in HttpResponseLayer). This kind of exception will be thrown if trying to construct with HTTP status code of
-		 * HttpResponseLayer#HttpStatusCodeUnknown or with undefined HTTP version ::HttpVersionUnknown
+		 * only in HttpResponseLayer). This kind of exception will be thrown if trying to construct with a HTTP status code that is not in
+		 * HttpResponseStatusCode or with undefined HTTP version ::HttpVersionUnknown
 		 */
 		class HttpResponseFirstLineException : public std::exception
 		{
 		public:
 			~HttpResponseFirstLineException() throw() {}
-			void setMessage(std::string message) { m_Message = message; }
+			void setMessage(const std::string &message) { m_Message = message; }
 			virtual const char* what() const throw()
 			{
 				return m_Message.c_str();
@@ -680,20 +803,14 @@ namespace pcpp
 
 	private:
 		HttpResponseFirstLine(HttpResponseLayer* httpResponse);
-		HttpResponseFirstLine(HttpResponseLayer* httpResponse,  HttpVersion version, HttpResponseLayer::HttpResponseStatusCode statusCode, std::string statusCodeString = "");
-
-		static HttpVersion parseVersion(char* data, size_t dataLen);
-		static HttpResponseLayer::HttpResponseStatusCode validateStatusCode(char* data, size_t dataLen, HttpResponseLayer::HttpResponseStatusCode potentialCode);
-
+		HttpResponseFirstLine(HttpResponseLayer* httpResponse,  HttpVersion version, const HttpResponseStatusCode& statusCode);
 
 		HttpResponseLayer* m_HttpResponse;
 		HttpVersion m_Version;
-		HttpResponseLayer::HttpResponseStatusCode m_StatusCode;
+		HttpResponseStatusCode m_StatusCode;
 		int m_FirstLineEndOffset;
 		bool m_IsComplete;
 		HttpResponseFirstLineException m_Exception;
 	};
 
 } // namespace pcpp
-
-#endif /* PACKETPP_HTTP_LAYER */

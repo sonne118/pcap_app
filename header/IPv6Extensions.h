@@ -1,5 +1,4 @@
-#ifndef PACKETPP_IPV6_EXTENSION
-#define PACKETPP_IPV6_EXTENSION
+#pragma once
 
 #include <vector>
 #include "IpAddress.h"
@@ -194,7 +193,7 @@ namespace pcpp
 		 * extensions. This class does not create or modify IPv6 option records, but rather serves as a wrapper and
 		 * provides useful methods for retrieving data from them
 		 */
-		class IPv6Option : public TLVRecord
+		class IPv6Option : public TLVRecord<uint8_t, uint8_t>
 		{
 		public:
 
@@ -205,17 +204,41 @@ namespace pcpp
 			 * A c'tor for this class that gets a pointer to the option raw data (byte array)
 			 * @param[in] optionRawData A pointer to the attribute raw data
 			 */
-			IPv6Option(uint8_t* optionRawData) : TLVRecord(optionRawData) { }
+			explicit IPv6Option(uint8_t* optionRawData) : TLVRecord(optionRawData) { }
 
 			/**
 			 * A d'tor for this class, currently does nothing
 			 */
 			~IPv6Option() { }
 
+			/**
+			 * Check if a pointer can be assigned to the TLV record data
+			 * @param[in] recordRawData A pointer to the TLV record raw data
+			 * @param[in] tlvDataLen The size of the TLV record raw data
+			 * @return True if data is valid and can be assigned
+			 */
+			static bool canAssign(const uint8_t* recordRawData, size_t tlvDataLen)
+			{
+				auto data = (TLVRawData*)recordRawData;
+				if (data == nullptr)
+					return false;
+
+				if (tlvDataLen < sizeof(TLVRawData::recordType))
+					return false;
+
+				if (data->recordType == Pad0OptionType)
+					return true;
+
+				return TLVRecord<uint8_t, uint8_t>::canAssign(recordRawData, tlvDataLen);
+			}
+
 			// implement abstract methods
 
 			size_t getTotalSize() const
 			{
+				if (m_Data == nullptr)
+					return 0;
+
 				if (m_Data->recordType == Pad0OptionType)
 					return sizeof(uint8_t);
 
@@ -224,8 +247,8 @@ namespace pcpp
 
 			size_t getDataSize() const
 			{
-				if (m_Data->recordType == Pad0OptionType)
-					return (size_t)0;
+				if (m_Data == nullptr || m_Data->recordType == Pad0OptionType)
+					return 0;
 
 				return (size_t)m_Data->recordLen;
 			}
@@ -240,7 +263,7 @@ namespace pcpp
 		class IPv6TLVOptionBuilder : public TLVRecordBuilder
 		{
 		public:
-		
+
 			/**
 			 * A c'tor for building IPv6 TLV options which their value is a byte array. The IPv6Option object can later
 			 * be retrieved by calling build()
@@ -270,9 +293,8 @@ namespace pcpp
 				TLVRecordBuilder(optType, optValue) { }
 
 			/**
-			 * A copy c'tor that creates an instance of this class out of another instance and copies all the data from it 
+			 * A copy c'tor that creates an instance of this class out of another instance and copies all the data from it
 			 * @param[in] other The instance to copy data from
-			 * 
 			 */
 			IPv6TLVOptionBuilder(const IPv6TLVOptionBuilder& other) :
 				TLVRecordBuilder(other) {}
@@ -311,9 +333,9 @@ namespace pcpp
 		 * Returns a pointer to the option that comes after the option given as the parameter
 		 * @param[in] option A pointer to an option instance
 		 * @return An IPv6Option object that wraps the option data. In the following cases logical NULL (IPv6Option#isNull() == true)
-		 * is returned: 
+		 * is returned:
 		 * (1) input parameter is out-of-bounds for this extension or
-		 * (2) the next option doesn't exist or 
+		 * (2) the next option doesn't exist or
 		 * (3) the input option is NULL
 		 */
 		IPv6Option getNextOption(IPv6Option& option) const;
@@ -326,7 +348,7 @@ namespace pcpp
 	protected:
 
 		/** A private c'tor to keep this object from being constructed */
-		IPv6TLVOptionHeader(const std::vector<IPv6TLVOptionBuilder>& options);
+		explicit IPv6TLVOptionHeader(const std::vector<IPv6TLVOptionBuilder>& options);
 
 		IPv6TLVOptionHeader(IDataContainer* dataContainer, size_t offset);
 
@@ -353,7 +375,7 @@ namespace pcpp
 		 * @param[in] options A vector of IPv6TLVOptionHeader#TLVOptionBuilder instances which define the options that will be stored in the
 		 * extension data. Notice this vector is read-only and its content won't be modified
 		 */
-		IPv6HopByHopHeader(const std::vector<IPv6TLVOptionBuilder>& options) : IPv6TLVOptionHeader(options) { m_ExtType = IPv6HopByHop; }
+		explicit IPv6HopByHopHeader(const std::vector<IPv6TLVOptionBuilder>& options) : IPv6TLVOptionHeader(options) { m_ExtType = IPv6HopByHop; }
 
 	private:
 
@@ -378,7 +400,7 @@ namespace pcpp
 		 * @param[in] options A vector of IPv6TLVOptionHeader#TLVOptionBuilder instances which define the options that will be stored in the
 		 * extension data. Notice this vector is read-only and its content won't be modified
 		 */
-		IPv6DestinationHeader(const std::vector<IPv6TLVOptionBuilder>& options) : IPv6TLVOptionHeader(options) { m_ExtType = IPv6Destination; }
+		explicit IPv6DestinationHeader(const std::vector<IPv6TLVOptionBuilder>& options) : IPv6TLVOptionHeader(options) { m_ExtType = IPv6Destination; }
 
 	private:
 
@@ -533,5 +555,3 @@ namespace pcpp
 	};
 
 }
-
-#endif // PACKETPP_IPV6_EXTENSION

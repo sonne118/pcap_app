@@ -1,5 +1,4 @@
-#ifndef PACKETPP_TCP_LAYER
-#define PACKETPP_TCP_LAYER
+#pragma once
 
 #include "Layer.h"
 #include "TLVData.h"
@@ -19,7 +18,8 @@ namespace pcpp
 	 * Represents an TCP protocol header
 	 */
 #pragma pack(push,1)
-	struct tcphdr {
+	struct tcphdr
+	{
 		/** Source TCP port */
 		uint16_t portSrc;
 		/** Destination TCP port */
@@ -84,7 +84,8 @@ namespace pcpp
 	/**
 	 * TCP options types
 	 */
-	enum TcpOptionType {
+	enum TcpOptionType : uint8_t
+	{
 		/** Padding */
 		PCPP_TCPOPT_NOP =       1,
 		/** End of options */
@@ -188,12 +189,13 @@ namespace pcpp
 #define PCPP_TCPOLEN_EXP_MIN        2
 
 
+
 	/**
 	 * @class TcpOption
 	 * A wrapper class for TCP options. This class does not create or modify TCP option records, but rather
 	 * serves as a wrapper and provides useful methods for retrieving data from them
 	 */
-	class TcpOption : public TLVRecord
+	class TcpOption : public TLVRecord<uint8_t, uint8_t>
 	{
 	public:
 
@@ -201,7 +203,7 @@ namespace pcpp
 		 * A c'tor for this class that gets a pointer to the option raw data (byte array)
 		 * @param[in] optionRawData A pointer to the TCP option raw data
 		 */
-		TcpOption(uint8_t* optionRawData) : TLVRecord(optionRawData) { }
+		explicit TcpOption(uint8_t* optionRawData) : TLVRecord(optionRawData) { }
 
 		/**
 		 * A d'tor for this class, currently does nothing
@@ -214,34 +216,64 @@ namespace pcpp
 		 */
 		TcpOptionType getTcpOptionType() const
 		{
-			if (m_Data == NULL)
-				return TCPOPT_Unknown;
+			return getTcpOptionType(m_Data);
+		}
 
-			return (TcpOptionType)m_Data->recordType;
+		/**
+		 * Check if a pointer can be assigned to the TLV record data
+		 * @param[in] recordRawData A pointer to the TLV record raw data
+		 * @param[in] tlvDataLen The size of the TLV record raw data
+		 * @return True if data is valid and can be assigned
+		 */
+		static bool canAssign(const uint8_t* recordRawData, size_t tlvDataLen)
+		{
+			const auto* data = reinterpret_cast<const TLVRawData*>(recordRawData);
+			if (data == nullptr)
+				return false;
+
+			if (tlvDataLen < sizeof(TLVRawData::recordType))
+				return false;
+
+			const auto recordType = getTcpOptionType(data);
+			if (recordType == TcpOptionType::PCPP_TCPOPT_NOP || recordType == TcpOptionType::PCPP_TCPOPT_EOL)
+				return true;
+
+			return TLVRecord<uint8_t, uint8_t>::canAssign(recordRawData, tlvDataLen);
 		}
 
 		// implement abstract methods
 
 		size_t getTotalSize() const
 		{
-			if (m_Data == NULL)
-				return (size_t)0;
+			if (m_Data == nullptr)
+				return 0;
 
-			if (m_Data->recordType == (uint8_t)PCPP_TCPOPT_NOP || m_Data->recordType == (uint8_t)PCPP_TCPOPT_EOL)
+			const auto recordType = getTcpOptionType(m_Data);
+			if (recordType == TcpOptionType::PCPP_TCPOPT_NOP || recordType == TcpOptionType::PCPP_TCPOPT_EOL)
 				return sizeof(uint8_t);
 
-			return (size_t)m_Data->recordLen;
+			return static_cast<size_t>(m_Data->recordLen);
 		}
 
 		size_t getDataSize() const
 		{
-			if (m_Data == NULL)
+			if (m_Data == nullptr)
 				return 0;
 
-			if (m_Data->recordType == (uint8_t)PCPP_TCPOPT_NOP || m_Data->recordType == (uint8_t)PCPP_TCPOPT_EOL)
-				return (size_t)0;
+			const auto recordType = getTcpOptionType(m_Data);
+			if (recordType == TcpOptionType::PCPP_TCPOPT_NOP || recordType == TcpOptionType::PCPP_TCPOPT_EOL)
+				return 0;
 
-			return (size_t)m_Data->recordLen - (2*sizeof(uint8_t));
+			return static_cast<size_t>(m_Data->recordLen) - (2*sizeof(uint8_t));
+		}
+
+	private:
+		static TcpOptionType getTcpOptionType(const TLVRawData* optionRawData)
+		{
+			if (optionRawData == nullptr)
+				return TcpOptionType::TCPOPT_Unknown;
+
+			return static_cast<TcpOptionType>(optionRawData->recordType);
 		}
 	};
 
@@ -259,7 +291,7 @@ namespace pcpp
 		/**
 		 * An enum to describe NOP and EOL TCP options. Used in one of this class's c'tors
 		 */
-		enum NopEolOptionTypes
+		enum NopEolOptionTypes : uint8_t
 		{
 			/** NOP TCP option */
 			NOP,
@@ -310,7 +342,7 @@ namespace pcpp
 		 * by calling build()
 		 * @param[in] optionType An enum value indicating which option type to build (NOP or EOL)
 		 */
-		TcpOptionBuilder(NopEolOptionTypes optionType);
+		explicit TcpOptionBuilder(NopEolOptionTypes optionType);
 
 		/**
 		 * Build the TcpOption object out of the parameters defined in the c'tor
@@ -365,6 +397,16 @@ namespace pcpp
 		 * @return A pointer to the @ref tcphdr
 		 */
 		tcphdr* getTcpHeader() const { return (tcphdr*)m_Data; }
+
+		/**
+		 * @return TCP source port
+		 */
+		uint16_t getSrcPort() const;
+
+		/**
+		 * @return TCP destination port
+		 */
+		uint16_t getDstPort() const;
 
 		/**
 		 * Get a TCP option by type
@@ -488,7 +530,4 @@ namespace pcpp
 			&& hdr->dataOffset >= 5 /* the minimum TCP header size */
 			&& dataLen >= hdr->dataOffset * sizeof(uint32_t);
 	}
-
 } // namespace pcpp
-
-#endif /* PACKETPP_TCP_LAYER */

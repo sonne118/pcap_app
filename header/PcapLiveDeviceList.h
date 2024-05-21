@@ -1,9 +1,7 @@
-#ifndef PCAPPP_LIVE_DEVICE_LIST
-#define PCAPPP_LIVE_DEVICE_LIST
+#pragma once
 
 #include "IpAddress.h"
 #include "PcapLiveDevice.h"
-#include "WinPcapLiveDevice.h"
 #include <vector>
 
 
@@ -34,8 +32,6 @@ namespace pcpp
 		// private copy c'tor
 		PcapLiveDeviceList( const PcapLiveDeviceList& other );
 		PcapLiveDeviceList& operator=(const PcapLiveDeviceList& other);
-		// private d'tor
-		~PcapLiveDeviceList();
 
 		void init();
 
@@ -92,17 +88,31 @@ namespace pcpp
 		PcapLiveDevice* getPcapLiveDeviceByName(const std::string& name) const;
 
 		/**
+		 * Get a pointer to the live device by its IP address or name
+		 * @param[in] ipOrName An IP address or name of the interface
+		 * @return A pointer to the live device if exists, NULL otherwise
+		 */
+		PcapLiveDevice* getPcapLiveDeviceByIpOrName(const std::string& ipOrName) const;
+
+		/**
 		 * @return A list of all DNS servers defined for this machine. If this list is empty it means no DNS servers were defined or they
 		 * couldn't be extracted from some reason
 		 */
 		const std::vector<IPv4Address>& getDnsServers() const { return m_DnsServers; }
 
 		/**
+		 * Copies the current live device list
+		 * @return A pointer to the cloned device list
+		 */
+		PcapLiveDeviceList* clone();
+
+		/**
 		 * Reset the live device list and DNS server list, meaning clear and refetch them
 		 */
 		void reset();
+
+		// d'tor
+		~PcapLiveDeviceList();
 	};
 
 } // namespace pcpp
-
-#endif
