@@ -14,7 +14,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pcap_reader", "pcap_reader\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet_Ptr", "dotnet_Ptr\dotnet_Ptr.csproj", "{173A5719-8706-4225-A3D9-759E73E1F928}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "get_packages", "get_packages\get_packages.vcxproj", "{E3671798-1BAC-4B94-80F8-0A567758C0B8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sniffer_packages", "sniffer_packages\sniffer_packages.vcxproj", "{E3671798-1BAC-4B94-80F8-0A567758C0B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -6,11 +6,10 @@
 
 using namespace std;
 
-#ifndef ETHERTYPE_IP
-#define ETHERTYPE_IP		0x0800	/* IP protocol */
-#endif
 #define ETHER_ADDR_LEN 6
-
+#ifndef ETHERTYPE_IP
+#define ETHERTYPE_IP		0x0800	
+#endif
 
 //Ethernet Header
 typedef struct ether_header {
@@ -107,7 +106,7 @@ int main() {
 
    
     pcap_freealldevs(alldevs);
-    descr = pcap_open_offline("D:/repo/test2/pcap_app/pcap_app/get_packages/http.pcap", errbuf);
+    descr = pcap_open_offline("D:/repo/test2/pcap_app/pcap_app/sniffer_packages/http.pcap", errbuf);
     if (descr == NULL) {
         cout << "pcap_open_live() failed: " << errbuf << endl;
         return 1;
