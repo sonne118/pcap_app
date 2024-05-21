@@ -7,12 +7,12 @@ namespace dotnet_Ptr
         [StructLayout(LayoutKind.Sequential)]
         public struct myStruct
         {
-          public  int id;
-          public string source_ip;
-          public string dest_ip;
-          public string mac_source;
-          public string mac_destin;
-          public string user_agent;
+            public int id;
+            public string source_ip;
+            public string dest_ip;
+            public string mac_source;
+            public string mac_destin;
+            public string user_agent;
         }
 
         [DllImport("pcap_reader.dll", CallingConvention = CallingConvention.Cdecl)]
