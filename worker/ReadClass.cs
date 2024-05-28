@@ -1,0 +1,20 @@
+﻿using System.Runtime.InteropServices;
+
+namespace worker
+{
+    public static class ReadClass
+    {
+        public static unsafe Snapshot ReadMessage(BinaryReader stream)
+        {
+            Snapshot snapshot;
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Snapshot))];
+            stream.Read(buffer, 0, buffer.Length);
+            fixed (byte* b = &buffer[0])
+            {
+                var p = new IntPtr(b);
+                snapshot = Marshal.PtrToStructure<Snapshot>(p);
+            }
+            return snapshot;
+        }
+    }
+}

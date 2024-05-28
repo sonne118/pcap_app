@@ -19,4 +19,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ipc.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="struct.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ether_ntoa.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>
