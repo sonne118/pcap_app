@@ -10,13 +10,6 @@
 
 using namespace std;
 
-void producer(pcap_t* adhandle, struct pcap_pkthdr* pkthdr, const u_char* packet);
-
-#define ETHER_ADDR_LEN 6
-#ifndef ETHERTYPE_IP
-#define ETHERTYPE_IP		0x0800	
-#endif
-
 int main() {
 
 	pcap_t* descr;
