@@ -129,8 +129,8 @@ xcopy "1_packet.pcap" "$(OutDir)" /Y</Command>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
-      <AdditionalIncludeDirectories>D:\repo\test2\pcap_app\pcap_app\sniffer_packages;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>D:\repo\test2\pcap_app\pcap_app\header;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <AdditionalIncludeDirectories>D:\repo\test2\pcap_app\1\pcap_app\sniffer_packages;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories>D:\repo\test2\pcap_app\1\pcap_app\header;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>

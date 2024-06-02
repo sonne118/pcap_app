@@ -101,7 +101,18 @@ void producer(pcap_t* adhandle, struct pcap_pkthdr* pkthdr, const u_char* packet
 					data = (u_char*)(packet + sizeof(struct ether_header) + sizeof(struct ip) + sizeof(struct tcphdr));
 					dataLength = pkthdr->len - (sizeof(struct ether_header) + sizeof(struct ip) + sizeof(struct tcphdr));
 
-					cout << sourceIp << ":" << sourcePort << " -> " << destIp << ":" << destPort << "->  D_Address:   " << dest_mac << "->  S_Address:     " << source_mac << endl;
+					std::string proto = "";
+					if (ipHeader->ip_p == 0x06)
+						proto = "Protocol: TCP (6)";
+					else if (ipHeader->ip_p == 0x11)
+						proto = "Protocol: UDP";
+
+
+					cout << sourceIp << ":" << sourcePort << " -> " << destIp << ":" << destPort << "->  D_Address:   " << dest_mac << "->  S_Address: " << source_mac << "-> proto:" << proto << endl;
+
+
+
+					//cout << sourceIp << ":" << sourcePort << " -> " << destIp << ":" << destPort << "->  D_Address:   " << dest_mac << "->  S_Address:     " << source_mac << endl;
 
 					while (((free_index + 1) mod buff_max) == full_index) {
 						std::this_thread::sleep_for(std::chrono::milliseconds(100));
