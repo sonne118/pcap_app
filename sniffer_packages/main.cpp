@@ -27,7 +27,6 @@ int main() {
 	if (dev || file)
 	{
 		std::vector<std::unique_ptr<std::thread>> threads;
-				
 		threads.emplace_back(std::make_unique<std::thread>(&Packages::producer, pack));
 		threads.emplace_back(std::make_unique<std::thread>(&Packages::consumer, pack));
 
@@ -35,9 +34,7 @@ int main() {
 			thread->join();
 		}
 	}
-
-	pack->~Packages();	
-	
+	pack->~Packages();
 	std::cout << "capture finished" << std::endl;
 	return 0;
 }

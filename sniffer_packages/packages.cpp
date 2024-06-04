@@ -205,7 +205,7 @@ inline int Packages::OpenDevices()
 		return -1;
 	}
 	//printf("\nlistening on %s...\n", d->description);
-	std::cout << "\nlistening on % s...\n"  << d->description << std::endl;
+	std::cout << "\nlistening on % s...\n" << d->description << std::endl;
 
 	return 1;
 }

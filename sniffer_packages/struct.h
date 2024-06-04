@@ -21,7 +21,7 @@ typedef struct ether_header {
 
 //IPv4 Header
 typedef struct ip {
-    // unsigned char	ip_vhl;		/* header length, version *///
+	// unsigned char	ip_vhl;		/* header length, version *///
 	unsigned char ver_ihl;
 	unsigned char tos;
 	unsigned short tlen;
@@ -33,7 +33,7 @@ typedef struct ip {
 	unsigned char crc;
 	u_char ip_src[4];
 	u_char ip_dst[4];
-	
+
 }IPHEADER, * PIPHEADER;
 #define IP_HL(ip)  (((ip)->ip_vhl) & 0x0f)
 #define IP_V(ip)  (((ip)->ip_vhl) >> 4)
