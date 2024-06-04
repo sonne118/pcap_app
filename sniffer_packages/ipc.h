@@ -4,7 +4,7 @@
 #include <tchar.h>
 #include <ether_ntoa.h>
 #include <ipc.h>
-#include <WinSock2.h>
+//#include <WinSock2.h>
 #include <struct.h>
 #include <pcap.h>
 #include <packages.h>
