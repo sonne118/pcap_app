@@ -1,15 +1,11 @@
-﻿#include <WinSock2.h>
-#include <pcap.h>
+﻿#pragma once
 #include <packages.h>
-#include <time.h>
+#include <packages.cpp>
 #include <iostream>
 #include <string.h>
-#include <ipc.h>
-#include <sstream>
-#include <struct.h>
-#include <ether_ntoa.h>
+#include <vector>
 
-using namespace std;
+
 
 int main() {
 
@@ -36,19 +32,18 @@ int main() {
 			thread.join();
 		}
 	}
-	cout << "capture finished" << endl;
+	std::cout << "capture finished" << std::endl;
 	return 0;
 }
 
-Packages::Packages(pcap_t* adhandle, struct pcap_pkthdr* pkthdr, const u_char* packet)
+ Packages::Packages(pcap_t* adhandle, struct pcap_pkthdr* pkthdr, const u_char* packet)
 {
 	_adhandle = adhandle;
 	_pkthdr = pkthdr;
 	_packet = packet;
 }
 
-
-int Packages::findalldevs()
+ int Packages::findalldevs()
 {
 	if (pcap_findalldevs_ex(PCAP_SRC_IF_STRING, NULL, &alldevs, errbuf) == -1)
 	{
@@ -75,7 +70,7 @@ int Packages::findalldevs()
 	return  inum;
 }
 
-int Packages::OpenDevices()
+ int Packages::OpenDevices()
 {
 	if (inum < 1 || inum > i)
 	{
@@ -104,11 +99,11 @@ int Packages::OpenDevices()
 	return 1;
 }
 
-int Packages::OpenFile()
+ int Packages::OpenFile()
 {
 	_adhandle = pcap_open_offline("D:/repo/test2/pcap_app/pcap_app/sniffer_packages/http.pcap", errbuf);
 	if (_adhandle == NULL) {
-		cout << "pcap_open_live() failed: " << errbuf << endl;
+		std::cout << "pcap_open_live() failed: " << errbuf << std::endl;
 		return 1;
 	}
 }

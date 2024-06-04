@@ -17,6 +17,5 @@ int ether_ntoa(const unsigned char etheraddr[ETHER_ADDR_LEN], char* dest, size_t
 		(unsigned)etheraddr[4],
 		(unsigned)etheraddr[5]);
 }
-
 #endif
 

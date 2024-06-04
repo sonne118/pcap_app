@@ -1,40 +1,41 @@
 #ifndef IPC_H
 #define IPC_H
-
-#include <packages.h>
-#include <iostream>
 #include <mutex>
-#include <thread>
-#include <vector>
 #include <tchar.h>
-#include <windows.h>
-#include <string>
-#include <struct.h>
 #include <ether_ntoa.h>
+#include <ipc.h>
+#include <WinSock2.h>
 #include <struct.h>
+#include <pcap.h>
 #include <packages.h>
+
+
+
+inline HANDLE hPipe = ::CreateNamedPipe(_T("\\\\.\\pipe\\testpipe"),
+	PIPE_ACCESS_DUPLEX,
+	PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
+	PIPE_UNLIMITED_INSTANCES,
+	4096,
+	4096,
+	0,
+	NULL);
+
+
 #define buff_max 200
 #define mod %
 
 
 tagSnapshot shared_buff[buff_max];
-std::atomic<int> free_index(0);
-std::atomic<int> full_index(0);
-std::mutex mtx;
+inline std::atomic<int> free_index(0);
+inline std::atomic<int> full_index(0);
+inline std::mutex mtx;
 
 
-void* Packages::consumer() {
+
+
+inline  void* Packages::consumer() {
 	tagSnapshot consumed_item{};
 	tagSnapshot snapshot;
-
-	HANDLE hPipe = ::CreateNamedPipe(_T("\\\\.\\pipe\\testpipe"),
-		PIPE_ACCESS_DUPLEX,
-		PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
-		PIPE_UNLIMITED_INSTANCES,
-		4096,
-		4096,
-		0,
-		NULL);
 
 	ConnectNamedPipe(hPipe, NULL);
 
@@ -59,7 +60,7 @@ void* Packages::consumer() {
 	CloseHandle(hPipe);
 }
 
-void* Packages::producer() {
+inline void* Packages::producer() {
 
 	tagSnapshot new_item{};int res;
 
@@ -69,7 +70,7 @@ void* Packages::producer() {
 		while ((res = pcap_next_ex(_adhandle, &_pkthdr, &_packet)) >= 0) {
 
 			if (res == 0) {
-				cout << "timeout" << "no packages now" << endl;
+				std::cout << "timeout" << "no packages now" << std::endl;
 				continue;
 			}
 
@@ -85,7 +86,7 @@ void* Packages::producer() {
 			u_int sourcePort, destPort;
 			u_char* data;
 			int dataLength = 0;
-			string dataStr = "";
+			std::string dataStr = "";
 
 			ethernetHeader = (struct ether_header*)_packet;
 			if (ntohs(ethernetHeader->ether_type) == ETHERTYPE_IP) {
@@ -131,7 +132,7 @@ void* Packages::producer() {
 					//off = ntohs(ipHeader->ip_off);
 
 
-					cout << sourceIp << ":" << sourcePort << " -> " << destIp << ":" << destPort << "->  D_Address:   " << dest_mac << "->  S_Address: " << source_mac << "-> proto:" << proto << endl;
+					std::cout << sourceIp << ":" << sourcePort << " -> " << destIp << ":" << destPort << "->  D_Address:   " << dest_mac << "->  S_Address: " << source_mac << "-> proto:" << proto << std::endl;
 
 					while (((free_index + 1) mod buff_max) == full_index) {
 						std::this_thread::sleep_for(std::chrono::milliseconds(100));

@@ -21,6 +21,9 @@
     <ClCompile Include="packages.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="packages.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ipc.h">
