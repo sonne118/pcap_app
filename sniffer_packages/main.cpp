@@ -3,6 +3,7 @@
 #include <string.h>
 #include <vector>
 #include <thread> 
+#include <memory>
 #include <ipc.h>
 #include <packages.h>
 #include <packages.cpp>
@@ -25,14 +26,18 @@ int main() {
 
 	if (dev || file)
 	{
-		std::vector<std::thread> threads;
-		threads.emplace_back(&Packages::producer, pack);
-		threads.emplace_back(&Packages::consumer, pack);
+		std::vector<std::unique_ptr<std::thread>> threads;
+				
+		threads.emplace_back(std::make_unique<std::thread>(&Packages::producer, pack));
+		threads.emplace_back(std::make_unique<std::thread>(&Packages::consumer, pack));
 
 		for (auto& thread : threads) {
-			thread.join();
+			thread->join();
 		}
 	}
+
+	pack->~Packages();	
+	
 	std::cout << "capture finished" << std::endl;
 	return 0;
 }

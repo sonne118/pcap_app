@@ -33,8 +33,10 @@ static std::vector<SecondStruct> ClientCode(int* size)
 			v.reset();
 		}
 		*size = request.size();
-		delete vectorOne;
-		delete vectorTwo;
+
+		vectorOne->~VectorOneHandler();
+		vectorTwo->~VectorTwoHandler();
+
 		return vec;
 	}
 

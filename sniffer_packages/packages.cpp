@@ -27,6 +27,7 @@ inline Packages::Packages(pcap_t* adhandle, struct pcap_pkthdr* pkthdr, const u_
 	_packet = packet;
 }
 
+inline Packages ::~Packages() {};
 
 inline void* Packages::consumer() {
 	tagSnapshot consumed_item{};

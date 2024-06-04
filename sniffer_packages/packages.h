@@ -7,7 +7,7 @@ class Packages
 {
 public:
 	Packages(pcap_t* adhandle, struct pcap_pkthdr* pkthdr, const u_char* packet);
-	//~Packages();
+	~Packages();
 	void* producer();
 	void* consumer();
 	int findalldevs();
@@ -25,6 +25,5 @@ private:
 	struct pcap_pkthdr* _pkthdr;
 	const u_char* _packet;
 };
-
 
 #endif
