@@ -28,7 +28,7 @@ int main() {
 
     // file =pack->OpenFile();
 	
-	//if (dev && file)
+	if (dev || file)
 	{
 		std::vector<std::thread> threads;
 		threads.emplace_back(&Packages::producer, pack);
@@ -88,9 +88,9 @@ int Packages::OpenDevices()
 		return -1;
 	}
 
-	/* Jump to the selected adapter */
+	// Jump to the selected adapter 
 	for (d = alldevs, i = 0; i < inum - 1;d = d->next, i++);
-	/* Open the device */
+	// Open the device 
 	if ((_adhandle = pcap_open(d->name,          // name of the device
 		65536,            // portion of the packet to capture	
 		PCAP_OPENFLAG_PROMISCUOUS,    // promiscuous mode
