@@ -7,7 +7,7 @@
 #define ETHERTYPE_IP		0x0800	
 #endif
 
-int ether_ntoa(const unsigned char etheraddr[ETHER_ADDR_LEN], char* dest, size_t len)
+ inline int ether_ntoa(const unsigned char etheraddr[ETHER_ADDR_LEN], char* dest, size_t len)
 {
 	return snprintf(dest, len, "%02x:%02x:%02x:%02x:%02x:%02x",
 		(unsigned)etheraddr[0],

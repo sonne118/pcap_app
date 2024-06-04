@@ -3,7 +3,6 @@
 #define PACKAGES_H
 #include <pcap.h>
 
-
 class Packages
 {
 public:
@@ -26,5 +25,6 @@ private:
 	struct pcap_pkthdr* _pkthdr;
 	const u_char* _packet;
 };
+
 
 #endif

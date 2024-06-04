@@ -4,10 +4,12 @@
 #include <WinSock2.h>
 
 
+
 #define ETHER_ADDR_LEN 6
 #ifndef ETHERTYPE_IP
 #define ETHERTYPE_IP		0x0800	
 #endif
+
 
 
 //Ethernet Header
