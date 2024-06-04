@@ -9,25 +9,23 @@
 #include <struct.h>
 #include <ether_ntoa.h>
 
-
-
 using namespace std;
 
 int main() {
 
-	int file =0, dev=0;
+	int file = 0, dev = 0;
 	pcap_t* adhandle = nullptr;
 	struct pcap_pkthdr* pkthdr = nullptr;
 	const u_char* packet = nullptr;
 
 	Packages* pack = new Packages(adhandle, pkthdr, packet);
 
-	 dev = pack->findalldevs();
+	dev = pack->findalldevs();
 	if (dev)
-	pack->OpenDevices();
+		pack->OpenDevices();
 
-    // file =pack->OpenFile();
-	
+	// file =pack->OpenFile();
+
 	if (dev || file)
 	{
 		std::vector<std::thread> threads;
@@ -38,8 +36,6 @@ int main() {
 			thread.join();
 		}
 	}
-	
-
 	cout << "capture finished" << endl;
 	return 0;
 }
@@ -83,7 +79,7 @@ int Packages::OpenDevices()
 {
 	if (inum < 1 || inum > i)
 	{
-		printf("\nInterface number out of range.\n");	
+		printf("\nInterface number out of range.\n");
 		pcap_freealldevs(alldevs);
 		return -1;
 	}
@@ -99,7 +95,7 @@ int Packages::OpenDevices()
 		errbuf            // error buffer
 	)) == NULL)
 	{
-		fprintf(stderr, "\nUnable to open the adapter. %s is not supported by WinPcap\n", d->name);		
+		fprintf(stderr, "\nUnable to open the adapter. %s is not supported by WinPcap\n", d->name);
 		pcap_freealldevs(alldevs);
 		return -1;
 	}
@@ -109,7 +105,7 @@ int Packages::OpenDevices()
 }
 
 int Packages::OpenFile()
-{	
+{
 	_adhandle = pcap_open_offline("D:/repo/test2/pcap_app/pcap_app/sniffer_packages/http.pcap", errbuf);
 	if (_adhandle == NULL) {
 		cout << "pcap_open_live() failed: " << errbuf << endl;

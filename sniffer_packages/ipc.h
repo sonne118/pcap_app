@@ -59,7 +59,7 @@ void* Packages::consumer() {
 	CloseHandle(hPipe);
 }
 
- void* Packages:: producer() {
+void* Packages::producer() {
 
 	tagSnapshot new_item{};int res;
 
@@ -101,7 +101,7 @@ void* Packages::consumer() {
 				ether_ntoa(ptr2, dest_mac, sizeof dest_mac);
 
 				//ntohs(th->seq), ntohs(th->ack_seq));
-				
+
 				std::string proto = "";
 				if (ipHeader->ip_p == 0x06)
 					proto = "Protocol: TCP (6)";
@@ -111,10 +111,10 @@ void* Packages::consumer() {
 					proto = "Protocol: ICMP";
 				else if (ipHeader->ip_p == 0x0501)
 					proto = "Protocol: IPV4";
-						
 
-			//if (ipHeader->ip_p == IPPROTO_TCP )//|| ipHeader->ip_p == IPPROTO_ICMP)
-				 {
+
+				//if (ipHeader->ip_p == IPPROTO_TCP )//|| ipHeader->ip_p == IPPROTO_ICMP)
+				{
 					tcpHeader = (tcphdr*)(_packet + sizeof(struct ether_header) + sizeof(struct ip));
 					sourcePort = ntohs(tcpHeader->sport);
 					destPort = ntohs(tcpHeader->dport);
@@ -122,18 +122,15 @@ void* Packages::consumer() {
 					dataLength = _pkthdr->len - (sizeof(struct ether_header) + sizeof(struct ip) + sizeof(struct tcphdr));
 
 
-			u_int hlen, version;
-			int i;
-			int len;
-			//int off;
+					u_int hlen, version;
+					int i;
+					int len;
+					len = ntohs(ipHeader->tlen);
+					//hlen = IP_HL(ipHeader); /* header length */
+					//version = IP_V(ipHeader);/* ip version */
+					//off = ntohs(ipHeader->ip_off);
 
 
-			len = ntohs(ipHeader->tlen);
-			//hlen = IP_HL(ipHeader); /* header length */
-			//version = IP_V(ipHeader);/* ip version */
-			//off = ntohs(ipHeader->ip_off);
-
-					
 					cout << sourceIp << ":" << sourcePort << " -> " << destIp << ":" << destPort << "->  D_Address:   " << dest_mac << "->  S_Address: " << source_mac << "-> proto:" << proto << endl;
 
 					while (((free_index + 1) mod buff_max) == full_index) {
