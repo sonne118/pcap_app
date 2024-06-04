@@ -9,7 +9,6 @@
 #define ETHERTYPE_IP		0x0800	
 #endif
 
-char errbuf[PCAP_ERRBUF_SIZE];
 
 //Ethernet Header
 typedef struct ether_header {
