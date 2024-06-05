@@ -9,7 +9,7 @@
 #include <packages.cpp>
 
 
-int main() {
+int main1() {
 
 	int file = 0, dev = 0;
 	pcap_t* adhandle = nullptr;
@@ -38,6 +38,31 @@ int main() {
 	std::cout << "capture finished" << std::endl;
 	return 0;
 }
+
+
+extern "C"
+{
+	void __declspec(dllexport) __stdcall fnCPPDLL(void)
+	{
+		DWORD IDThread;
+		HANDLE hEvent;
+		HANDLE hThread;
+		hEvent = CreateEvent(
+			NULL,
+			TRUE,
+			FALSE,
+			_T("MyEvent")
+		);
+		hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)main1, &hEvent, 0, &IDThread);
+		if (WAIT_TIMEOUT == WaitForSingleObject(hEvent, 10000))
+			std::cout << "Time Out" << std::endl;
+		WaitForSingleObject(hThread, INFINITE);//This line is used
+
+		//return 99;
+	}
+}
+
+
 
 
 

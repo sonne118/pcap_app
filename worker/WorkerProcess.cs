@@ -1,9 +1,12 @@
 ﻿using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace worker
 {
     public class WorkerProcess : BackgroundService
     {
+     //   [DllImport("fnCPPDLL.dll")]
+       // extern static void fnCPPDLL();
         readonly private int timeout;
         readonly private string path;
         public WorkerProcess()
@@ -13,6 +16,8 @@ namespace worker
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+
+           // fnCPPDLL();
             ThreadPool.QueueUserWorkItem(delegate
             {
                 var proc = new Process();

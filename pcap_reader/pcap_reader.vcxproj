@@ -131,6 +131,8 @@ xcopy "1_packet.pcap" "$(OutDir)" /Y</Command>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>D:\repo\test2\pcap_app\1\pcap_app\pcap_reader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>D:\repo\test2\pcap_app\1\pcap_app\header;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <CompileAsManaged>true</CompileAsManaged>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
