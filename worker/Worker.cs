@@ -35,8 +35,9 @@ namespace worker
                         return func;                        
                     });
 
-                    pool.Return(func);// first object in poll
-                    pool.Return(func);// second object in poll in any case
+                    pool.Return(func);// first Task in poll
+                    pool.Return(func);// second Task in poll 
+                    pool.Return(func); //third Task in poll for any case ... improving scalability
                     while (pipe.IsConnected)
                     {
                         var result = pool.Get();
