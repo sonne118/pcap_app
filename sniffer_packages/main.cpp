@@ -9,7 +9,7 @@
 #include <packages.cpp>
 
 
-int main1() {
+int ThreadFunc() {
 
 	int file = 0, dev = 0;
 	pcap_t* adhandle = nullptr;
@@ -53,7 +53,7 @@ extern "C"
 			FALSE,
 			_T("MyEvent")
 		);
-		hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)main1, &hEvent, 0, &IDThread);
+		hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ThreadFunc, &hEvent, 0, &IDThread);
 		if (WAIT_TIMEOUT == WaitForSingleObject(hEvent, 10000))
 			std::cout << "Time Out" << std::endl;
 		WaitForSingleObject(hThread, INFINITE);//This line is used
