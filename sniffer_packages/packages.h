@@ -22,6 +22,6 @@ private:
 	int i = 0;
 	pcap_t* _adhandle;
 	struct pcap_pkthdr* _pkthdr;
-	const u_char* _packet;	
+	const u_char* _packet;
 };
 #endif

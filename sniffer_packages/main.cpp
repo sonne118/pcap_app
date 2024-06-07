@@ -7,22 +7,19 @@
 #include <memory>
 #include <ipc.h>
 
-
-
-int ThreadFunc(){
+int ThreadFunc() {
 
 	int file = 0, dev = 0;
 	pcap_t* adhandle = nullptr;
 	struct pcap_pkthdr* pkthdr = nullptr;
 	const u_char* packet = nullptr;
-	
+
 	Packages* pack = new Packages(adhandle, pkthdr, packet);
 
 	dev = pack->findalldevs();
 	if (dev)
 		pack->OpenDevices();
-
-
+	// file = pack->Packages::OpenFile();
 	if (dev || file)
 	{
 		std::vector<std::unique_ptr<std::thread>> threads;
@@ -31,7 +28,6 @@ int ThreadFunc(){
 
 		for (auto& thread : threads) {
 			thread->join();
-
 		}
 	}
 	pack->~Packages();
@@ -44,7 +40,7 @@ extern "C"
 {
 	void __declspec(dllexport) __stdcall fnCPPDLL(void)
 	{
-		
+
 		DWORD IDThread;
 		HANDLE hEvent;
 		HANDLE hThread;
@@ -56,9 +52,20 @@ extern "C"
 		);
 		hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ThreadFunc, &hEvent, 0, &IDThread);
 		WaitForSingleObject(hThread, INFINITE);
-		
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -11,7 +11,6 @@
 #endif
 
 
-
 //Ethernet Header
 typedef struct ether_header {
 	unsigned char ether_dhost[ETHER_ADDR_LEN];
