@@ -6,10 +6,9 @@
 #include <WinSock2.h>
 #include <struct.h>
 #include <pcap.h>
-#include <packages.h>
 #include <ipc.h>
 
-#define buff_max 200
+#define buff_max 5
 #define mod %
 
 inline char errbuf[PCAP_ERRBUF_SIZE];
@@ -29,11 +28,11 @@ inline Packages::Packages(pcap_t* adhandle, struct pcap_pkthdr* pkthdr, const u_
 
 inline Packages ::~Packages() {};
 
+
 inline void* Packages::consumer() {
 	tagSnapshot consumed_item{};
 	tagSnapshot snapshot;
 
-	ConnectNamedPipe(hPipe, NULL);
 
 	while (true) {
 		while (free_index == full_index) {
@@ -46,7 +45,7 @@ inline void* Packages::consumer() {
 			consumed_item = shared_buff[full_index];
 			full_index = (full_index + 1) mod buff_max;
 			snapshot = consumed_item;
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));		
 			WriteFile(hPipe, &snapshot, sizeof(tagSnapshot), NULL, NULL);
 		}
 		mtx.unlock();
@@ -127,18 +126,15 @@ inline void* Packages::producer() {
 					//version = IP_V(ipHeader);/* ip version */
 					//off = ntohs(ipHeader->ip_off);
 
-
-					std::cout << sourceIp << ":" << sourcePort << " -> " << destIp << ":" << destPort << "->  D_Address:   " << dest_mac << "->  S_Address: " << source_mac << "-> proto:" << proto << std::endl;
-
 					while (((free_index + 1) mod buff_max) == full_index) {
 						std::this_thread::sleep_for(std::chrono::milliseconds(100));
 					}
 					mtx.lock();
 
-					strcpy(new_item.source_ip, sourceIp);
-					strcpy(new_item.dest_ip, destIp);
-					strcpy(new_item.source_mac, source_mac);
-					strcpy(new_item.dest_mac, dest_mac);
+					strcpy_s(new_item.source_ip, sourceIp);
+					strcpy_s(new_item.dest_ip, destIp);
+					strcpy_s(new_item.source_mac, source_mac);
+					strcpy_s(new_item.dest_mac, dest_mac);
 					new_item.dest_port = destPort;
 					new_item.source_port = sourcePort;
 

@@ -18,9 +18,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="packages.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="packages.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -34,6 +31,9 @@
     </ClInclude>
     <ClInclude Include="ether_ntoa.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="packages.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

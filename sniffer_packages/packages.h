@@ -14,7 +14,6 @@ public:
 	int OpenDevices();
 	int OpenFile();
 
-
 private:
 	pcap_t* descr;
 	pcap_if_t* alldevs;
@@ -23,7 +22,6 @@ private:
 	int i = 0;
 	pcap_t* _adhandle;
 	struct pcap_pkthdr* _pkthdr;
-	const u_char* _packet;
+	const u_char* _packet;	
 };
-
 #endif
