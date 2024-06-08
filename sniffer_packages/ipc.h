@@ -3,7 +3,6 @@
 
 #include <tchar.h>
 
-
 inline HANDLE hPipe = ::CreateNamedPipe(_T("\\\\.\\pipe\\testpipe"),
 	PIPE_ACCESS_DUPLEX,
 	PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,

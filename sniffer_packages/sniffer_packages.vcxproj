@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="mainFunc.cpp" />
     <ClCompile Include="packages.cpp" />
   </ItemGroup>
   <ItemGroup>

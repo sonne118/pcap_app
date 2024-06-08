@@ -45,7 +45,7 @@ inline void* Packages::consumer() {
 			consumed_item = shared_buff[full_index];
 			full_index = (full_index + 1) mod buff_max;
 			snapshot = consumed_item;
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));		
 			WriteFile(hPipe, &snapshot, sizeof(tagSnapshot), NULL, NULL);
 		}
 		mtx.unlock();
