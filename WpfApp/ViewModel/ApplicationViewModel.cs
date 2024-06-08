@@ -1,17 +1,18 @@
 ﻿using CoreModel.Model;
-using Services.Data;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using static dotnet_Ptr.dotnet_Ptr;
+using WpfApp.Model;
+using WpfApp.Services.Helpers;
+
 
 namespace MVVM
 {
     public class ApplicationViewModel : INotifyPropertyChanged
     {
         private Data selectedData;
-        private readonly IEnumerable<myStruct> list;
+        private readonly IEnumerable<PcapStruct> list;
         private readonly IAccumulateData _accumulateData;
 
         public ObservableCollection<Data> Data { get; set; }
@@ -44,9 +45,9 @@ namespace MVVM
 
     public static class LinqExtensions
     {
-        public static ICollection<Data> AddRange(this ICollection<Data> source, IEnumerable<myStruct> addSource)
+        public static ICollection<Data> AddRange(this ICollection<Data> source, IEnumerable<PcapStruct> addSource)
         {
-            foreach (myStruct item in addSource)
+            foreach (var item in addSource)
             {
                 source.Add(new Data
                 {

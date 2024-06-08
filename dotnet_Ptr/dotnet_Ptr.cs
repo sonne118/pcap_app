@@ -5,7 +5,7 @@ namespace dotnet_Ptr
     public class dotnet_Ptr
     {
         [StructLayout(LayoutKind.Sequential)]
-        public struct myStruct
+        public struct PcapStruct
         {
             public int id;
             public string source_ip;
@@ -18,14 +18,14 @@ namespace dotnet_Ptr
         [DllImport("pcap_reader.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr Predict(out int size, [MarshalAs(UnmanagedType.LPStr)] string path2Image);
 
-        public static List<myStruct> GetPredict(string path = "somepath")
+        public static List<PcapStruct> GetPredict(string path = "somepath")
         {
             var ptr = Predict(out int size, path);
-            List<myStruct> results = new List<myStruct>();
-            var structSize = Marshal.SizeOf(typeof(myStruct));
+            List<PcapStruct> results = new List<PcapStruct>();
+            var structSize = Marshal.SizeOf(typeof(PcapStruct));
             for (var i = 0; i < size; i++)
             {
-                var o = Marshal.PtrToStructure<myStruct>(ptr);
+                var o = Marshal.PtrToStructure<PcapStruct>(ptr);
                 results.Add(o);
                 ptr += structSize;
             }

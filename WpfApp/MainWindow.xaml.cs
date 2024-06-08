@@ -1,5 +1,5 @@
-﻿using Services.Data;
-using System.Windows;
+﻿using System.Windows;
+using WpfApp.Services.Helpers;
 
 namespace MVVM
 {

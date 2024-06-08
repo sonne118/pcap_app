@@ -5,15 +5,15 @@
 		<TargetFramework>net7.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks> 
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\dotnet_Ptr\dotnet_Ptr.csproj" />
-		<ProjectReference Include="..\pcap_reader\pcap_reader.vcxproj" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Services\" />
+		<ProjectReference Include="..\pcap_reader\pcap_reader.vcxproj" />
 	</ItemGroup>
 
 </Project>
