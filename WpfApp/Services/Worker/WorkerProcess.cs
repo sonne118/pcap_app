@@ -11,10 +11,10 @@ namespace WpfApp.Services.Worker
         [DllImport("sniffer_packages.dll")]
         extern static void fnCPPDLL();
         readonly private int timeout;
-        //readonly private string path;
+        readonly private string path;
         public WorkerProcess()
         {
-            //    path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "sniffer_packages.exe"));
+            //path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "sniffer_packages.exe"));
             timeout = 10000;
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

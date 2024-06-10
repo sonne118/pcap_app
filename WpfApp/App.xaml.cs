@@ -23,29 +23,23 @@ namespace WpfApp
                     services.AddHostedService<WorkerProcess>();
                     services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
                     services.AddHostedService<Worker>();
-                    services.AddAutoMapper(typeof(AppMappingProfile));                                                          
+                    services.AddAutoMapper(typeof(AppMappingProfile));
                 })
                 .Build();
         }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-
-
-           // DataContext = new ApplicationViewModel(_backgroundJobs);
-
             await AppHost!.StartAsync();
-
             var startupForm = AppHost.Services.GetRequiredService<MainWindow>();
             startupForm.Show();
-
             base.OnStartup(e);
         }
 
         protected override async void OnExit(ExitEventArgs e)
         {
             await AppHost!.StopAsync();
-           /////// AppHost.Dispose();
+            AppHost.Dispose();
             base.OnExit(e);
         }
     }

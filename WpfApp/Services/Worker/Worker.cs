@@ -49,15 +49,11 @@ namespace WpfApp.Services.Worker
                     pool.Return(func); //third Task in poll for any case ... improving scalability
                     while (pipe.IsConnected)
                     {
-                        var   result = pool.Get();
+                        var result = pool.Get();
                         try
                         {
-                          // await Task.Delay(1000);
-                           res = await result(stream);
-                          // Console.WriteLine(res);
+                            res = await result(stream);
                             _backgroundJobs.BackgroundTasks.Enqueue(res);
-
-                            //// 
                         }
                         finally
                         {

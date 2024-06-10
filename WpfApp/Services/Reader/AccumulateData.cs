@@ -7,7 +7,7 @@ namespace WpfApp.Services.Reader
     {
         public IEnumerable<PcapStruct> GetCurrerntData()
         {
-           // var results = DotnetPtr.GetPredict();
+            // var results = DotnetPtr.GetPredict();
 
             return null;
         }

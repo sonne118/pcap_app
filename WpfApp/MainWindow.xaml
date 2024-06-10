@@ -44,16 +44,3 @@
 
 
 
-
-<!--<ListView Margin="10,10,10,216"  ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedData}">
-    <ListView.View >
-        <GridView >
-            <GridViewColumn Header="id" Width="40"  DisplayMemberBinding="{Binding Id}" />
-            <GridViewColumn Header="source ip" Width="120" DisplayMemberBinding="{Binding Source_ip}" />
-            <GridViewColumn Header="destination ip" Width="120" DisplayMemberBinding="{Binding Dest_ip}" />
-            <GridViewColumn Header="mac source" Width="120" DisplayMemberBinding="{Binding Mac_source}" />
-            <GridViewColumn Header="mac destination" Width="120" DisplayMemberBinding="{Binding Mac_destin}" />
-            <GridViewColumn Header="user agent" Width="120" DisplayMemberBinding="{Binding User_agent}" />
-        </GridView>
-    </ListView.View>
-</ListView>-->
