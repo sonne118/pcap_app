@@ -13,7 +13,6 @@ namespace WpfApp
     public partial class App : Application
     {
         public static IHost? AppHost { get; private set; }
-
         public App()
         {
             AppHost = Host.CreateDefaultBuilder()
