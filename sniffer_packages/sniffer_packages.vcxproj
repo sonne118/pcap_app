@@ -82,7 +82,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>D:\repo\test2\pcap_app\NamedPipe\CSNamedPipe\WpdPack\WpdPack\Include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\repo\test2\pcap_app\1\pcap_app\WpdPack\WpdPack\Include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
