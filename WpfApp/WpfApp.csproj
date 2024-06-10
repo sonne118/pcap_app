@@ -2,18 +2,21 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net7.0-windows</TargetFramework>
+		<TargetFramework>net8.0-windows7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks> 
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="AutoMapper" Version="11.0.0" />
+	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
 	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\pcap_reader\pcap_reader.vcxproj" />
+	  <ProjectReference Include="..\sniffer_packages\sniffer_packages.vcxproj" />
 	</ItemGroup>
 
 </Project>

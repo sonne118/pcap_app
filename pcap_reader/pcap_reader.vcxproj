@@ -85,8 +85,8 @@
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(PcapPlusPlusHome)\header;$(PcapSdkHome)\Include;$(PThreadWin32Home)\Pre-built.2\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(PcapPlusPlusHome)\x64\Debug;$(PThreadWin32Home)\Pre-built.2\lib\x64;$(PcapSdkHome)\Lib\x64;$(LibraryPath)</LibraryPath>
-    <OutDir>$(PcapPlusPlusHome)\ExampleProject\Debug\x64</OutDir>
-    <IntDir>$(PcapPlusPlusHome)\ExampleProject\Debug\x64</IntDir>
+    <OutDir>$(PcapPlusPlusHome)\pcap_reader\Debug\x64</OutDir>
+    <IntDir>$(PcapPlusPlusHome)\pcap_reader\Debug\x64</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -127,7 +127,7 @@ xcopy "1_packet.pcap" "$(OutDir)" /Y</Command>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WINx64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalIncludeDirectories>D:\repo\test2\pcap_app\1\pcap_app\pcap_reader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>D:\repo\test2\pcap_app\1\pcap_app\header;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>

@@ -119,7 +119,7 @@
       <PreprocessorDefinitions>WINx64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\repo\test2\pcap_app\1\pcap_app\sniffer_packages;D:\repo\test2\pcap_app\NamedPipe\CSNamedPipe\WpdPack\WpdPack\Include\pcap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>D:\repo\test2\pcap_app\NamedPipe\CSNamedPipe\WpdPack\WpdPack\Include</AdditionalUsingDirectories>
+      <AdditionalUsingDirectories>D:\repo\test2\pcap_app\1\pcap_app\WpdPack\WpdPack\Include</AdditionalUsingDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -131,7 +131,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Ws2_32.lib;IPHLPAPI.lib;wpcap.lib;Packet.lib;pthreadVC2.lib;Common++.lib;Packet++.lib;Pcap++.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\repo\test2\pcap_app\NamedPipe\CSNamedPipe\WpdPack\Lib;D:\repo\test2\pcap_app\NamedPipe\CSNamedPipe\WpdPack\WpdPack\Lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\repo\test2\pcap_app\1\pcap_app\WpdPack\Lib;D:\repo\test2\pcap_app\1\pcap_app\WpdPack\WpdPack\Lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -19,21 +19,41 @@
         </Style>
 
     </Window.Resources>
+    <!--Background="Lavender" ShowGridLines="True"  Margin="0,0,0,0"-->
 
-    <Grid  Background="Lavender" ShowGridLines="True"  Margin="0,0,0,0">
-        <Border Grid.Column="0" BorderBrush="White" BorderThickness="2">
-        </Border>
-        <ListView Margin="10"  ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedData}">
-            <ListView.View >
-                <GridView >
-                    <GridViewColumn Header="id" Width="40"  DisplayMemberBinding="{Binding Id}" />
-                    <GridViewColumn Header="source ip" Width="120" DisplayMemberBinding="{Binding Source_ip}" />
-                    <GridViewColumn Header="destination ip" Width="120" DisplayMemberBinding="{Binding Dest_ip}" />
-                    <GridViewColumn Header="mac source" Width="120" DisplayMemberBinding="{Binding Mac_source}" />
-                    <GridViewColumn Header="mac destination" Width="120" DisplayMemberBinding="{Binding Mac_destin}" />
-                    <GridViewColumn Header="user agent" Width="120" DisplayMemberBinding="{Binding User_agent}" />
-                </GridView>
+    <DataGrid  ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False"> 
+        <!--<Border Grid.Column="0" BorderBrush="White" BorderThickness="2">
+        </Border>-->
+        <!--<ListView Margin="10,10,10,216"  ItemsSource="{Binding SnifferData}" SelectedItem="{Binding SelectedSnifferData}">
+            <ListView.View >-->
+                <!--<GridView >-->
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Source_ip"  Width="120" Binding="{Binding Source_ip}"   />
+            <DataGridTextColumn Header="Source_port" Width="120" Binding="{Binding Source_port}" />
+            <DataGridTextColumn Header="Dest_ip" Width="120" Binding="{Binding Dest_ip}" />
+            <DataGridTextColumn Header="Dest_port" Width="120" Binding="{Binding Dest_port}" />
+            <DataGridTextColumn Header="Source_mac" Width="120" Binding="{Binding Source_mac}" />
+            <DataGridTextColumn Header="Dest_mac" Width="120" Binding="{Binding Dest_mac}" />
+        </DataGrid.Columns>
+                <!--</GridView>
             </ListView.View>
-        </ListView>
-    </Grid>
+        </ListView>-->
+    </DataGrid>
 </Window>
+
+
+
+
+
+<!--<ListView Margin="10,10,10,216"  ItemsSource="{Binding Data}" SelectedItem="{Binding SelectedData}">
+    <ListView.View >
+        <GridView >
+            <GridViewColumn Header="id" Width="40"  DisplayMemberBinding="{Binding Id}" />
+            <GridViewColumn Header="source ip" Width="120" DisplayMemberBinding="{Binding Source_ip}" />
+            <GridViewColumn Header="destination ip" Width="120" DisplayMemberBinding="{Binding Dest_ip}" />
+            <GridViewColumn Header="mac source" Width="120" DisplayMemberBinding="{Binding Mac_source}" />
+            <GridViewColumn Header="mac destination" Width="120" DisplayMemberBinding="{Binding Mac_destin}" />
+            <GridViewColumn Header="user agent" Width="120" DisplayMemberBinding="{Binding User_agent}" />
+        </GridView>
+    </ListView.View>
+</ListView>-->

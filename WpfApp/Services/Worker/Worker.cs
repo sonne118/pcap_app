@@ -6,17 +6,22 @@ using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
 using WpfApp.Model;
+using WpfApp.Services.BackgroundJob;
+
 
 namespace WpfApp.Services.Worker
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
+        private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ILogger<Worker> logger, IBackgroundJobs<Snapshot> backgroundJobs)
         {
             _logger = logger;
+            _backgroundJobs = backgroundJobs;
         }
+
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -44,11 +49,15 @@ namespace WpfApp.Services.Worker
                     pool.Return(func); //third Task in poll for any case ... improving scalability
                     while (pipe.IsConnected)
                     {
-                        var result = pool.Get();
+                        var   result = pool.Get();
                         try
                         {
-                            res = await result(stream);
-                            Console.WriteLine(res);
+                          // await Task.Delay(1000);
+                           res = await result(stream);
+                          // Console.WriteLine(res);
+                            _backgroundJobs.BackgroundTasks.Enqueue(res);
+
+                            //// 
                         }
                         finally
                         {
