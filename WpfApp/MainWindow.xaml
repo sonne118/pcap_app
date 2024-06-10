@@ -23,9 +23,9 @@
     <local:CustomDataGrid ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,0,0,-6" >
         <DataGrid.Columns>
             <DataGridTextColumn Header="Source_ip"  Width="120" Binding="{Binding Source_ip}"   />
-            <DataGridTextColumn Header="Source_port" Width="120" Binding="{Binding Source_port}" />
+            <DataGridTextColumn Header="Source_port" Width="50" Binding="{Binding Source_port}" />
             <DataGridTextColumn Header="Dest_ip" Width="120" Binding="{Binding Dest_ip}" />
-            <DataGridTextColumn Header="Dest_port" Width="120" Binding="{Binding Dest_port}" />
+            <DataGridTextColumn Header="Dest_port" Width="50" Binding="{Binding Dest_port}" />
             <DataGridTextColumn Header="Source_mac" Width="120" Binding="{Binding Source_mac}" />
             <DataGridTextColumn Header="Dest_mac" Width="120" Binding="{Binding Dest_mac}" />
         </DataGrid.Columns>
