@@ -6,8 +6,9 @@
         mc:Ignorable="d"
          xmlns:local="clr-namespace:MVVM"
         Title="grid_pcap" Height="600" Width="700">
+    
     <Window.Resources>
-        
+
         <Style TargetType="Grid">
             <Setter Property="Background" Value="Transparent"/>
         </Style>
@@ -18,8 +19,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Left" />
         </Style>
     </Window.Resources>
-
-
+    
     <local:CustomDataGrid ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,0,0,-6" >
         <DataGrid.Columns>
             <DataGridTextColumn Header="Source_ip"  Width="120" Binding="{Binding Source_ip}"   />
@@ -31,28 +31,6 @@
         </DataGrid.Columns>
     </local:CustomDataGrid>
 
-    <!--Background="Lavender" ShowGridLines="True"  Margin="0,0,0,0"-->
-    <!--<custom:CustomDataGrid ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False">-->
-    <!--<DataGrid  Name="CustomDataGrid" ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,0,0,-6">
-        --><!--<Border Grid.Column="0" BorderBrush="White" BorderThickness="2">
-        </Border>-->
-        <!--<ListView Margin="10,10,10,216"  ItemsSource="{Binding SnifferData}" SelectedItem="{Binding SelectedSnifferData}">
-            <ListView.View >-->
-        <!--<GridView >--><!--
-        <DataGrid.Columns>
-            <DataGridTextColumn Header="Source_ip"  Width="120" Binding="{Binding Source_ip}"   />
-            <DataGridTextColumn Header="Source_port" Width="120" Binding="{Binding Source_port}" />
-            <DataGridTextColumn Header="Dest_ip" Width="120" Binding="{Binding Dest_ip}" />
-            <DataGridTextColumn Header="Dest_port" Width="120" Binding="{Binding Dest_port}" />
-            <DataGridTextColumn Header="Source_mac" Width="120" Binding="{Binding Source_mac}" />
-            <DataGridTextColumn Header="Dest_mac" Width="120" Binding="{Binding Dest_mac}" />
-        </DataGrid.Columns>
-        --><!--</GridView>
-            </ListView.View>
-        </ListView>--><!--
-    </DataGrid>-->
-    <!--<CustomControls:CustomDataGrid></CustomControls:CustomDataGrid>-->
-    <!--<custom:CustomDataGrid/>-->
 </Window>
 
 
