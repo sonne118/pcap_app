@@ -10,6 +10,7 @@ public:
 	~Packages();
 	void* producer();
 	void* consumer();
+	void* producer_lock();
 	int findalldevs();
 	int OpenDevices();
 	int OpenFile();
@@ -18,7 +19,7 @@ private:
 	pcap_t* descr;
 	pcap_if_t* alldevs;
 	pcap_if_t* d;
-	int inum = 4;
+	int inum = 5;
 	int i = 0;
 	pcap_t* _adhandle;
 	struct pcap_pkthdr* _pkthdr;

@@ -28,7 +28,6 @@ inline Packages::Packages(pcap_t* adhandle, struct pcap_pkthdr* pkthdr, const u_
 
 inline Packages ::~Packages() {};
 
-
 inline void* Packages::consumer() {
 	tagSnapshot consumed_item{};
 	tagSnapshot snapshot;
@@ -45,7 +44,7 @@ inline void* Packages::consumer() {
 			consumed_item = shared_buff[full_index];
 			full_index = (full_index + 1) mod buff_max;
 			snapshot = consumed_item;
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));		
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 			WriteFile(hPipe, &snapshot, sizeof(tagSnapshot), NULL, NULL);
 		}
 		mtx.unlock();
@@ -57,7 +56,7 @@ inline void* Packages::consumer() {
 
 inline void* Packages::producer() {
 
-	tagSnapshot new_item{};int res;
+	int res; tagSnapshot new_item{};
 
 	while (true) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -138,7 +137,6 @@ inline void* Packages::producer() {
 					new_item.dest_port = destPort;
 					new_item.source_port = sourcePort;
 
-
 					shared_buff[free_index] = new_item;
 					free_index = (free_index + 1) mod buff_max;
 					mtx.unlock();
@@ -153,26 +151,28 @@ inline int Packages::findalldevs()
 {
 	if (pcap_findalldevs_ex(PCAP_SRC_IF_STRING, NULL, &alldevs, errbuf) == -1)
 	{
-		fprintf(stderr, "Error in pcap_findalldevs: %s\n", errbuf);
+		std::cout << "Error in pcap_findalldevs" << errbuf << std::endl;
 		exit(1);
 	}
 
 	for (d = alldevs; d; d = d->next)
 	{
-		printf("%d. %s", ++i, d->name);
+		std::cout << ++i << "." << d->name << std::endl;
 		if (d->description)
-			printf(" (%s)\n", d->description);
+			std::cout << d->description << std::endl;
 		else
-			printf(" (No description available)\n");
+			std::cout << "No description available" << std::endl;
 	}
 	if (i == 0)
 	{
-		printf("\nNo interfaces found! Make sure WinPcap is installed.\n");
+		std::cout << "No interfaces found! Make sure WinPcap is installed" << std::endl;
 		return -1;
 	}
 
-	printf("Enter the interface number (1-%d):", i);
-	//scanf_s("%d", &inum);
+	std::cout << "Enter the interface number: 1-" << i << std::endl;
+
+	//std::cin >> inum; 
+	std::cout << "You entered the interface number: " << inum << std::endl;
 	return  inum;
 }
 
@@ -180,28 +180,25 @@ inline int Packages::OpenDevices()
 {
 	if (inum < 1 || inum > i)
 	{
-		printf("\nInterface number out of range.\n");
+		std::cout << "Interface number out of range" << std::endl;
 		pcap_freealldevs(alldevs);
 		return -1;
 	}
-
 	// Jump to the selected adapter 
 	for (d = alldevs, i = 0; i < inum - 1;d = d->next, i++);
 	// Open the device 
-	if ((_adhandle = pcap_open(d->name,          // name of the device
-		65536,            // portion of the packet to capture	
-		PCAP_OPENFLAG_PROMISCUOUS,    // promiscuous mode
-		1000,             // read timeout
-		NULL,             // authentication on the remote machine
-		errbuf            // error buffer
-	)) == NULL)
+	if ((_adhandle = pcap_open(d->name,
+		65536,
+		PCAP_OPENFLAG_PROMISCUOUS,
+		1000,
+		NULL,
+		errbuf)) == NULL)
 	{
 		fprintf(stderr, "\nUnable to open the adapter. %s is not supported by WinPcap\n", d->name);
 		pcap_freealldevs(alldevs);
 		return -1;
 	}
-	//printf("\nlistening on %s...\n", d->description);
-	std::cout << "\nlistening on % s...\n" << d->description << std::endl;
+	std::cout << "listening on  ......" << d->description << std::endl;
 
 	return 1;
 }
