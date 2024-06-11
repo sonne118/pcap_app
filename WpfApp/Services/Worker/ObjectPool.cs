@@ -13,7 +13,6 @@ namespace WpfApp.Services.Worker
             _objectGenerator = objectGenerator ?? throw new ArgumentNullException(nameof(objectGenerator));
             _objects = new ConcurrentBag<Func<V, T>>();
         }
-
         public Func<V, T> Get() => _objects.TryTake(out Func<V, T> item) ? item : _objectGenerator();
 
         public void Return(Func<V, T> item) => _objects.Add(item);

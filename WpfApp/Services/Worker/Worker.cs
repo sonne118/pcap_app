@@ -21,8 +21,6 @@ namespace WpfApp.Services.Worker
             _logger = logger;
             _backgroundJobs = backgroundJobs;
         }
-
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             BinaryReader value = default; Snapshot res = default;
