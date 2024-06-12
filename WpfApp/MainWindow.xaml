@@ -21,7 +21,7 @@
     </Window.Resources>
     <Grid>
         <Button Width="40
-          " RenderTransformOrigin="-0.85,-8.699" Margin="144,4,0,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left">
+          " RenderTransformOrigin="-0.85,-8.699" Margin="28,4,0,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border CornerRadius="10" Background="DeepSkyBlue">
@@ -30,7 +30,7 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Button Width="40" RenderTransformOrigin="-0.85,-8.699" Margin="0,4,446,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Button Width="40" RenderTransformOrigin="-0.85,-8.699" Margin="0,5,571,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border CornerRadius="10" Background="Red">
@@ -39,9 +39,6 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-
-
-
         <local:CustomDataGrid MouseDown="datagrid_MouseDown" IsReadOnly="True"  ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,40,0,160" >
             <local:CustomDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
