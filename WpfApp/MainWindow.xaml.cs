@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
+using CoreModel.Model;
 
 namespace MVVM
 {
@@ -23,13 +24,13 @@ namespace MVVM
         {
             if (e.ChangedButton == MouseButton.Left && e.ClickCount == 2)
             {
-                DataGrid dg = sender as DataGrid;
-                DataRowView dr = dg.SelectedItem as DataRowView;
+                CustomDataGrid dg = sender as CustomDataGrid;
+                SnifferData _snifferData = dg.SelectedItem as SnifferData;
 
-                ModalViewModel viewModel = new ModalViewModel("Data");
+                ModalViewModel viewModel = new ModalViewModel(_snifferData);
                 ModalWindow modalWindow = new ModalWindow
                 {
-                    DataContext = viewModel
+                    DataContext = viewModel.Data1
                 };
 
                 modalWindow.ShowDialog();
