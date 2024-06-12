@@ -28,10 +28,10 @@
                         <Setter Property="Background" Value="LawnGreen"/>
                     </DataTrigger>
                     <DataTrigger Binding="{ Binding Path=Dest_port}"  Value="443">
-                        <Setter Property="Background" Value="Aqua"/>
+                        <Setter Property="Background" Value="AntiqueWhite"/>
                     </DataTrigger>
                     <DataTrigger Binding="{ Binding Path=Dest_mac}"  Value="ff:ff:ff:ff:ff:ff">
-                        <Setter Property="Background" Value="AntiqueWhite"/>
+                        <Setter Property="Background" Value="Azure"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
