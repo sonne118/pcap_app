@@ -19,32 +19,55 @@
             <Setter Property="HorizontalContentAlignment" Value="Left" />
         </Style>
     </Window.Resources>
+    <Grid>
+        <Button Width="40
+          " RenderTransformOrigin="-0.85,-8.699" Margin="144,4,0,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="10" Background="DeepSkyBlue">
+                        <ContentPresenter Content="start" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <Button Width="40" RenderTransformOrigin="-0.85,-8.699" Margin="0,4,446,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right">
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="10" Background="Red">
+                        <ContentPresenter Content="stop" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
 
-    <local:CustomDataGrid MouseDown="datagrid_MouseDown" IsReadOnly="True"  ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,0,0,208" >
-        <local:CustomDataGrid.RowStyle>
-            <Style TargetType="DataGridRow">
-                <Style.Triggers>
-                    <DataTrigger Binding="{ Binding Path=Source_port}"  Value="443">
-                        <Setter Property="Background" Value="LawnGreen"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{ Binding Path=Dest_port}"  Value="443">
-                        <Setter Property="Background" Value="AntiqueWhite"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{ Binding Path=Dest_mac}"  Value="ff:ff:ff:ff:ff:ff">
-                        <Setter Property="Background" Value="Azure"/>
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-        </local:CustomDataGrid.RowStyle>
-        <DataGrid.Columns>
-            <DataGridTextColumn Header="Source_ip"  Width="120" Binding="{Binding Source_ip}"   />
-            <DataGridTextColumn Header="Source_port" Width="50" Binding="{Binding Source_port}" />
-            <DataGridTextColumn Header="Dest_ip" Width="120" Binding="{Binding Dest_ip}" />
-            <DataGridTextColumn Header="Dest_port" Width="50" Binding="{Binding Dest_port}" />
-            <DataGridTextColumn Header="Source_mac" Width="120" Binding="{Binding Source_mac}" />
-            <DataGridTextColumn Header="Dest_mac" Width="120" Binding="{Binding Dest_mac}" />
-        </DataGrid.Columns>
-    </local:CustomDataGrid>
+
+
+        <local:CustomDataGrid MouseDown="datagrid_MouseDown" IsReadOnly="True"  ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,40,0,160" >
+            <local:CustomDataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{ Binding Path=Source_port}"  Value="443">
+                            <Setter Property="Background" Value="LawnGreen"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{ Binding Path=Dest_port}"  Value="443">
+                            <Setter Property="Background" Value="AntiqueWhite"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{ Binding Path=Dest_mac}"  Value="ff:ff:ff:ff:ff:ff">
+                            <Setter Property="Background" Value="Azure"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </local:CustomDataGrid.RowStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Source_ip"  Width="120" Binding="{Binding Source_ip}"   />
+                <DataGridTextColumn Header="Source_port" Width="50" Binding="{Binding Source_port}" />
+                <DataGridTextColumn Header="Dest_ip" Width="120" Binding="{Binding Dest_ip}" />
+                <DataGridTextColumn Header="Dest_port" Width="50" Binding="{Binding Dest_port}" />
+                <DataGridTextColumn Header="Source_mac" Width="120" Binding="{Binding Source_mac}" />
+                <DataGridTextColumn Header="Dest_mac" Width="120" Binding="{Binding Dest_mac}" />
+            </DataGrid.Columns>
+        </local:CustomDataGrid>
+    </Grid>
 
 </Window>
 

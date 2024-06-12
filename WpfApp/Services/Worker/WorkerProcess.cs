@@ -18,8 +18,11 @@ namespace WpfApp.Services.Worker
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            ThreadPool.QueueUserWorkItem((_) => fnCPPDLL());
-            await Task.Delay(timeout, stoppingToken);
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                ThreadPool.QueueUserWorkItem((_) => fnCPPDLL());
+                await Task.Delay(timeout, stoppingToken);
+            }
         }
     }
 
