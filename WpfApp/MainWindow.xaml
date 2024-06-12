@@ -20,7 +20,7 @@
         </Style>
     </Window.Resources>
     
-    <local:CustomDataGrid ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,0,0,-6" >
+    <local:CustomDataGrid ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,0,0,208" >
         <DataGrid.Columns>
             <DataGridTextColumn Header="Source_ip"  Width="120" Binding="{Binding Source_ip}"   />
             <DataGridTextColumn Header="Source_port" Width="50" Binding="{Binding Source_port}" />
