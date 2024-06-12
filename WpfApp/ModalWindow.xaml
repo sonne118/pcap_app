@@ -14,31 +14,31 @@
               Margin="0 5 0 0">
                 <StackPanel>
                     <Label>
-                        <TextBlock>
-                            <Run Text="source_ip: "  FontStyle="Italic"/>
-                            <Run Text="{Binding Source_ip}" FontWeight="Medium" />
+                        <TextBlock >
+                            <Run Text="source_ip: "  Foreground="Chocolate"  FontStyle="Italic"/>
+                            <Run Text="{Binding Source_ip}" Foreground="Navy" FontWeight="Medium" />
                             <Run Text=": " />
-                            <Run Text="{Binding Source_port}" FontWeight="Medium" />
+                            <Run Text="{Binding Source_port}"  Foreground="Navy" FontWeight="Medium" />
                         </TextBlock>
                     </Label>
                     <Label>
                         <TextBlock>
-                            <Run Text="dest_ip: " FontStyle="Italic" />
-                            <Run Text="{Binding Dest_ip}" FontWeight="Medium" />
+                            <Run Text="dest_ip: "  Foreground="Chocolate" FontStyle="Italic" />
+                            <Run Text="{Binding Dest_ip}" Foreground="Navy" FontWeight="Medium" />
                             <Run Text=": " />
-                            <Run Text="{Binding Dest_port}" FontWeight="Medium" />
+                            <Run Text="{Binding Dest_port}"  Foreground="Navy" FontWeight="Medium" />
                         </TextBlock>
                     </Label>
                     <Label>
                         <TextBlock>
-                            <Run Text="Source_mac: " FontStyle="Italic" />
-                            <Run Text="{Binding Source_mac}" FontWeight="Medium" />
+                            <Run Text="Source_mac: "  Foreground="Chocolate" FontStyle="Italic" />
+                            <Run Text="{Binding Source_mac}" Foreground="Navy" FontWeight="Medium" />
                         </TextBlock>
                     </Label>
                     <Label>
                         <TextBlock>
-                            <Run Text="dest_mac: " FontStyle="Italic"/>
-                            <Run Text="{Binding Dest_mac}" FontWeight="Medium"/>
+                            <Run Text="dest_mac: "   Foreground="Chocolate" FontStyle="Italic"/>
+                            <Run Text="{Binding Dest_mac}" Foreground="Navy" FontWeight="Medium"/>
                         </TextBlock>
                     </Label>
                 </StackPanel>
