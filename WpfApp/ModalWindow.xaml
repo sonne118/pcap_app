@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp"
         mc:Ignorable="d"
-        Title="ModalWindow" Height="200" Width="300"
+        Title="{Binding Source_ip}" Height="200" Width="300"
         WindowStartupLocation="CenterOwner">
     <Grid >
         <StackPanel  Margin="10">
