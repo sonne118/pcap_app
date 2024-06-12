@@ -19,7 +19,7 @@ private:
 	pcap_t* descr;
 	pcap_if_t* alldevs;
 	pcap_if_t* d;
-	int inum = 5;
+	int inum = 4;
 	int i = 0;
 	pcap_t* _adhandle;
 	struct pcap_pkthdr* _pkthdr;
