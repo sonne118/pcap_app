@@ -6,7 +6,7 @@
         mc:Ignorable="d"
          xmlns:local="clr-namespace:MVVM"
         Title="grid_pcap" Height="600" Width="700">
-    
+
     <Window.Resources>
 
         <Style TargetType="Grid">
@@ -23,15 +23,18 @@
     <local:CustomDataGrid MouseDown="datagrid_MouseDown" IsReadOnly="True"  ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,0,0,208" >
         <local:CustomDataGrid.RowStyle>
             <Style TargetType="DataGridRow">
-            <Style.Triggers>
-                <DataTrigger Binding="{ Binding Path=Source_port}"  Value="443">
-                    <Setter Property="Background" Value="LawnGreen"/>
-                </DataTrigger>
+                <Style.Triggers>
+                    <DataTrigger Binding="{ Binding Path=Source_port}"  Value="443">
+                        <Setter Property="Background" Value="LawnGreen"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{ Binding Path=Dest_port}"  Value="443">
+                        <Setter Property="Background" Value="Aqua"/>
+                    </DataTrigger>
                     <DataTrigger Binding="{ Binding Path=Dest_mac}"  Value="ff:ff:ff:ff:ff:ff">
                         <Setter Property="Background" Value="AntiqueWhite"/>
                     </DataTrigger>
                 </Style.Triggers>
-        </Style>
+            </Style>
         </local:CustomDataGrid.RowStyle>
         <DataGrid.Columns>
             <DataGridTextColumn Header="Source_ip"  Width="120" Binding="{Binding Source_ip}"   />

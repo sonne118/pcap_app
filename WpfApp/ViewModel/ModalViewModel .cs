@@ -3,16 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MVVM
 {
-    
+
     public class ModalViewModel : INotifyPropertyChanged
     {
         private SnifferData _data;
-        public SnifferData Data1
+        public SnifferData ModalData
         {
             get { return _data; }
             set
@@ -20,14 +21,13 @@ namespace MVVM
                 if (_data != value)
                 {
                     _data = value;
-                    OnPropertyChanged(nameof(Data1));
+                    OnPropertyChanged(nameof(ModalData));
                 }
             }
         }
-
         public ModalViewModel(SnifferData data)
         {
-            Data1 = data;
+            ModalData = data;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

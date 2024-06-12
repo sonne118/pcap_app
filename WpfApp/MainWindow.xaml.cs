@@ -30,7 +30,7 @@ namespace MVVM
                 ModalViewModel viewModel = new ModalViewModel(_snifferData);
                 ModalWindow modalWindow = new ModalWindow
                 {
-                    DataContext = viewModel.Data1
+                    DataContext = viewModel.ModalData
                 };
 
                 modalWindow.ShowDialog();

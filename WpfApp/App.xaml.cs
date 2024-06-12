@@ -32,7 +32,7 @@ namespace WpfApp
             await AppHost!.StartAsync();
             var startupForm = AppHost.Services.GetRequiredService<MainWindow>();
             startupForm.Show();
-           
+
             var modalForm = AppHost.Services.GetRequiredService<MainWindow>();
             base.OnStartup(e);
         }
