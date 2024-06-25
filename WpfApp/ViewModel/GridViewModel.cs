@@ -5,23 +5,25 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Timers;
 using System.Windows.Threading;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
-using WpfApp.Services.Reader;
 
 
 namespace MVVM
 {
-    public class GridViewModel : INotifyPropertyChanged
+    public class GridViewModel : INotifyPropertyChanged, IDisposable
     {
         private readonly IMapper _mapper;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
         private SnifferData selectedSnifferData;
         private DispatcherTimer _timer;
         public ObservableCollection<SnifferData> _SnifferData { get; set; }
+
+        public void Dispose()
+        {
+            _timer.Stop();
+        }
 
         public SnifferData SelectedSnifferData
         {

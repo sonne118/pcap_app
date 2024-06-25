@@ -19,9 +19,9 @@ namespace WpfApp
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<MainWindow>();
-                    services.AddHostedService<WorkerProcess>();
                     services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
                     services.AddHostedService<Worker>();
+                    services.AddSingleton<IHostedService, StartService>();
                     services.AddAutoMapper(typeof(AppMappingProfile));
                 })
                 .Build();
@@ -33,7 +33,6 @@ namespace WpfApp
             var startupForm = AppHost.Services.GetRequiredService<MainWindow>();
             startupForm.Show();
 
-            var modalForm = AppHost.Services.GetRequiredService<MainWindow>();
             base.OnStartup(e);
         }
 

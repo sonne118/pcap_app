@@ -1,22 +1,29 @@
 ﻿using AutoMapper;
-using System.Data;
+using CoreModel.Model;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
+using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
-using CoreModel.Model;
+
 
 namespace MVVM
 {
     public partial class MainWindow : Window
     {
-        private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
-        public MainWindow(IBackgroundJobs<Snapshot> _backgroundJobs, IMapper mapper)
+
+        private readonly IServiceProvider _serviceProvider;
+
+
+        private readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
+        public MainWindow(IBackgroundJobs<Snapshot> backgroundJobs, IMapper mapper, IServiceProvider serviceProvider)
         {
             InitializeComponent();
-            DataContext = new GridViewModel(_backgroundJobs, mapper);
+            DataContext = new GridViewModel(backgroundJobs, mapper);
+            _serviceProvider = serviceProvider;
 
         }
 
@@ -36,5 +43,25 @@ namespace MVVM
                 modalWindow.ShowDialog();
             }
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<IHostedService>();
+                service.StopAsync(_stoppingCts.Token);
+            }
+        }
+
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<IHostedService>();
+                service.StartAsync(_stoppingCts.Token);
+            }
+        }
+
     }
 }

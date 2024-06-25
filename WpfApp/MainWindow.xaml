@@ -19,7 +19,7 @@
     </Window.Resources>
     <Grid>
         <Button Width="40
-          " RenderTransformOrigin="-0.85,-8.699" Margin="28,4,0,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left">
+          " RenderTransformOrigin="-0.85,-8.699" Margin="28,4,0,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Click="Button_Click_1">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border CornerRadius="10" Background="DeepSkyBlue">
@@ -28,7 +28,7 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Button Width="40" RenderTransformOrigin="-0.85,-8.699" Margin="0,5,571,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right">
+        <Button Width="40" RenderTransformOrigin="-0.85,-8.699" Margin="0,4,569,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Click="Button_Click">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border CornerRadius="10" Background="Red">

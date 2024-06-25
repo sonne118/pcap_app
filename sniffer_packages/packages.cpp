@@ -63,8 +63,18 @@ inline void* Packages::producer() {
 
 		while ((res = pcap_next_ex(_adhandle, &_pkthdr, &_packet)) >= 0) {
 
+			WaitForSingleObject(eventHandles, INFINITE);
+
 			if (res == 0) {
-				std::cout << "timeout" << "no packages now" << std::endl;
+				//std::cout << "timeout" << "no packages now" << std::endl; //tester
+				strcpy_s(new_item.source_ip, "192.168.1.1");
+				strcpy_s(new_item.dest_ip, "192.168.1.100");
+				strcpy_s(new_item.source_mac, "FF:FF:FF:FF:FF:FF");
+				strcpy_s(new_item.dest_mac, "FF:FF:FF:FF:FF:FF");
+				new_item.dest_port = 8080;
+				new_item.source_port = 8081;
+				shared_buff[free_index] = new_item;
+				free_index = (free_index + 1) mod buff_max;
 				continue;
 			}
 
@@ -129,7 +139,7 @@ inline void* Packages::producer() {
 						std::this_thread::sleep_for(std::chrono::milliseconds(100));
 					}
 					mtx.lock();
-
+					//std::cout << "sourceIp"<< sourceIp << std::endl; ///tester
 					strcpy_s(new_item.source_ip, sourceIp);
 					strcpy_s(new_item.dest_ip, destIp);
 					strcpy_s(new_item.source_mac, source_mac);

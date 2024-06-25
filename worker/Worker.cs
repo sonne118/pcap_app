@@ -1,14 +1,22 @@
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 
 namespace worker
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
+        [DllImport("sniffer_packages.dll")]
+        extern static void fnCPPDLL(int flag);
 
         public Worker(ILogger<Worker> logger)
         {
             _logger = logger;
+        }
+
+        static Worker()
+        {
+            ThreadPool.QueueUserWorkItem((_) => fnCPPDLL(1));
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
