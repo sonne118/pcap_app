@@ -2,6 +2,8 @@
 #ifndef PACKAGES_H
 #define PACKAGES_H
 #include <pcap.h>
+#include <vector>
+#include <string>
 
 class Packages
 {
@@ -10,8 +12,9 @@ public:
 	~Packages();
 	void* producer();
 	void* consumer();
-	void* producer_lock();
+	//void* producer_lock();
 	int findalldevs();
+	std::vector<std::string> listalldevs();
 	int OpenDevices();
 	int OpenFile();
 
@@ -19,12 +22,12 @@ private:
 	pcap_t* descr;
 	pcap_if_t* alldevs;
 	pcap_if_t* d;
-	int inum = 3;
 	int i = 0;
 	pcap_t* _adhandle;
 	struct pcap_pkthdr* _pkthdr;
 	const u_char* _packet;
 public:
 	HANDLE eventHandles;
+	int inum = 0;
 };
 #endif

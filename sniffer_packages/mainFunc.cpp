@@ -6,9 +6,9 @@
 #include <thread> 
 #include <memory>
 #include <ipc.h>
+#include <atlsafe.h>
 
-
-int mainFunc(HANDLE eventHandle) {
+int mainFunc(HANDLE eventHandle, int d) {
 
 	int file = 0, dev = 0;
 	pcap_t* adhandle = nullptr;
@@ -17,6 +17,7 @@ int mainFunc(HANDLE eventHandle) {
 
 	Packages* pack = new Packages(adhandle, pkthdr, packet);
 	pack->eventHandles = eventHandle;
+	pack->inum = d;
 
 	dev = pack->findalldevs();
 	if (dev)
@@ -37,8 +38,27 @@ int mainFunc(HANDLE eventHandle) {
 	return 0;
 }
 
+
+extern "C" __declspec(dllexport) LPSAFEARRAY fnDevCPPDLL();
+LPSAFEARRAY fnDevCPPDLL()
+{
+	std::vector<string> listdev;
+	Packages* pack = new Packages(nullptr, nullptr, nullptr);
+	listdev = pack->listalldevs();
+	CComSafeArray<BSTR> a(listdev.size());
+
+	std::vector<std::string>::const_iterator it;
+	int i = 0;
+	for (it = listdev.begin(); it != listdev.end(); ++it, ++i)
+	{
+		a.SetAt(i, A2BSTR_EX((*it).c_str()), FALSE);
+	}
+	return a.Detach();
+}
+
+
 extern "C" {
-	void __declspec(dllexport) __stdcall fnCPPDLL(int flag)
+	void __declspec(dllexport) __stdcall fnCPPDLL(int d)
 	{
 		HANDLE eventHandle = NULL;
 		DWORD IDThread;
@@ -58,7 +78,7 @@ extern "C" {
 			std::cout << "Event" << eventHandle << std::endl;//tester
 		}
 
-		hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)mainFunc(eventHandle), &eventHandle, 0, &IDThread);
+		hThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)mainFunc(eventHandle,d), &eventHandle, 0, &IDThread);
 
 		std::cout << " main thread " << std::endl;
 

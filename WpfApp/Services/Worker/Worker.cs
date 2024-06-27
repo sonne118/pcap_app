@@ -14,16 +14,12 @@ namespace WpfApp.Services.Worker
 {
     public class Worker : BackgroundService
     {
-        [DllImport("sniffer_packages.dll")]
-        extern static void fnCPPDLL(int flag);
         readonly private int timeout;
         readonly private string path;
         private readonly ILogger<Worker> _logger;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
         public static CancellationTokenSource _stoppingCts;
         public static CancellationToken stoppingToken;
-        private static Thread _workerThread;
-        private static int flag = 1;
 
         public Worker(ILogger<Worker> logger, IBackgroundJobs<Snapshot> backgroundJobs)
         {
@@ -31,12 +27,6 @@ namespace WpfApp.Services.Worker
             _backgroundJobs = backgroundJobs;
         }
 
-        static Worker()
-        {
-            _workerThread = new Thread(() => fnCPPDLL(flag));
-            _workerThread.Start();
-
-        }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             BinaryReader value = default; Snapshot res = default;
@@ -81,7 +71,7 @@ namespace WpfApp.Services.Worker
                 pipe.Close();
                 await Task.Delay(10000, stoppingToken);
             }
-           
+
         }
 
     }

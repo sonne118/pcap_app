@@ -7,6 +7,11 @@
 #include <struct.h>
 #include <pcap.h>
 #include <ipc.h>
+#include <list>
+#include <vector>
+#include <string>
+
+using namespace std;
 
 #define buff_max 5
 #define mod %
@@ -155,6 +160,34 @@ inline void* Packages::producer() {
 			}
 		}
 	}
+}
+
+inline std::vector<std::string> Packages::listalldevs()
+{  
+	std::vector<std::string> list;
+
+	if (pcap_findalldevs_ex(PCAP_SRC_IF_STRING, NULL, &alldevs, errbuf) == -1)
+	{
+		std::cout << "Error in pcap_findalldevs" << errbuf << std::endl;
+		exit(1);
+	}
+
+	for (d = alldevs; d; d = d->next)
+	{
+		++i;
+		if (d->description)
+		{
+			auto str = std::to_string(i).append("_").append(d->name).append(d->description);
+			list.push_back(str);
+		}
+		else
+			std::cout << "No description available" << std::endl;
+	}
+	if (i == 0)
+	{
+		std::cout << "No interfaces found! Make sure WinPcap is installed" << std::endl;
+	}
+	return  list;
 }
 
 inline int Packages::findalldevs()

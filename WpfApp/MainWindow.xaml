@@ -18,26 +18,60 @@
         </Style>
     </Window.Resources>
     <Grid>
-        <Button Width="40
-          " RenderTransformOrigin="-0.85,-8.699" Margin="28,4,0,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Click="Button_Click_1">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="19*"/>
+            <RowDefinition Height="0*"/>
+            <RowDefinition Height="44*"/>
+            <RowDefinition Height="521*"/>
+        </Grid.RowDefinitions>
+        <Button Width="52" RenderTransformOrigin="-0.85,-8.699" Margin="0,4,638,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Click="Button_Click_1" Grid.RowSpan="3">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
-                    <Border CornerRadius="10" Background="DeepSkyBlue">
+                    <Border CornerRadius="10" Background="LightGreen" Margin="6,0,2,5">
                         <ContentPresenter Content="start" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Button Width="40" RenderTransformOrigin="-0.85,-8.699" Margin="0,4,569,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Click="Button_Click">
+        <Button Width="91" RenderTransformOrigin="-0.85,-8.699" Margin="0,4,513,29" HorizontalAlignment="Right" Click="Button_Click" Grid.RowSpan="3">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
-                    <Border CornerRadius="10" Background="Red">
+                    <Border CornerRadius="10" Background="Red" Margin="-22,0,69,4">
                         <ContentPresenter Content="stop" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <local:CustomDataGrid MouseDown="datagrid_MouseDown" IsReadOnly="True"  ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,40,0,160" >
+        <StackPanel Margin="0,0,70,29" Grid.RowSpan="3" Height="30" VerticalAlignment="Bottom">
+            <ComboBox Name="cDevice" ItemsSource="{Binding _comboBox}"  SelectionChanged="cDevices_SelectionChanged" Width="392" Height="22" RenderTransformOrigin="0.596,0.774">
+                <!--<ComboBox.ItemTemplate>-->
+                <!--DisplayMemberPath="Name"
+                    <DataTemplate>
+                        <StackPanel>
+                            --><!--<Rectangle Fill="{Binding Name}" Width="16" Height="16" Margin="0,2,5,2" />--><!--
+                            <TextBlock Text="{Binding Name}" />
+                        </StackPanel>
+                    </DataTemplate>-->
+                <!--</ComboBox.ItemTemplate>-->
+            </ComboBox>
+            <!--<Button x:Name="btnNext" Click="btnNext_Click" Width="118" Content="Next" Height="18" RenderTransformOrigin="1.905,-3.14"/>-->
+            <!--Grid.RowSpan="2">-->
+            <!--<Button x:Name="btnPrevious" Click="btnPrevious_Click" Width="42" Content="Prev" RenderTransformOrigin="-0.623,-1.276"/>-->
+            <!--<WrapPanel Margin="15" Width="223" >-->
+            <!--HorizontalAlignment="Center">-->
+            <!--<Button x:Name="btnBlue" Click="btnBlue_Click" Width="55" Content="Blue"/>-->
+            <!--</WrapPanel>-->
+        </StackPanel>
+        <Button Width="41"  x:Name="btnNext"   RenderTransformOrigin="-0.85,-8.699" Margin="0,4,-250,24" HorizontalAlignment="Center" Grid.RowSpan="3" Click="btnNext_Click" >
+            <Button.Template>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="10" Background="LightSkyBlue" Margin="88,0,-83,13">
+                        <ContentPresenter Content="Ok" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,4,0,0" Height="20"/>
+                    </Border>
+                </ControlTemplate>
+            </Button.Template>
+        </Button>
+        <local:CustomDataGrid MouseDown="datagrid_MouseDown" IsReadOnly="True"  ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2" >
             <local:CustomDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>

@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Controls;
 using System.Windows.Threading;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
@@ -19,6 +21,7 @@ namespace MVVM
         private SnifferData selectedSnifferData;
         private DispatcherTimer _timer;
         public ObservableCollection<SnifferData> _SnifferData { get; set; }
+        public List<string> _comboBox { get; set; }
 
         public void Dispose()
         {
@@ -34,10 +37,11 @@ namespace MVVM
                 OnPropertyChanged("SelectedSnifferData");
             }
         }
-        public GridViewModel(IBackgroundJobs<Snapshot> backgroundJobs, IMapper mapper)
+        public GridViewModel(IBackgroundJobs<Snapshot> backgroundJobs, IEnumerable<string> comboBox, IMapper mapper)
         {
             _mapper = mapper;
             _backgroundJobs = backgroundJobs;
+            _comboBox = new List<string>(comboBox);
             _SnifferData = new ObservableCollection<SnifferData>();
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMicroseconds(100);

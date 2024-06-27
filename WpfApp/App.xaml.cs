@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using MVVM;
 using System.Windows;
+using wpfapp.Services.Worker;
 using WpfApp.Map;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
@@ -21,7 +22,7 @@ namespace WpfApp
                     services.AddSingleton<MainWindow>();
                     services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
                     services.AddHostedService<Worker>();
-                    services.AddSingleton<IHostedService, StartService>();
+                    services.AddSingleton<IHostDevice, StartService>(); 
                     services.AddAutoMapper(typeof(AppMappingProfile));
                 })
                 .Build();
