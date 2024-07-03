@@ -1,20 +1,16 @@
 ﻿using AutoMapper;
 using CoreModel.Model;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using wpfapp.Services.Reader;
 using wpfapp.Services.Worker;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
-using WpfApp.Services.Worker;
+using wpfapp.Services.IPC.Ptr;
 
 
 namespace MVVM
@@ -29,7 +25,7 @@ namespace MVVM
 
         public IEnumerable<string> ComboBox
         {
-            get { return GetDevicesPtr.GetDevices(); }
+            get { return DevicesPtr.GetAllDevices(); }
             set { _comboBox = value; }
         }
 

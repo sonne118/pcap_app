@@ -21,7 +21,10 @@ namespace WpfApp.Services.Worker
         private static void StartThread(int dev)
         {
             _workerThread = new Thread(() => fnCPPDLL(dev));
+            //_workerThread.Abort();
+            //Thread.Sleep(1000);
             _workerThread.Start();
+            //_workerThread.
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
