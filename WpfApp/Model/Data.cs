@@ -5,12 +5,12 @@ namespace CoreModel.Model
 {
     public class Data : INotifyPropertyChanged
     {
-        public int id;
-        public string source_ip;
-        public string dest_ip;
-        public string mac_source;
-        public string mac_destin;
-        public string user_agent;
+        private int id;
+        private string? source_ip = null;
+        private string? dest_ip = null;
+        private string? mac_source = null;
+        private string? mac_destin = null;
+        private string? user_agent = null;
 
 
         public int Id
@@ -71,7 +71,7 @@ namespace CoreModel.Model
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)

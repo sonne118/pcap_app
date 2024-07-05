@@ -15,7 +15,7 @@ int mainFunc(HANDLE eventHandle) {
 	int file = 0; bool dev = true;
 
 	Packages* pack = new Packages();
-	pack->SetHandler(eventHandle);
+	pack->setHandler(eventHandle);
 
 	//file = oPdev->OpDevices::OpenFile();
 	if (dev || file)

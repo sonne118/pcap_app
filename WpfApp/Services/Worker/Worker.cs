@@ -13,8 +13,7 @@ namespace WpfApp.Services.Worker
 {
     public class Worker : BackgroundService
     {
-        readonly private int timeout;
-        readonly private string path;
+        readonly private int timeout= 10000;      
         private readonly ILogger<Worker> _logger;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
         public static CancellationToken stoppingToken;
@@ -68,7 +67,7 @@ namespace WpfApp.Services.Worker
                     }
                 }
                 pipe.Close();
-                await Task.Delay(10000, stoppingToken);
+                await Task.Delay(timeout, stoppingToken);
             }
         }
     }

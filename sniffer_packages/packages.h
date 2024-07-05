@@ -32,7 +32,7 @@ public:
 	~Packages();
 	void* producer(std::atomic<bool>& on);
 	void* consumer();
-	void SetHandler(HANDLE eventHandle);
+	void  setHandler(HANDLE eventHandle);
 
 
 private:
@@ -53,7 +53,7 @@ Packages ::~Packages() {
 	_eventHandles = nullptr;
 };
 
-inline void Packages::SetHandler(HANDLE eventHandle) {
+inline void Packages::setHandler(HANDLE eventHandle) {
 	_eventHandles = eventHandle;
 }
 

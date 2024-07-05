@@ -5,13 +5,13 @@ namespace CoreModel.Model
 {
     public class SnifferData : INotifyPropertyChanged
     {
-        // public int id;
-        public int source_port;
-        public int dest_port;
-        public string source_ip;
-        public string dest_ip;
-        public string source_mac;
-        public string dest_mac;
+        // privatr int id;
+        private int source_port;
+        private int dest_port;
+        private string? source_ip = null;
+        private string? dest_ip = null;
+        private string? source_mac = null;
+        private string? dest_mac = null;
 
 
         public int Source_port
@@ -72,7 +72,7 @@ namespace CoreModel.Model
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             if (PropertyChanged != null)

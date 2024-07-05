@@ -7,8 +7,7 @@ namespace WpfApp.Services.Worker
     public class StartService : IHostDevice
     {
 
-        private static EventWaitHandle _eventWaitHandle;
-        private static Thread _workerThread;
+        private static EventWaitHandle _eventWaitHandle;     
         static StartService()
         {
             _eventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, @"Global\sniffer");
