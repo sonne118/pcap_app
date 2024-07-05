@@ -103,7 +103,8 @@ extern "C"
 			quit_flag = false;
 
 		oPdev = new OpDevices();
-		oPdev->Findalldevs(dev);
+		oPdev->SetInum(dev);
+		oPdev->Findalldevs();
 		_adhandle1 = oPdev->OpenDevices();
 		{
 			std::unique_lock lk(m);

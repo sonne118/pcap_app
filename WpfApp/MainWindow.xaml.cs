@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using wpfapp.IPC.Ptr;
-//using wpfapp.Services.IPC.Sniffer;
 using wpfapp.Services.Worker;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;

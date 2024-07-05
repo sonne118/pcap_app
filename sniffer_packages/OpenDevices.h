@@ -21,7 +21,12 @@ public:
 	};
 
 public:
-	int Findalldevs(int in)
+	void SetInum(int dev)
+	{
+		inum = dev;
+	};
+
+	int Findalldevs()
 	{
 		if (pcap_findalldevs_ex(PCAP_SRC_IF_STRING, NULL, &alldevs, errbuf) == -1)
 		{
@@ -46,7 +51,6 @@ public:
 		std::cout << "Enter the interface number: 1-" << i << std::endl;
 
 		//std::cin >> inum;
-		in = inum;
 		std::cout << "You entered the interface number: " << inum << std::endl;
 		return  inum;
 	}
@@ -56,6 +60,7 @@ public:
 
 		std::cout << " entered the interface number: " << inum << std::endl;
 
+		_adhandle = nullptr;
 		if (inum < 1 || inum > i)
 		{
 			std::cout << "Interface number out of range" << std::endl;
