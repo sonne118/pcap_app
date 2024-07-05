@@ -87,8 +87,8 @@ extern "C"
 
 		d1 = dev;
 		OpDevices* oPdev;
-		pcap_t* _adhandle2 = NULL;
-		_adhandle1 = NULL;
+		pcap_t* _adhandle2 = nullptr;
+		_adhandle1 = nullptr;
 
 		if (quit_flag)
 			quit_flag = false;
