@@ -27,14 +27,11 @@ public:
 	std::vector<std::string>listalldevs();
 	int OpenFile();
 
-
 private:
 	int i = 0;
+	int inum;
 	pcap_if_t* alldevs;
 	pcap_if_t* d;
-	int inum;	
-
-public :
 	pcap_t* _adhandle;
 };
 
@@ -79,7 +76,7 @@ inline pcap_t* OpDevices::OpenDevices()
 	if (inum < 1 || inum > i)
 	{
 		std::cout << "Interface number out of range" << std::endl;
-		pcap_freealldevs(alldevs);		
+		pcap_freealldevs(alldevs);
 	}
 	// Jump to the selected adapter 
 	for (d = alldevs, i = 0; i < inum - 1;d = d->next, i++);
@@ -136,6 +133,5 @@ inline int OpDevices::OpenFile()
 		return 1;
 	}
 }
-
 #endif
 

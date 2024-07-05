@@ -21,17 +21,17 @@ using namespace std;
 #define buff_max 5
 #define mod %
 
- tagSnapshot shared_buff[buff_max];
+tagSnapshot shared_buff[buff_max];
 
- std::atomic<int> free_index(0);
- std::atomic<int> full_index(0);
- std::mutex mtx;
+std::atomic<int> free_index(0);
+std::atomic<int> full_index(0);
+std::mutex mtx;
 
 
 class Packages
 {
 public:
-	Packages(); 
+	Packages();
 	~Packages();
 	void* producer(std::atomic<bool>& on);
 	void* consumer();
@@ -46,7 +46,7 @@ private:
 	const u_char* _packet;
 public:
 	pcap_t* _adhandle;
-	HANDLE eventHandles;	
+	HANDLE eventHandles;
 };
 
 Packages::Packages() {};
@@ -104,7 +104,7 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 
 			WaitForSingleObject(eventHandles, INFINITE);
 
-			if (res == 0) {			
+			if (res == 0) {
 				strcpy_s(new_item.source_ip, "192.168.1.1");
 				strcpy_s(new_item.dest_ip, "192.168.1.100");
 				strcpy_s(new_item.source_mac, "FF:FF:FF:FF:FF:FF");
@@ -165,13 +165,8 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 					dataLength = _pkthdr->len - (sizeof(struct ether_header) + sizeof(struct ip) + sizeof(struct tcphdr));
 
 
-					u_int hlen, version;
-					int i;
 					int len;
 					len = ntohs(ipHeader->tlen);
-					//hlen = IP_HL(ipHeader); /* header length */
-					//version = IP_V(ipHeader);/* ip version */
-					//off = ntohs(ipHeader->ip_off);
 
 					while (((free_index + 1) mod buff_max) == full_index) {
 						std::this_thread::sleep_for(std::chrono::milliseconds(100));

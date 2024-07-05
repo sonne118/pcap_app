@@ -35,7 +35,7 @@ HANDLE hPipe = ::CreateNamedPipe(_T("\\\\.\\pipe\\testpipe"),
 extern "C" __declspec(dllexport) LPSAFEARRAY fnDevCPPDLL();
 
 LPSAFEARRAY fnDevCPPDLL()
-{	
+{
 	std::vector<std::string> listdev; OpDevices* oPdev;
 	oPdev = new OpDevices();
 	listdev = oPdev->listalldevs();
@@ -107,6 +107,5 @@ extern "C"
 		cv.notify_one();
 	}
 }
-
 #endif 
 

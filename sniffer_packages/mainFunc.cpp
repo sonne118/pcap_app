@@ -10,8 +10,6 @@
 #include <functional>
 #include <openDevices.h>
 
-
-
 int mainFunc(HANDLE eventHandle) {
 
 	int file = 0; bool dev = true;
@@ -19,7 +17,7 @@ int mainFunc(HANDLE eventHandle) {
 	Packages* pack = new Packages();
 	pack->eventHandles = eventHandle;
 
-	 //file = oPdev->OpDevices::OpenFile();
+	//file = oPdev->OpDevices::OpenFile();
 	if (dev || file)
 	{
 		std::vector<std::thread> threads;

@@ -70,14 +70,11 @@ namespace MVVM
             var d = comboBox?.SelectedItem as string;
             var b = Int32.TryParse(d?.Substring(0, 1), out var dev);
 
-            PutdevPtr.PutDev(dev);
-            // using (var scope = _serviceProvider.CreateScope())
-            // {
-            // var service = scope.ServiceProvider.GetRequiredService<IHostDevice>();
-            //var service = _serviceProvider.GetRequiredService<IHostDevice>();
-            //if (b) 
-            //  service.SetUpDevice(dev, _stoppingCts.Token);
-            // }
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<IPutDevice>();
+                service.PutDevices(dev);
+            }
         }
     }
 
