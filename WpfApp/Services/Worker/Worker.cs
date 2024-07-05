@@ -3,13 +3,11 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.IO.Pipes;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using wpfapp.Services.Worker;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
-
 
 namespace WpfApp.Services.Worker
 {
@@ -19,7 +17,6 @@ namespace WpfApp.Services.Worker
         readonly private string path;
         private readonly ILogger<Worker> _logger;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
-        public static CancellationTokenSource _stoppingCts;
         public static CancellationToken stoppingToken;
 
         public Worker(ILogger<Worker> logger, IStreamData streamData, IBackgroundJobs<Snapshot> backgroundJobs)
@@ -73,8 +70,6 @@ namespace WpfApp.Services.Worker
                 pipe.Close();
                 await Task.Delay(10000, stoppingToken);
             }
-
         }
-
     }
 }

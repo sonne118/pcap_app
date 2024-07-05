@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using wpfapp.Services.Worker;
 
@@ -15,7 +14,6 @@ namespace WpfApp.Services.Worker
             _eventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, @"Global\sniffer");
         }
 
-       
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _eventWaitHandle.Reset();
@@ -30,7 +28,6 @@ namespace WpfApp.Services.Worker
 
         public Task SetUpDevice(int device, CancellationToken cancellationToken)
         {
-            //StartThread(device);
             return Task.CompletedTask;
         }
 

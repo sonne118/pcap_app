@@ -10,7 +10,6 @@ using WpfApp.Services.Worker;
 
 namespace WpfApp
 {
-
     public partial class App : Application
     {
         public static IHost? AppHost { get; private set; }
@@ -22,7 +21,7 @@ namespace WpfApp
                     services.AddSingleton<MainWindow>();
                     services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
                     services.AddHostedService<Worker>();
-                    services.AddSingleton<IStreamData, StreamData>();                    
+                    services.AddSingleton<IStreamData, StreamData>();
                     services.AddSingleton<IHostDevice, StartService>();
                     //services.AddHostedService<StartService>(s =>s.GetRequiredService<StartService>());
                     services.AddSingleton<IDevices, Devices>();

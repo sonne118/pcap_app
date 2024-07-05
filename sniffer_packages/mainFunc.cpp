@@ -15,17 +15,17 @@ int mainFunc(HANDLE eventHandle) {
 	int file = 0; bool dev = true;
 
 	Packages* pack = new Packages();
-	pack->eventHandles = eventHandle;
+	pack->SetHandler(eventHandle);
 
 	//file = oPdev->OpDevices::OpenFile();
 	if (dev || file)
 	{
-		std::vector<std::thread> threads;
-		threads.emplace_back(std::thread(&Packages::producer, pack, std::ref(quit_flag)));
-		threads.emplace_back(std::thread(&Packages::consumer, pack));
+		std::vector<std::unique_ptr<std::thread>> threads;
+		threads.emplace_back(std::make_unique<std::thread>(&Packages::producer, pack, std::ref(quit_flag)));
+		threads.emplace_back(std::make_unique<std::thread>(&Packages::consumer, pack));
 		cv.notify_one();
 		for (auto& thread : threads) {
-			thread.join();
+			thread->join();
 		}
 	}
 	pack->~Packages();

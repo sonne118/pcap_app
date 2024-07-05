@@ -2,7 +2,6 @@
 
 namespace MVVM
 {
-
     public partial class ModalWindow : Window
     {
         public ModalWindow()

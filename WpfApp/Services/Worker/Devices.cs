@@ -11,7 +11,7 @@ namespace wpfapp.Services.Worker
     {
         public IEnumerable<string> GetDevices()
         {
-           return DevicesPtr.GetAllDevices();
+            return DevicesPtr.GetAllDevices();
         }
     }
 }

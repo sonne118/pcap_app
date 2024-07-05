@@ -16,8 +16,6 @@
 #include <string>
 #include <atomic>
 
-using namespace std;
-
 #define buff_max 5
 #define mod %
 
@@ -27,7 +25,6 @@ std::atomic<int> free_index(0);
 std::atomic<int> full_index(0);
 std::mutex mtx;
 
-
 class Packages
 {
 public:
@@ -35,6 +32,7 @@ public:
 	~Packages();
 	void* producer(std::atomic<bool>& on);
 	void* consumer();
+	void SetHandler(HANDLE eventHandle);
 
 
 private:
@@ -44,17 +42,20 @@ private:
 	int i = 0;
 	struct pcap_pkthdr* _pkthdr;
 	const u_char* _packet;
-public:
 	pcap_t* _adhandle;
-	HANDLE eventHandles;
+	HANDLE _eventHandles;
 };
 
 Packages::Packages() {};
 
 Packages ::~Packages() {
 	_adhandle = nullptr;
-	eventHandles = nullptr;
+	_eventHandles = nullptr;
 };
+
+inline void Packages::SetHandler(HANDLE eventHandle) {
+	_eventHandles = eventHandle;
+}
 
 inline void* Packages::consumer() {
 	tagSnapshot consumed_item{};
@@ -102,7 +103,7 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 
 		while ((res = pcap_next_ex(_adhandle, &_pkthdr, &_packet)) >= 0 && on) {
 
-			WaitForSingleObject(eventHandles, INFINITE);
+			WaitForSingleObject(_eventHandles, INFINITE);
 
 			if (res == 0) {
 				strcpy_s(new_item.source_ip, "192.168.1.1");

@@ -10,7 +10,6 @@ using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
 using wpfapp.Services.Worker;
 
-
 namespace MVVM
 {
     public class GridViewModel : INotifyPropertyChanged, IDisposable
@@ -37,7 +36,7 @@ namespace MVVM
         {
             _mapper = mapper;
             _backgroundJobs = backgroundJobs;
-            if (device.GetDevices() is IEnumerable<string> ls)
+            if (device?.GetDevices() is IEnumerable<string> ls)
             {
                 _comboBox = new List<string>(ls);
             }
@@ -50,6 +49,7 @@ namespace MVVM
         public void Dispose()
         {
             _timer.Stop();
+            _timer.Tick -= ProcessQueue;
         }
 
         private void ProcessQueue(object sender, EventArgs e)
