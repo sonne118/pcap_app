@@ -20,12 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mainFunc.cpp" />
-    <ClCompile Include="packages.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ether_ntoa.h" />
     <ClInclude Include="ipc.h" />
-    <ClInclude Include="OpenDevices.h" />
+    <ClInclude Include="openDevices.h" />
     <ClInclude Include="packages.h" />
     <ClInclude Include="struct.h" />
   </ItemGroup>
