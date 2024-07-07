@@ -36,7 +36,7 @@ static std::vector<SecondStruct> ClientCode(int* size)
 
 		vectorOne->~VectorOneHandler();
 		vectorTwo->~VectorTwoHandler();
-
+	
 		return vec;
 	}
 

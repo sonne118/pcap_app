@@ -15,9 +15,12 @@ public:
 	OpDevices() {};
 
 	~OpDevices() {
-		alldevs = nullptr;
-		d = nullptr;
-		_adhandle = nullptr;
+		alldevs = NULL;
+		d= NULL;
+		_adhandle = NULL;
+		delete alldevs;
+	    delete d;
+		delete _adhandle;
 	};
 
 public:

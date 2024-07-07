@@ -49,8 +49,11 @@ private:
 Packages::Packages() {};
 
 Packages ::~Packages() {
-	_adhandle = nullptr;
-	_eventHandles = nullptr;
+	_adhandle = NULL;
+	_eventHandles = NULL;
+	delete _adhandle;
+	delete _eventHandles;
+
 };
 
 inline void Packages::setHandler(HANDLE eventHandle) {
