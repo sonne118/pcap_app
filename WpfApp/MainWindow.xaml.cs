@@ -17,17 +17,17 @@ namespace MVVM
 {
     public partial class MainWindow : Window
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _scopeFactory;
         private readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
 
         public MainWindow(IBackgroundJobs<Snapshot> backgroundJobs,
                           IMapper mapper,
                           IDevices device,
-                          IServiceProvider serviceProvider)
+                          IServiceScopeFactory scopeFactory)
         {
             InitializeComponent();
             DataContext = new GridViewModel(backgroundJobs, device, mapper);
-            _serviceProvider = serviceProvider;
+            _scopeFactory = scopeFactory;
         }
 
         private void datagrid_MouseDown(object sender, MouseButtonEventArgs e)
@@ -49,7 +49,7 @@ namespace MVVM
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            using (var scope = _serviceProvider.CreateScope())
+            using (var scope = _scopeFactory.CreateScope())
             {
                 var service = scope.ServiceProvider.GetRequiredService<IHostedService>();
                 service.StopAsync(_stoppingCts.Token);
@@ -58,7 +58,7 @@ namespace MVVM
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            using (var scope = _serviceProvider.CreateScope())
+            using (var scope = _scopeFactory.CreateScope())
             {
                 var service = scope.ServiceProvider.GetRequiredService<IHostedService>();
                 service.StartAsync(_stoppingCts.Token);
@@ -71,7 +71,7 @@ namespace MVVM
             var d = comboBox?.SelectedItem as string;
             var b = Int32.TryParse(d?.Substring(0, 1), out var dev);
 
-            using (var scope = _serviceProvider.CreateScope())
+            using (var scope = _scopeFactory.CreateScope())
             {
                 var service = scope.ServiceProvider.GetRequiredService<IPutDevice>();
                 service.PutDevices(dev);
@@ -80,7 +80,7 @@ namespace MVVM
 
         private void GridPcap_Closed(object sender, EventArgs e)
         {
-            using (var scope = _serviceProvider.CreateScope())
+            using (var scope = _scopeFactory.CreateScope())
             {
                 var service_h = scope.ServiceProvider.GetRequiredService<IHostedService>();
                 var service_w = scope.ServiceProvider.GetRequiredService<Worker>();

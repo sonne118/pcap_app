@@ -6,7 +6,6 @@ using System.IO;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
-using wpfapp.IPC.Ptr;
 using wpfapp.Services.Worker;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
@@ -18,23 +17,22 @@ namespace WpfApp.Services.Worker
         readonly private int timeout= 10000;      
         private readonly ILogger<Worker> _logger;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
-        private readonly IServiceProvider _serviceProvider;
-        public static CancellationToken stoppingToken;
+        private readonly IServiceScopeFactory _scopeFactory;        
 
         public Worker(ILogger<Worker> logger,
                       IStreamData streamData, 
                       IBackgroundJobs<Snapshot> backgroundJobs,
-                      IServiceProvider serviceProvider)
+                      IServiceScopeFactory scopeFactory)
         {
             _logger = logger;
             _backgroundJobs = backgroundJobs;
-            _serviceProvider = serviceProvider;
+            _scopeFactory = scopeFactory;
             streamData.GetStream(3);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            BinaryReader value = default; Snapshot res = default;
+            Func<BinaryReader,Task<Snapshot>> result; Snapshot res;
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -61,10 +59,10 @@ namespace WpfApp.Services.Worker
                     pool.Return(func); //third Task in poll for any case ... improving scalability
                     while (pipe.IsConnected)
                     {
-                        var result = pool.Get();
+                        result = pool.Get();
                         try
                         {
-                            res = await result(stream);
+                             res = await result(stream);
                             _backgroundJobs.BackgroundTasks.Enqueue(res);
                         }
                         finally
@@ -78,9 +76,9 @@ namespace WpfApp.Services.Worker
             }
         }
 
-        public override async Task StopAsync(CancellationToken cancellationToken)
+        public override  Task StopAsync(CancellationToken cancellationToken)
         {         
-            using (var scope = _serviceProvider.CreateScope())
+            using (var scope = _scopeFactory.CreateScope())
             {
                 var service_s = scope.ServiceProvider.GetRequiredService<IStreamData>();
                 var service_j = scope.ServiceProvider.GetRequiredService<IBackgroundJobs<Snapshot>>();
@@ -88,6 +86,7 @@ namespace WpfApp.Services.Worker
                 service_j.CleanBackgroundTask();    
             }
             base.StopAsync(cancellationToken);
+            return Task.CompletedTask;
         }
     }
 }

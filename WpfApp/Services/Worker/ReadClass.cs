@@ -11,6 +11,7 @@ namespace WpfApp.Services.Worker
         {
             Snapshot snapshot;
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Snapshot))];
+
             stream.Read(buffer, 0, buffer.Length);
             fixed (byte* b = &buffer[0])
             {
