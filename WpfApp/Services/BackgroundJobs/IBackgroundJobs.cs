@@ -5,5 +5,9 @@ namespace WpfApp.Services.BackgroundJob
     public interface IBackgroundJobs<T>
     {
         ConcurrentQueue<T> BackgroundTasks { get; set; }
+        public void CleanBackgroundTask() {
+
+            BackgroundTasks.Clear();
+        }
     }
 }

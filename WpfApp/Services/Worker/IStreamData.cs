@@ -3,5 +3,6 @@
     public interface IStreamData
     {
         void GetStream(int d);
+        void StopStream();
     }
 }

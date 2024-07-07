@@ -1,15 +1,16 @@
 ﻿using AutoMapper;
 using CoreModel.Model;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using wpfapp.IPC.Ptr;
 using wpfapp.Services.Worker;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
+using WpfApp.Services.Worker;
 
 
 namespace MVVM
@@ -50,7 +51,7 @@ namespace MVVM
         {
             using (var scope = _serviceProvider.CreateScope())
             {
-                var service = scope.ServiceProvider.GetRequiredService<IHostDevice>();
+                var service = scope.ServiceProvider.GetRequiredService<IHostedService>();
                 service.StopAsync(_stoppingCts.Token);
             }
         }
@@ -59,7 +60,7 @@ namespace MVVM
         {
             using (var scope = _serviceProvider.CreateScope())
             {
-                var service = scope.ServiceProvider.GetRequiredService<IHostDevice>();
+                var service = scope.ServiceProvider.GetRequiredService<IHostedService>();
                 service.StartAsync(_stoppingCts.Token);
             }
         }
@@ -74,6 +75,17 @@ namespace MVVM
             {
                 var service = scope.ServiceProvider.GetRequiredService<IPutDevice>();
                 service.PutDevices(dev);
+            }
+        }
+
+        private void GridPcap_Closed(object sender, EventArgs e)
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var service_h = scope.ServiceProvider.GetRequiredService<IHostedService>();
+                var service_w = scope.ServiceProvider.GetRequiredService<Worker>();
+                service_h.StopAsync(_stoppingCts.Token);
+                service_w.StopAsync(_stoppingCts.Token);
             }
         }
     }

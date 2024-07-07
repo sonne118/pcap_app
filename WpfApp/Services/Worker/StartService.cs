@@ -1,10 +1,11 @@
-﻿using System.Threading;
+﻿using Microsoft.Extensions.Hosting;
+using System.Threading;
 using System.Threading.Tasks;
 using wpfapp.Services.Worker;
 
 namespace WpfApp.Services.Worker
 {
-    public class StartService : IHostDevice
+    public class StartService : IHostedService
     {
 
         private static EventWaitHandle _eventWaitHandle;     

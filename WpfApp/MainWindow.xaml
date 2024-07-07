@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"      
         mc:Ignorable="d"
          xmlns:local="clr-namespace:MVVM"
-        Title="grid_pcap" Height="600" Width="700">
+        Title="grid_pcap" Height="600" Width="700" Closed="GridPcap_Closed">
     <Window.Resources>
         <Style TargetType="Grid">
             <Setter Property="Background" Value="Transparent"/>

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -5,6 +6,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
+using wpfapp.IPC.Ptr;
 using wpfapp.Services.Worker;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
@@ -16,12 +18,17 @@ namespace WpfApp.Services.Worker
         readonly private int timeout= 10000;      
         private readonly ILogger<Worker> _logger;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
+        private readonly IServiceProvider _serviceProvider;
         public static CancellationToken stoppingToken;
 
-        public Worker(ILogger<Worker> logger, IStreamData streamData, IBackgroundJobs<Snapshot> backgroundJobs)
+        public Worker(ILogger<Worker> logger,
+                      IStreamData streamData, 
+                      IBackgroundJobs<Snapshot> backgroundJobs,
+                      IServiceProvider serviceProvider)
         {
             _logger = logger;
             _backgroundJobs = backgroundJobs;
+            _serviceProvider = serviceProvider;
             streamData.GetStream(3);
         }
 
@@ -69,6 +76,18 @@ namespace WpfApp.Services.Worker
                 pipe.Close();
                 await Task.Delay(timeout, stoppingToken);
             }
+        }
+
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {         
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var service_s = scope.ServiceProvider.GetRequiredService<IStreamData>();
+                var service_j = scope.ServiceProvider.GetRequiredService<IBackgroundJobs<Snapshot>>();
+                service_s.StopStream();
+                service_j.CleanBackgroundTask();    
+            }
+            base.StopAsync(cancellationToken);
         }
     }
 }
