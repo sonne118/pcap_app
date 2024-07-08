@@ -23,11 +23,10 @@ namespace MVVM
                           IMapper mapper,
                           IDevices device,
                           IServiceScopeFactory scopeFactory)
-        {
-
-            OnClosingCommand = new ClosingCommand(this).ExitCommand;
+        {           
             _scopeFactory = scopeFactory;
-            InitializeComponent();                 
+            InitializeComponent();
+            OnClosingCommand = new ClosingCommand(this).ExitCommand;
             DataContext = new GridViewModel(backgroundJobs, device, mapper);                       
         }
 
