@@ -7,28 +7,28 @@ namespace WpfApp.Services.Worker
 {
     public class StartService : IHostedService
     {
-
+        readonly private int timeout = 1;
         private static EventWaitHandle _eventWaitHandle;     
         static StartService()
         {
             _eventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, @"Global\sniffer");
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken cancellationToken)
         {
             _eventWaitHandle.Reset();
-            return Task.CompletedTask;
+            await Task.Delay(timeout, cancellationToken);
         }
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
             _eventWaitHandle.Set();
-            return Task.CompletedTask;
+             await Task.Delay(timeout, cancellationToken);
         }
 
-        public Task SetUpDevice(int device, CancellationToken cancellationToken)
+        public async Task SetUpDevice(int device, CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            await Task.Delay(timeout, cancellationToken);
         }
 
     }

@@ -18,7 +18,7 @@ namespace MVVM
         private readonly DispatcherTimer _timer;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
         public ObservableCollection<SnifferData> _SnifferData { get; set; }
-        public List<string> _comboBox { get; set; }
+        public List<string> _ComboBox { get; set; }
 
         private SnifferData _selectedSnifferData;
         public SnifferData SelectedSnifferData
@@ -38,9 +38,9 @@ namespace MVVM
             _backgroundJobs = backgroundJobs;
             if (device?.GetDevices() is IEnumerable<string> ls)
             {
-                _comboBox = new List<string>(ls);
+                _ComboBox = new List<string>(ls);
             }
-            _SnifferData = new ObservableCollection<SnifferData>();
+             _SnifferData = new ObservableCollection<SnifferData>();
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMicroseconds(100);
             _timer.Tick += ProcessQueue;

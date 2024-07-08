@@ -10,8 +10,6 @@ using System.Windows.Input;
 using wpfapp.Services.Worker;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
-using WpfApp.Services.Worker;
-
 
 namespace MVVM
 {
@@ -19,15 +17,18 @@ namespace MVVM
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
+        public ICommand OnClosingCommand { get; }
 
         public MainWindow(IBackgroundJobs<Snapshot> backgroundJobs,
                           IMapper mapper,
                           IDevices device,
                           IServiceScopeFactory scopeFactory)
         {
-            InitializeComponent();
-            DataContext = new GridViewModel(backgroundJobs, device, mapper);
+
+            OnClosingCommand = new ClosingCommand(this).ExitCommand;
             _scopeFactory = scopeFactory;
+            InitializeComponent();                 
+            DataContext = new GridViewModel(backgroundJobs, device, mapper);                       
         }
 
         private void datagrid_MouseDown(object sender, MouseButtonEventArgs e)
@@ -77,17 +78,6 @@ namespace MVVM
                 service.PutDevices(dev);
             }
         }
-
-        private void GridPcap_Closed(object sender, EventArgs e)
-        {
-            using (var scope = _scopeFactory.CreateScope())
-            {
-                var service_h = scope.ServiceProvider.GetRequiredService<IHostedService>();
-                var service_w = scope.ServiceProvider.GetRequiredService<Worker>();
-                service_h.StopAsync(_stoppingCts.Token);
-                service_w.StopAsync(_stoppingCts.Token);
-            }
-        }
     }
-
 }
+

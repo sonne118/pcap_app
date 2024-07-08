@@ -8,10 +8,5 @@ namespace wpfapp.Services.Worker
         {
             GetStreamPtr.StartStream(d);
         }
-
-        public void StopStream()
-        {
-            GetStreamPtr.StopStream();
-        }
     }
 }

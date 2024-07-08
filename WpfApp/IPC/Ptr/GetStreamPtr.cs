@@ -16,9 +16,5 @@ namespace wpfapp.IPC.Ptr
             _workerThread = new Thread(() => fnCPPDLL(dev));
             _workerThread?.Start();
         }
-        public static void StopStream()
-        {
-            _workerThread = null;
-        }
     }
 }

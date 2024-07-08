@@ -19,11 +19,11 @@ namespace WpfApp
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<MainWindow>();
-                    services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
+                    services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();                                      
                     services.AddHostedService<Worker>();
                     services.AddSingleton<IStreamData, StreamData>();
                     services.AddSingleton<IHostedService, StartService>();
-                    services.AddHostedService<StartService>(s =>s.GetRequiredService<StartService>());
+                    services.AddHostedService(s =>s.GetRequiredService<StartService>());                    
                     services.AddSingleton<IDevices, Devices>();
                     services.AddSingleton<IPutDevice, PutDevice>();
                     services.AddAutoMapper(typeof(AppMappingProfile));

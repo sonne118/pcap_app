@@ -14,13 +14,13 @@ namespace WpfApp.Services.Worker
 {
     public class Worker : BackgroundService
     {
-        readonly private int timeout= 10000;      
+        readonly private int timeout = 10000;
         private readonly ILogger<Worker> _logger;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
-        private readonly IServiceScopeFactory _scopeFactory;        
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public Worker(ILogger<Worker> logger,
-                      IStreamData streamData, 
+                      IStreamData streamData,
                       IBackgroundJobs<Snapshot> backgroundJobs,
                       IServiceScopeFactory scopeFactory)
         {
@@ -32,7 +32,7 @@ namespace WpfApp.Services.Worker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Func<BinaryReader,Task<Snapshot>> result; Snapshot res;
+            Func<BinaryReader, Task<Snapshot>> result; Snapshot res;
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -62,7 +62,7 @@ namespace WpfApp.Services.Worker
                         result = pool.Get();
                         try
                         {
-                             res = await result(stream);
+                            res = await result(stream);
                             _backgroundJobs.BackgroundTasks.Enqueue(res);
                         }
                         finally
@@ -76,17 +76,15 @@ namespace WpfApp.Services.Worker
             }
         }
 
-        public override  Task StopAsync(CancellationToken cancellationToken)
-        {         
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+            await ExecuteAsync(cancellationToken);
+            await base.StopAsync(cancellationToken);
             using (var scope = _scopeFactory.CreateScope())
             {
-                var service_s = scope.ServiceProvider.GetRequiredService<IStreamData>();
                 var service_j = scope.ServiceProvider.GetRequiredService<IBackgroundJobs<Snapshot>>();
-                service_s.StopStream();
-                service_j.CleanBackgroundTask();    
+                service_j.CleanBackgroundTask();
             }
-            base.StopAsync(cancellationToken);
-            return Task.CompletedTask;
         }
     }
 }

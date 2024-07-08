@@ -2,7 +2,6 @@
 {
     public interface IStreamData
     {
-        void GetStream(int d);
-        void StopStream();
+        void GetStream(int d);     
     }
 }

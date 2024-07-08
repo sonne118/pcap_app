@@ -5,7 +5,8 @@
 		<TargetFramework>net8.0-windows7.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks> 
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<UserSecretsId>33151b79-c239-45a7-805a-675ac1c63a5d</UserSecretsId> 
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -13,6 +14,8 @@
 	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
 	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
 	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+	  <PackageReference Include="MvvmLight" Version="5.4.1.1" />
+	  <PackageReference Include="Prism.Wpf" Version="8.1.97" />
 	</ItemGroup>
 
 	<ItemGroup>
