@@ -32,7 +32,7 @@ public:
 	~Packages();
 	void* producer(std::atomic<bool>& on);
 	void* consumer();
-	void  setHandler(HANDLE eventHandle);
+	void setHandler(HANDLE eventHandle);
 
 
 private:
@@ -104,7 +104,7 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-		while ((res = pcap_next_ex(_adhandle, &_pkthdr, &_packet)) >= 0 && on) {
+		while ((res = pcap_next_ex(_adhandle, &_pkthdr, &_packet)) >= 0 && on.load()) {
 
 			WaitForSingleObject(_eventHandles, INFINITE);
 
