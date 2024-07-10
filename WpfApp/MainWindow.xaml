@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
+        xmlns:k="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:toggleSwitch="clr-namespace:ToggleSwitch;assembly=ToggleSwitch"
         xmlns:local="clr-namespace:MVVM"
         mc:Ignorable="d"        
         Title="grid_pcap" Height="600" Width="700">
@@ -135,6 +136,18 @@
         <Style TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="HorizontalContentAlignment" Value="Left" />
         </Style>
+        <Style x:Key="CheckBoxStyle1" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+            <!-- Other setters for background, template, etc. -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <!-- Your custom toggle switch design here -->
+                        <!-- Use triggers to handle checked/unchecked states -->
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -161,10 +174,11 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <StackPanel Margin="0,0,70,29" Grid.RowSpan="3" Height="30" VerticalAlignment="Bottom">
-            <ComboBox Name="cDevice" Style="{StaticResource ComboBoxFlatStyle}" ItemsSource="{Binding _ComboBox}"  SelectionChanged="cDevices_SelectionChanged" Width="392" Height="22" RenderTransformOrigin="0.596,0.774">
+        <StackPanel Margin="0,0,0,29" Grid.RowSpan="3" Height="30" VerticalAlignment="Bottom" RenderTransformOrigin="0.503,0.501" HorizontalAlignment="Left" Width="545">
+            <ComboBox Name="cDevice" Style="{StaticResource ComboBoxFlatStyle}" ItemsSource="{Binding _ComboBox}"  SelectionChanged="cDevices_SelectionChanged" Width="300" Height="25" RenderTransformOrigin="0.596,0.774">
             </ComboBox>
         </StackPanel>
+        <StackPanel Height="19" VerticalAlignment="Top"/>
         <local:CustomDataGrid MouseDown="datagrid_MouseDown" IsReadOnly="True"  ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2" >
             <local:CustomDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
@@ -190,6 +204,9 @@
                 <DataGridTextColumn Header="Dest_mac" Width="120" Binding="{Binding Dest_mac}" />
             </DataGrid.Columns>
         </local:CustomDataGrid>
+        <StackPanel Height="27" Grid.RowSpan="3"  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="457,1,0,0">
+            <toggleSwitch:HorizontalToggleSwitch IsChecked="True" CheckedContent="GRPC" Width="88" RenderTransformOrigin="1.452,0.762" />
+        </StackPanel>
     </Grid>
 
 </Window>

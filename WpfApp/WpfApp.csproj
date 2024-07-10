@@ -16,6 +16,7 @@
 	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
 	  <PackageReference Include="MvvmLight" Version="5.4.1.1" />
 	  <PackageReference Include="Prism.Wpf" Version="8.1.97" />
+	  <PackageReference Include="ToggleSwitch" Version="1.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -50,7 +51,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="IPC\Gprc\" />
+	  <Folder Include="IPC\Grpc\" />
 	</ItemGroup>
 
 </Project>
