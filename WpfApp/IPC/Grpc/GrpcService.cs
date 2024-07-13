@@ -46,7 +46,7 @@ namespace wpfapp.IPC.Grpc
                 {
                     var streamData = _mapper.Map<streamingRequest>(data);
 
-                    await _clientStreamingCall?.RequestStream.WriteAsync(streamData);
+                    await _clientStreamingCall.RequestStream.WriteAsync(streamData);
 
                     await Task.Delay(100, cancellationToken);
                 }
