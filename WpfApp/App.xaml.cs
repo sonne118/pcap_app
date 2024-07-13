@@ -1,12 +1,16 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CoreModel.Model;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MVVM;
+using System;
 using System.Windows;
+using wpfapp.IPC.Grpc;
 using wpfapp.Services.Worker;
 using WpfApp.Map;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
 using WpfApp.Services.Worker;
+using GrpcClient;
 
 namespace WpfApp
 {
@@ -26,6 +30,11 @@ namespace WpfApp
                     services.AddHostedService(s =>s.GetRequiredService<StartService>());                    
                     services.AddSingleton<IDevices, Devices>();
                     services.AddSingleton<IPutDevice, PutDevice>();
+                    services.AddHostedService<GrpcService>();
+                    services.AddGrpcClient<StreamingData.StreamingDataClient>(options =>
+                    {
+                        options.Address = new Uri("https://localhost:5005");
+                    });
                     services.AddAutoMapper(typeof(AppMappingProfile));
                 })
                 .Build();

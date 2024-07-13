@@ -204,9 +204,22 @@
                 <DataGridTextColumn Header="Dest_mac" Width="120" Binding="{Binding Dest_mac}" />
             </DataGrid.Columns>
         </local:CustomDataGrid>
-        <StackPanel Height="27" Grid.RowSpan="3"  VerticalAlignment="Top" HorizontalAlignment="Left" Margin="457,1,0,0">
-            <toggleSwitch:HorizontalToggleSwitch IsChecked="True" CheckedContent="GRPC" Width="88" RenderTransformOrigin="1.452,0.762" />
-        </StackPanel>
+        <!--<StackPanel Height="27" Grid.RowSpan="3"  VerticalAlignment="Top" HorizontalAlignment="Left" >-->
+            <toggleSwitch:HorizontalToggleSwitch RenderTransformOrigin="2.682,1.322" Margin="472,0,0,34" Grid.RowSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+                <toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
+                    <StackPanel>
+                    <TextBlock TextAlignment="Center">FILE</TextBlock>
+                    </StackPanel>
+                </toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
+            </toggleSwitch:HorizontalToggleSwitch>
+            <toggleSwitch:HorizontalToggleSwitch IsChecked="False" CheckedContent="GRPC" Width="88" RenderTransformOrigin="1.452,0.762" Margin="584,0,0,34" Grid.RowSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+            <toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
+                <StackPanel>
+                    <TextBlock TextAlignment="Center">GRPC</TextBlock>
+                </StackPanel>
+            </toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
+        </toggleSwitch:HorizontalToggleSwitch>
+            <!--</StackPanel>-->
     </Grid>
 
 </Window>
