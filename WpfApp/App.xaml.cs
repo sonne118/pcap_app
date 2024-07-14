@@ -11,6 +11,8 @@ using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
 using WpfApp.Services.Worker;
 using GrpcClient;
+using System.Net.Http;
+using Grpc.Core;
 
 namespace WpfApp
 {
@@ -33,8 +35,20 @@ namespace WpfApp
                     services.AddHostedService<GrpcService>();
                     services.AddGrpcClient<StreamingData.StreamingDataClient>(options =>
                     {
-                        options.Address = new Uri("https://localhost:5005");
-                    });
+                        options.Address = new Uri("https://localhost:5001");
+                        options.ChannelOptionsActions.Add(x =>
+                        {
+                            x.Credentials = ChannelCredentials.Insecure;
+                        });
+                    });                  
+                    //.ConfigurePrimaryHttpMessageHandler(() =>
+                    //{
+                    //    var handler = new HttpClientHandler();
+                    //    handler.ServerCertificateCustomValidationCallback =
+                    //        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
+
+                    //    return handler;
+                    //});
                     services.AddAutoMapper(typeof(AppMappingProfile));
                 })
                 .Build();

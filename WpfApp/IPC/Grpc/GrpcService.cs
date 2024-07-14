@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
-using CoreModel.Model;
 using Grpc.Core;
 using GrpcClient;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using wpfapp.Services.BackgroundJobs;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
 
@@ -14,14 +14,14 @@ namespace wpfapp.IPC.Grpc
     public class GrpcService : BackgroundService
     {
         private readonly IMapper _mapper;
-        private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
+        private readonly AsyncConcurrencyQueue<Snapshot> _snapshotsQueue;
         private StreamingData.StreamingDataClient _streamDataClient;
-        private AsyncDuplexStreamingCall<streamingRequest, streamingReply>? _clientStreamingCall;
+        private AsyncClientStreamingCall<streamingRequest, streamingReply>? _clientStreamingCall;
 
         private CancellationTokenSource cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         public GrpcService(IBackgroundJobs<Snapshot> backgroundJobs, IMapper mapper, StreamingData.StreamingDataClient streamDataClient)
         {
-            _backgroundJobs = backgroundJobs;
+            _snapshotsQueue = backgroundJobs.BackgroundTaskGrpc;
             _streamDataClient = streamDataClient;
             _mapper = mapper;
         }
@@ -41,21 +41,24 @@ namespace wpfapp.IPC.Grpc
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
-            {
-                while (_backgroundJobs.BackgroundTasks.TryPeek(out var data))
+            {               
                 {
-                    var streamData = _mapper.Map<streamingRequest>(data);
+                    await foreach (var data in _snapshotsQueue)
+                    {
+                        var streamData = _mapper.Map<streamingRequest>(data);
 
-                    await _clientStreamingCall.RequestStream.WriteAsync(streamData);
+                        await _clientStreamingCall.RequestStream.WriteAsync(streamData);
 
-                    await Task.Delay(100, cancellationToken);
-                }
+                        await Task.Delay(100, cancellationToken);
+                    }
+                }                                                
             }
         }
 
-        public override Task StopAsync(CancellationToken cancellationToken)
+        public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            return base.StopAsync(cancellationToken);
+            await _clientStreamingCall.RequestStream.CompleteAsync();
+            await base.StopAsync(cancellationToken);
         }
 
     }

@@ -64,6 +64,7 @@ namespace WpfApp.Services.Worker
                         {
                             res = await result(stream);
                             _backgroundJobs.BackgroundTasks.Enqueue(res);
+                            _backgroundJobs.BackgroundTaskGrpc.Enqueue(res);
                         }
                         finally
                         {

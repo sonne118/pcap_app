@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CoreModel.Model;
+using GrpcClient;
 using WpfApp.Model;
 
 namespace WpfApp.Map
@@ -8,7 +9,8 @@ namespace WpfApp.Map
     {
         public AppMappingProfile()
         {
-            CreateMap<Snapshot,SnifferData>();
+            CreateMap<Snapshot, SnifferData>();
+            CreateMap<Snapshot, streamingRequest>();
         }
     }
 }
