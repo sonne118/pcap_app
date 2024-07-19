@@ -22,7 +22,7 @@ namespace Server.Services
             while (await requestStream.MoveNext() && !context.CancellationToken.IsCancellationRequested)
             {
                 var message = requestStream.Current;
-                _logger.LogInformation($"{message.DestIp} :{message.DestPort},   {message.SourceIp}:{message.SourceIp} ");
+                _logger.LogInformation($"{message.SourceIp}:{message.SourceIp},{ message.DestIp} :{message.DestPort},{ message.SourceMac},{ message.DestMac}  ");
             }
 
             return new streamingReply { Index = 1 };
