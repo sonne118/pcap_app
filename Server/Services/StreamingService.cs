@@ -1,7 +1,5 @@
 using Grpc.Core;
 using GrpcClient;
-using Server;
-using System.Diagnostics.Metrics;
 
 namespace Server.Services
 {
@@ -12,7 +10,6 @@ namespace Server.Services
         {
             _logger = logger;
         }
-
 
         public override async Task<streamingReply> GetStreamingData(IAsyncStreamReader<streamingRequest> requestStream, ServerCallContext context)
         {
@@ -28,8 +25,8 @@ namespace Server.Services
                 _logger.LogInformation($"{message.DestIp} :{message.DestPort},   {message.SourceIp}:{message.SourceIp} ");
             }
 
-            return new streamingReply { Index=1 };
+            return new streamingReply { Index = 1 };
         }
-        
+
     }
 }

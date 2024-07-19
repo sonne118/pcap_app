@@ -3,7 +3,6 @@ using Grpc.Core;
 using GrpcClient;
 using Microsoft.Extensions.Hosting;
 using System;
-using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using wpfapp.Services.BackgroundJobs;
@@ -19,7 +18,6 @@ namespace wpfapp.IPC.Grpc
         private StreamingData.StreamingDataClient _streamDataClient;
         private AsyncClientStreamingCall<streamingRequest, streamingReply>? _clientStreamingCall;
         private CancellationTokenSource cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-
         public GrpcService(IBackgroundJobs<Snapshot> backgroundJobs, IMapper mapper, StreamingData.StreamingDataClient streamDataClient)
         {
 
