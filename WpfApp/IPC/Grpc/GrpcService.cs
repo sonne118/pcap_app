@@ -3,6 +3,7 @@ using Grpc.Core;
 using GrpcClient;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using wpfapp.Services.BackgroundJobs;
@@ -17,10 +18,11 @@ namespace wpfapp.IPC.Grpc
         private readonly AsyncConcurrencyQueue<Snapshot> _snapshotsQueue;
         private StreamingData.StreamingDataClient _streamDataClient;
         private AsyncClientStreamingCall<streamingRequest, streamingReply>? _clientStreamingCall;
-
         private CancellationTokenSource cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+
         public GrpcService(IBackgroundJobs<Snapshot> backgroundJobs, IMapper mapper, StreamingData.StreamingDataClient streamDataClient)
         {
+
             _snapshotsQueue = backgroundJobs.BackgroundTaskGrpc;
             _streamDataClient = streamDataClient;
             _mapper = mapper;
@@ -32,16 +34,15 @@ namespace wpfapp.IPC.Grpc
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
-        {            
+        {
             _clientStreamingCall = _streamDataClient.GetStreamingData(cancellationToken: cancellationToken);
-
             return base.StartAsync(cancellationToken);
         }
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
-            {               
+            {
                 {
                     await foreach (var data in _snapshotsQueue)
                     {
@@ -51,7 +52,7 @@ namespace wpfapp.IPC.Grpc
 
                         await Task.Delay(100, cancellationToken);
                     }
-                }                                                
+                }
             }
         }
 

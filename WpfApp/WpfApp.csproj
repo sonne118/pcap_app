@@ -10,9 +10,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="Protos\sniffering.proto" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <PackageReference Include="AutoMapper" Version="11.0.0" />
 	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
 	  <PackageReference Include="Google.Protobuf" Version="3.27.2" />
+	  <PackageReference Include="Grpc" Version="2.46.6" />
 	  <PackageReference Include="Grpc.Net.Client" Version="2.63.0" />
 	  <PackageReference Include="Grpc.Net.ClientFactory" Version="2.63.0" />
 	  <PackageReference Include="Grpc.Tools" Version="2.64.0">
@@ -60,11 +65,24 @@
 	</ItemGroup>
 	
 	 <ItemGroup> 
-    <Protobuf Include=".\Protos\snifferingData.proto" OutputDir="%(RelativePath)models/" /> 
+    <Protobuf Include="Protos\sniffering.proto" OutputDir="%(RelativePath)models/" /> 
     </ItemGroup> 
 
   <ItemGroup>
     <Folder Include="models\" />
+    <Folder Include="ssl\" />
+  </ItemGroup>
+  
+    <ItemGroup>
+    <EmbeddedResource Include="ssl\ca.crt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ssl\client.crt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ssl\client.key">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

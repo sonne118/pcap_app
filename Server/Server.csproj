@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.57.0" />
+    <PackageReference Include="Grpc.Core" Version="2.46.6" />
   </ItemGroup>
   
   	 <ItemGroup> 
@@ -16,6 +17,7 @@
 
   <ItemGroup>
     <Folder Include="models\" />
+    <Folder Include="ssl\" />
   </ItemGroup>
 
 </Project>

@@ -16,10 +16,10 @@ message streamingReply {
 }
 
 message streamingRequest {
-     int32 source_port = 1;
-     int32 dest_port = 23;
-     string source_ip = 22;
-     string dest_ip = 27;
-     string source_mac = 24;
-     string dest_mac = 25;         
+     int32 source_port = 8080;
+     int32 dest_port = 8081;
+     string source_ip = 192;
+     string dest_ip = 168;
+     string source_mac = 1;
+     string dest_mac = 2;         
 }

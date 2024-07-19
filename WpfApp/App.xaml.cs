@@ -1,4 +1,4 @@
-﻿using CoreModel.Model;
+﻿using GrpcClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MVVM;
@@ -10,9 +10,6 @@ using WpfApp.Map;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
 using WpfApp.Services.Worker;
-using GrpcClient;
-using System.Net.Http;
-using Grpc.Core;
 
 namespace WpfApp
 {
@@ -25,30 +22,18 @@ namespace WpfApp
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<MainWindow>();
-                    services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();                                      
+                    services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
                     services.AddHostedService<Worker>();
                     services.AddSingleton<IStreamData, StreamData>();
                     services.AddSingleton<IHostedService, StartService>();
-                    services.AddHostedService(s =>s.GetRequiredService<StartService>());                    
+                    services.AddHostedService(s => s.GetRequiredService<StartService>());
                     services.AddSingleton<IDevices, Devices>();
                     services.AddSingleton<IPutDevice, PutDevice>();
                     services.AddHostedService<GrpcService>();
                     services.AddGrpcClient<StreamingData.StreamingDataClient>(options =>
                     {
                         options.Address = new Uri("https://localhost:5001");
-                        options.ChannelOptionsActions.Add(x =>
-                        {
-                            x.Credentials = ChannelCredentials.Insecure;
-                        });
-                    });                  
-                    //.ConfigurePrimaryHttpMessageHandler(() =>
-                    //{
-                    //    var handler = new HttpClientHandler();
-                    //    handler.ServerCertificateCustomValidationCallback =
-                    //        HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-
-                    //    return handler;
-                    //});
+                    });            
                     services.AddAutoMapper(typeof(AppMappingProfile));
                 })
                 .Build();
