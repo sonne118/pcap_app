@@ -15,10 +15,7 @@ namespace Server.Services
         {
             var httpContext = context.GetHttpContext();
             _logger.LogInformation($"Connection id: {httpContext.Connection.Id}");
-            //await foreach (var message in requestStream.ReadAllAsync())
-            //{
-            //    _logger.LogInformation($"{message.DestIp} :{message.DestPort},   {message.SourceIp}:{message.SourceIp} ");
-            //}
+
             while (await requestStream.MoveNext() && !context.CancellationToken.IsCancellationRequested)
             {
                 var message = requestStream.Current;
