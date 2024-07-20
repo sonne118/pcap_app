@@ -14,7 +14,7 @@ namespace MVVM
 {
     public class GridViewModel : INotifyPropertyChanged, IDisposable
     {
-        private readonly IMapper _mapper;
+        private readonly IMapper _mapper;        
         private readonly DispatcherTimer _timer;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
         public ObservableCollection<SnifferData> _SnifferData { get; set; }

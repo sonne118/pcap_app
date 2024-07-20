@@ -10,7 +10,7 @@ builder.WebHost.ConfigureKestrel(option =>
 {
     option.ListenAnyIP(5001, listenOptions =>
     {
-        listenOptions.UseHttps(certPath, certPass);  ///@"ssl\\server.pfx"
+        listenOptions.UseHttps(certPath, certPass);  
         listenOptions.Protocols = HttpProtocols.Http2;
     });
 });

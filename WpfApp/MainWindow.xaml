@@ -212,7 +212,7 @@
                     </StackPanel>
                 </toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
             </toggleSwitch:HorizontalToggleSwitch>
-            <toggleSwitch:HorizontalToggleSwitch IsChecked="False" CheckedContent="GRPC" Width="88" RenderTransformOrigin="1.452,0.762" Margin="584,0,0,34" Grid.RowSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+            <toggleSwitch:HorizontalToggleSwitch IsChecked="False" IsEnabled="{Binding IsComboGprcEnable}" CheckedContent="GRPC" Width="88" RenderTransformOrigin="1.452,0.762" Margin="584,0,0,34" Grid.RowSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left">
             <toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
                 <StackPanel>
                     <TextBlock TextAlignment="Center">GRPC</TextBlock>
