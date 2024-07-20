@@ -72,17 +72,5 @@
     <Folder Include="models\" />
     <Folder Include="ssl\" />
   </ItemGroup>
-  
-    <ItemGroup>
-    <EmbeddedResource Include="ssl\ca.crt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ssl\client.crt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ssl\client.key">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
 
 </Project>

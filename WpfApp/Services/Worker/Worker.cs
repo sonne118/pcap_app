@@ -14,7 +14,7 @@ namespace WpfApp.Services.Worker
 {
     public class Worker : BackgroundService
     {
-        readonly private int timeout = 10000;
+        private readonly int timeout = 10000;
         private readonly ILogger<Worker> _logger;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
         private readonly IServiceScopeFactory _scopeFactory;
