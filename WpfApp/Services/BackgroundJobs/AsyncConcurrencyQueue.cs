@@ -11,8 +11,7 @@ namespace wpfapp.Services.BackgroundJobs
 
         public void Enqueue(T item)
         {
-            _bufferBlock.Post(item);
-            //_enumerationSemaphore.Release();
+            _bufferBlock.Post(item);          
         }
 
         public async IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken token = default)

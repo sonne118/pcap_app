@@ -1,5 +1,8 @@
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Server.Services;
+using Server.Map;
+using Server.Model;
+using Server.Services.BackgroundJobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,11 +20,24 @@ builder.WebHost.ConfigureKestrel(option =>
 
 builder.Services.AddGrpc();
 
+builder.Services.AddSignalR();
+
+builder.Services.AddAutoMapper(typeof(AppMappingProfile));
+
+builder.Services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
+
 var app = builder.Build();
 
 app.MapGrpcService<StreamingService>();
 
-app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<DataHub>("/dataHub");
+});
+
+//app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
 app.Run();
 
