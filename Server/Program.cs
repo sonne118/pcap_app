@@ -3,6 +3,7 @@ using Server.Services;
 using Server.Map;
 using Server.Model;
 using Server.Services.BackgroundJobs;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,11 @@ builder.WebHost.ConfigureKestrel(option =>
     {
         listenOptions.UseHttps(certPath, certPass);  
         listenOptions.Protocols = HttpProtocols.Http2;
+    });
+    option.ListenLocalhost(5000, listenOptions =>
+    {
+        listenOptions.UseHub<DataHub>();
+        listenOptions.Protocols = HttpProtocols.Http1;
     });
 });
 

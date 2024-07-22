@@ -18,6 +18,7 @@
     </ItemGroup> 
 
   <ItemGroup>
+    <Folder Include="ClientApp\src\" />
     <Folder Include="models\" />
     <Folder Include="ssl\" />
   </ItemGroup>
