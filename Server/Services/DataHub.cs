@@ -17,7 +17,7 @@ namespace Server.Services
             await foreach (var item in _backgroundJobs.BackgroundTaskSignalR)
             {
                 yield return item;
-                await Task.Delay(1000, cancellationToken);
+                await Task.Delay(3, cancellationToken);
             }
         }
     }

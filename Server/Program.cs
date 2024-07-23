@@ -10,6 +10,19 @@ var builder = WebApplication.CreateBuilder(args);
 string? certPath = Environment.GetEnvironmentVariable("CERTIFICATE_PATH");
 string? certPass = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        //builder.WithOrigins("http://localhost:3000", "http://localhost:5000")
+        builder.WithOrigins("*")
+         .AllowAnyHeader()
+         .AllowAnyMethod();
+        // .WithExposedHeaders(new string[] { "totalAmountOfRecords" });
+
+    });
+});
+
 builder.WebHost.ConfigureKestrel(option =>
 {
     option.ListenAnyIP(5001, listenOptions =>
@@ -19,7 +32,7 @@ builder.WebHost.ConfigureKestrel(option =>
     });
     option.ListenLocalhost(5000, listenOptions =>
     {
-        listenOptions.UseHub<DataHub>();
+        //listenOptions.UseHub<DataHub>();
         listenOptions.Protocols = HttpProtocols.Http1;
     });
 });
@@ -37,6 +50,11 @@ var app = builder.Build();
 app.MapGrpcService<StreamingService>();
 
 app.UseRouting();
+
+//app.UseWebSockets(new Microsoft.AspNetCore.Builder.WebSocketOptions
+//{
+//    KeepAliveInterval = TimeSpan.FromSeconds(120),
+//});
 
 app.UseEndpoints(endpoints =>
 {
