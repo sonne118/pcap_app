@@ -17,9 +17,7 @@ builder.Services.AddCors(options =>
         //builder.WithOrigins("http://localhost:3000", "http://localhost:5000")
         builder.WithOrigins("*")
          .AllowAnyHeader()
-         .AllowAnyMethod();
-        // .WithExposedHeaders(new string[] { "totalAmountOfRecords" });
-
+         .AllowAnyMethod();      
     });
 });
 
@@ -51,17 +49,15 @@ app.MapGrpcService<StreamingService>();
 
 app.UseRouting();
 
-//app.UseWebSockets(new Microsoft.AspNetCore.Builder.WebSocketOptions
-//{
-//    KeepAliveInterval = TimeSpan.FromSeconds(120),
-//});
+app.UseWebSockets(new Microsoft.AspNetCore.Builder.WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromSeconds(120),
+});
 
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<DataHub>("/dataHub");
 });
-
-//app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
 app.Run();
 
