@@ -14,11 +14,12 @@ COPY ["LoadBalancer/LoadBalancer.csproj", "LoadBalancer/"]
 RUN dotnet restore "./LoadBalancer/LoadBalancer.csproj"
 COPY . .
 WORKDIR "/src/LoadBalancer"
+
 RUN dotnet build "./LoadBalancer.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./LoadBalancer.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "LoadBalancer.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

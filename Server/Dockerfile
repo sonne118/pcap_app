@@ -14,6 +14,7 @@ COPY ["Server/Server.csproj", "Server/"]
 RUN dotnet restore "./Server/Server.csproj"
 COPY . .
 WORKDIR "/src/Server"
+
 RUN dotnet build "./Server.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
