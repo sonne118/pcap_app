@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sniffer_packages", "sniffer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "Server\Server.csproj", "{8408B4B1-2C1D-4137-8AE9-B518A11B8ED9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadBalancer", "LoadBalancer\LoadBalancer.csproj", "{F5A163F6-462E-4493-AF64-1426B517E7F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,18 @@ Global
 		{8408B4B1-2C1D-4137-8AE9-B518A11B8ED9}.Release|x64.Build.0 = Release|Any CPU
 		{8408B4B1-2C1D-4137-8AE9-B518A11B8ED9}.Release|x86.ActiveCfg = Release|Any CPU
 		{8408B4B1-2C1D-4137-8AE9-B518A11B8ED9}.Release|x86.Build.0 = Release|Any CPU
+		{F5A163F6-462E-4493-AF64-1426B517E7F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5A163F6-462E-4493-AF64-1426B517E7F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5A163F6-462E-4493-AF64-1426B517E7F3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F5A163F6-462E-4493-AF64-1426B517E7F3}.Debug|x64.Build.0 = Debug|Any CPU
+		{F5A163F6-462E-4493-AF64-1426B517E7F3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F5A163F6-462E-4493-AF64-1426B517E7F3}.Debug|x86.Build.0 = Debug|Any CPU
+		{F5A163F6-462E-4493-AF64-1426B517E7F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5A163F6-462E-4493-AF64-1426B517E7F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5A163F6-462E-4493-AF64-1426B517E7F3}.Release|x64.ActiveCfg = Release|Any CPU
+		{F5A163F6-462E-4493-AF64-1426B517E7F3}.Release|x64.Build.0 = Release|Any CPU
+		{F5A163F6-462E-4493-AF64-1426B517E7F3}.Release|x86.ActiveCfg = Release|Any CPU
+		{F5A163F6-462E-4493-AF64-1426B517E7F3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
