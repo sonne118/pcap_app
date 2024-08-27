@@ -3,14 +3,14 @@ using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
+using Prism.Mvvm;
 
 namespace MVVM
-{
+{    
     public class ClosingCommand
     {
         private ICommand _exitCommand;
         private MainWindow _mainWindow;
-
         public ClosingCommand(MainWindow mainWindow)
         {
             _exitCommand = new RelayCommand<CancelEventArgs>(OnExit);

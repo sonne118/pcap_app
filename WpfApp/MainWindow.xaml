@@ -212,14 +212,24 @@
                     </StackPanel>
                 </toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
             </toggleSwitch:HorizontalToggleSwitch>
-            <toggleSwitch:HorizontalToggleSwitch IsChecked="False" IsEnabled="{Binding IsComboGprcEnable}" CheckedContent="GRPC" Width="88" RenderTransformOrigin="1.452,0.762" Margin="584,0,0,34" Grid.RowSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+        <toggleSwitch:HorizontalToggleSwitch x:Name="chk" IsChecked="False" IsEnabled="{Binding IsComboGprcEnable}"  CheckedContent="GRPC" Width="88" RenderTransformOrigin="1.452,0.762" Margin="584,0,0,34" Grid.RowSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="Checked">
+                    <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding Path=SetGrpcService, Mode=OneWay}" />
+                </i:EventTrigger>
+                <i:EventTrigger EventName="Unchecked">
+                    <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding Path=SetGrpcService, Mode=OneWay}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+
             <toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
                 <StackPanel>
                     <TextBlock TextAlignment="Center">GRPC</TextBlock>
                 </StackPanel>
             </toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
         </toggleSwitch:HorizontalToggleSwitch>
-            <!--</StackPanel>-->
+            <!--</StackPanel>-->      
     </Grid>
+    
 
 </Window>

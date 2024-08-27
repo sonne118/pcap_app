@@ -1,22 +1,30 @@
 ﻿using AutoMapper;
 using CoreModel.Model;
+using GalaSoft.MvvmLight.CommandWpf;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Windows.Threading;
+using wpfapp.IPC.Grpc;
+using wpfapp.Services.Worker;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
-using wpfapp.Services.Worker;
 
 namespace MVVM
 {
     public class GridViewModel : INotifyPropertyChanged, IDisposable
     {
-        private readonly IMapper _mapper;        
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
+        private readonly IMapper _mapper;
         private readonly DispatcherTimer _timer;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
+        public RelayCommand<Boolean> SetGrpcService { get; private set; }
+
         public ObservableCollection<SnifferData> _SnifferData { get; set; }
         public List<string> _ComboBox { get; set; }
 
@@ -32,15 +40,18 @@ namespace MVVM
         }
         public GridViewModel(IBackgroundJobs<Snapshot> backgroundJobs,
                              IDevices device,
-                             IMapper mapper)
+                             IMapper mapper,
+                             IServiceScopeFactory scopeFactory)
         {
+            _scopeFactory = scopeFactory;
+            SetGrpcService = new RelayCommand<bool>(ExecuteGrpcService);
             _mapper = mapper;
             _backgroundJobs = backgroundJobs;
             if (device?.GetDevices() is IEnumerable<string> ls)
             {
                 _ComboBox = new List<string>(ls);
             }
-             _SnifferData = new ObservableCollection<SnifferData>();
+            _SnifferData = new ObservableCollection<SnifferData>();
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMicroseconds(100);
             _timer.Tick += ProcessQueue;
@@ -58,6 +69,22 @@ namespace MVVM
             {
                 var _snifferData = _mapper.Map<SnifferData>(data);
                 _SnifferData.Add(_snifferData);
+            }
+        }
+
+        void ExecuteGrpcService(bool isChecked)
+        {
+            using (var scope = _scopeFactory.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<IHostedGrpcService>();
+                if (!isChecked)
+                {
+                    service.StartAsync(_stoppingCts.Token);
+                }
+                else
+                {
+                    service.StopAsync(_stoppingCts.Token);
+                }
             }
         }
 

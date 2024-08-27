@@ -48,7 +48,7 @@ namespace WpfApp
                     services.AddHostedService(s => s.GetRequiredService<StartService>());
                     services.AddSingleton<IDevices, Devices>();
                     services.AddSingleton<IPutDevice, PutDevice>();
-                    services.AddHostedService<GrpcService>();
+                    services.AddSingleton<IHostedGrpcService, GrpcService>();
                     services.AddGrpcClient<StreamingData.StreamingDataClient>(options =>
                     {
                         options.Address = new Uri("https://localhost:5001");

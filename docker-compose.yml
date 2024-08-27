@@ -13,7 +13,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - 5000:8080
-      - 5001:5001
+      - 5000:5001
     networks:
       - proxybackend
 
@@ -27,10 +27,10 @@ services:
     mem_limit: "0.5G"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-    ports:
-      - 6000:8080
-      - 6001:8081
-      - 5001:5001
+    ports:      
+      #- 6000:8080
+      - 6001:8080
+      - 6000:5001
     networks:
       - proxybackend
 
@@ -44,10 +44,10 @@ services:
     mem_limit: "0.5G"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-    ports:
-      - 7000:8080
-      - 7001:8081
-      - 5001:5001
+    ports:     
+      #- 7000:8080
+       - 7001:8080
+       - 7000:5001
     networks:
       - proxybackend
 
@@ -60,11 +60,11 @@ services:
     cpus: 1
     mem_limit: "0.5G"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Production     
     ports:
-      - 8000:8080
-      - 8001:8081
-      - 5001:5001
+      - 8001:8080
+      #- 8001:8081
+      - 8000:5001
     networks:
       - proxybackend
 
@@ -77,16 +77,18 @@ services:
     cpus: 1
     mem_limit: "0.5G"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Production   
     ports:
-      - 9000:8080
-      - 9001:8081
-      - 5001:5001
+      - 9001:8080
+      #- 9001:8081
+      - 9000:5001
     networks:
       - proxybackend
 
   loadbalancer:
     image: ${DOCKER_REGISTRY-}loadbalancer
+    #volumes:       
+    #  - "./ssl:/ssl"
     container_name: loadbalancer
     build:
       context: .
@@ -94,13 +96,22 @@ services:
     cpus: 1
     mem_limit: "0.5G"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_ENVIRONMENT=Development
+      - 'ASPNETCORE_URLS=https://+;http://+'
+      - ASPNETCORE_HTTPS_PORT=5001     
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/server.pfx      
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=11111 
+      #- PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/mssql-tools/bin
+    volumes:
+      - ~/.aspnet/https:/https:ro #this is very important
+    # - ./https/server.pfx:/https/server.pfx:ro
+      # - ~/.aspnet/https:/https/:ro
+      #- ~/.aspnet/ssl:/ssl:ro #this is very important
     ports:
       - 3000:8080
-      - 3001:8081
-      - 3000:5001
-      - 3001:5001
+      - 3001:8081     
       - 5001:5001
+      - 443:443
     networks:
       - proxybackend
 

@@ -11,7 +11,7 @@ using WpfApp.Services.BackgroundJob;
 
 namespace wpfapp.IPC.Grpc
 {
-    public class GrpcService : BackgroundService
+    public class GrpcService : BackgroundService, IHostedGrpcService
     {
         private readonly IMapper _mapper;
         private readonly AsyncConcurrencyQueue<Snapshot> _snapshotsQueue;
@@ -20,7 +20,6 @@ namespace wpfapp.IPC.Grpc
         private CancellationTokenSource cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         public GrpcService(IBackgroundJobs<Snapshot> backgroundJobs, IMapper mapper, StreamingData.StreamingDataClient streamDataClient)
         {
-
             _snapshotsQueue = backgroundJobs.BackgroundTaskGrpc;
             _streamDataClient = streamDataClient;
             _mapper = mapper;
@@ -35,6 +34,11 @@ namespace wpfapp.IPC.Grpc
         {
             _clientStreamingCall = _streamDataClient.GetStreamingData(cancellationToken: cancellationToken);
             return base.StartAsync(cancellationToken);
+
+        }
+        async Task IHostedGrpcService.StartAsync(CancellationToken cancellationToken)
+        {
+            await StartAsync(cancellationToken);
         }
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -56,9 +60,12 @@ namespace wpfapp.IPC.Grpc
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            await _clientStreamingCall.RequestStream.CompleteAsync();
             await base.StopAsync(cancellationToken);
+            await _clientStreamingCall.RequestStream.CompleteAsync();
         }
-
+        async Task IHostedGrpcService.StopAsync(CancellationToken cancellationToken)
+        {
+            await StopAsync(cancellationToken);
+        }
     }
 }

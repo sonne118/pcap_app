@@ -17,17 +17,17 @@ namespace MVVM
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
-        public ICommand OnClosingCommand { get; }
-
+        public ClosingCommand closingCommand;
+        public ICommand OnClosingCommand { get { return closingCommand.ExitCommand; } }
         public MainWindow(IBackgroundJobs<Snapshot> backgroundJobs,
                           IMapper mapper,
                           IDevices device,
                           IServiceScopeFactory scopeFactory)
-        {           
+        {
             _scopeFactory = scopeFactory;
             InitializeComponent();
-            OnClosingCommand = new ClosingCommand(this).ExitCommand;
-            DataContext = new GridViewModel(backgroundJobs, device, mapper);                       
+            closingCommand = new ClosingCommand(this);
+            DataContext = new GridViewModel(backgroundJobs, device, mapper, scopeFactory);
         }
 
         private void datagrid_MouseDown(object sender, MouseButtonEventArgs e)
