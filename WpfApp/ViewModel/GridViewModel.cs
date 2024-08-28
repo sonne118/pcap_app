@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CoreModel.Model;
 using GalaSoft.MvvmLight.CommandWpf;
-//using GalaSoft.MvvmLight.Command;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -29,26 +28,29 @@ namespace MVVM
         public RelayCommand<Boolean> SetGrpcService { get; private set; }
         public ICommand StartStreamService { get; private set; }
         public ICommand StopStreamService { get; private set; }
-
         public ObservableCollection<StreamingData> _StreamingData { get; set; }
-        public ObservableCollection<string> Items { get; set; }        
+        public ObservableCollection<string> Items { get; set; }
         private StreamingData _selectedSnifferData;
         private string _selectedItem;
 
         public StreamingData SelectedSnifferData
         {
             get => _selectedSnifferData;
-            set 
+            set
             {
                 _selectedSnifferData = value;
                 OnPropertyChanged("SelectedSnifferData");
             }
         }
-        
+
         public string _SelectedItem
         {
             get => _selectedItem;
-            set => Set(ref _selectedItem, value);
+            set
+            {
+                Set(ref _selectedItem, value);
+                SetDevice(_selectedItem);
+            }
         }
 
         public GridViewModel(IBackgroundJobs<Snapshot> backgroundJobs,
@@ -57,16 +59,16 @@ namespace MVVM
                              IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory;
-            SetGrpcService = new RelayCommand<bool>(ExecuteGrpcService);
-            StartStreamService = new RelayCommand(ExecuteStartService);
-            StopStreamService = new RelayCommand(ExecuteStopService);
+            SetGrpcService = new RelayCommand<bool>(OnExecuteGrpcService);
+            StartStreamService = new RelayCommand(OnExecuteStartService);
+            StopStreamService = new RelayCommand(OnExecuteStopService);
             _mapper = mapper;
             _backgroundJobs = backgroundJobs;
             if (device?.GetDevices() is IEnumerable<string> ls)
             {
-                Items = new ObservableCollection<string>(ls);   
+                Items = new ObservableCollection<string>(ls);
             }
-             _StreamingData = new ObservableCollection<StreamingData>();
+            _StreamingData = new ObservableCollection<StreamingData>();
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMicroseconds(100);
             _timer.Tick += ProcessQueue;
@@ -87,7 +89,7 @@ namespace MVVM
             }
         }
 
-        void ExecuteGrpcService(bool isChecked)
+        private void OnExecuteGrpcService(bool isChecked)
         {
             using (var scope = _scopeFactory.CreateScope())
             {
@@ -102,7 +104,7 @@ namespace MVVM
                 }
             }
         }
-        void ExecuteStartService()
+        private void OnExecuteStartService()
         {
             using (var scope = _scopeFactory.CreateScope())
             {
@@ -111,12 +113,35 @@ namespace MVVM
             }
         }
 
-        void ExecuteStopService()
+        private void OnExecuteStopService()
         {
             using (var scope = _scopeFactory.CreateScope())
             {
                 var service = scope.ServiceProvider.GetRequiredService<IHostedService>();
                 service.StopAsync(_stoppingCts.Token);
+            }
+        }
+
+        private bool Set<T>(ref T field, T value, bool forceNotify = false, [CallerMemberName] string PropertyName = null)
+        {
+            if (Equals(field, value))
+            {
+                if (forceNotify) OnPropertyChanged(PropertyName);
+                return false;
+            }
+            field = value;
+            OnPropertyChanged(PropertyName);
+
+            return true;
+        }
+
+        private void SetDevice(string str)
+        {
+            using (var scope = _scopeFactory.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<IPutDevice>();
+                Int32.TryParse(str?.Substring(0, 1), out var dev);
+                service.PutDevices(dev);
             }
         }
 
@@ -127,24 +152,6 @@ namespace MVVM
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
-        protected virtual bool Set(ref string field, string value, bool forceNotify = false, [CallerMemberName] string PropertyName = null)
-        {
-            if (Equals(field, value))
-            {
-                if (forceNotify) OnPropertyChanged(PropertyName);
-                return false;
-            }
-            field = value;
-            OnPropertyChanged(PropertyName);
-            
-            using (var scope = _scopeFactory.CreateScope())
-            {
-                var service = scope.ServiceProvider.GetRequiredService<IPutDevice>();
-                Int32.TryParse(field?.Substring(0, 1), out var dev);
-                service.PutDevices(dev);
-            }           
-            return true;
-        }
     }
 
     public static class LinqExtensions

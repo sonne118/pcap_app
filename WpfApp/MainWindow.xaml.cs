@@ -18,7 +18,11 @@ namespace MVVM
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
         public ClosingCommand closingCommand;
+
+        public DataGridDoubleClickCommand dataGridDoubleClickCommand;
         public ICommand OnClosingCommand { get { return closingCommand.ExitCommand; } }
+        public ICommand OnDataGridDoubleClickCommand { get { return dataGridDoubleClickCommand.ShowCommand; } }
+        
         public MainWindow(IBackgroundJobs<Snapshot> backgroundJobs,
                           IMapper mapper,
                           IDevices device,
@@ -27,24 +31,8 @@ namespace MVVM
             _scopeFactory = scopeFactory;
             InitializeComponent();
             closingCommand = new ClosingCommand(this);
+            dataGridDoubleClickCommand = new DataGridDoubleClickCommand(this);
             DataContext = new GridViewModel(backgroundJobs, device, mapper, scopeFactory);
-        }
-
-        private void datagrid_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left && e.ClickCount == 2)
-            {
-                CustomDataGrid? dg = sender as CustomDataGrid;
-                StreamingData? _snifferData = dg?.SelectedItem as StreamingData;
-
-                ModalViewModel viewModel = new ModalViewModel(_snifferData);
-                ModalWindow modalWindow = new ModalWindow
-                {
-                    DataContext = viewModel.ModalData
-                };
-
-                modalWindow.ShowDialog();
-            }
         }       
     }
 }
