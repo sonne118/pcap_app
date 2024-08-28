@@ -49,7 +49,7 @@ namespace WpfApp
                     services.AddSingleton<IDevices, Devices>();
                     services.AddSingleton<IPutDevice, PutDevice>();
                     services.AddSingleton<IHostedGrpcService, GrpcService>();
-                    services.AddGrpcClient<StreamingData.StreamingDataClient>(options =>
+                    services.AddGrpcClient<StreamingDates.StreamingDatesClient>(options =>
                     {
                         options.Address = new Uri("https://localhost:5001");
                     })

@@ -6,7 +6,7 @@ using AutoMapper;
 
 namespace Server.Services
 {
-    public class StreamingService : StreamingData.StreamingDataBase
+    public class StreamingService : StreamingDates.StreamingDatesBase
     {
         private readonly ILogger<StreamingService> _logger;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;

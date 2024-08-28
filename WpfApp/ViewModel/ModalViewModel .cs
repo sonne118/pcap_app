@@ -5,8 +5,8 @@ namespace MVVM
 {
     public class ModalViewModel : INotifyPropertyChanged
     {
-        private SnifferData? _data;
-        public SnifferData ModalData
+        private StreamingData? _data;
+        public StreamingData ModalData
         {
             get { return _data; }
             set
@@ -18,7 +18,7 @@ namespace MVVM
                 }
             }
         }
-        public ModalViewModel(SnifferData data)
+        public ModalViewModel(StreamingData data)
         {
             ModalData = data;
         }

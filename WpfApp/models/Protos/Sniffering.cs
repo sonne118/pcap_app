@@ -29,9 +29,9 @@ namespace GrpcClient {
             "GAEgASgFIogBChBzdHJlYW1pbmdSZXF1ZXN0EhQKC3NvdXJjZV9wb3J0GJA/",
             "IAEoBRISCglkZXN0X3BvcnQYkT8gASgFEhIKCXNvdXJjZV9pcBjAASABKAkS",
             "EAoHZGVzdF9pcBioASABKAkSEgoKc291cmNlX21hYxgBIAEoCRIQCghkZXN0",
-            "X21hYxgCIAEoCTJZCg1TdHJlYW1pbmdEYXRhEkgKEEdldFN0cmVhbWluZ0Rh",
-            "dGESGS5zbmlmZmVyLnN0cmVhbWluZ1JlcXVlc3QaFy5zbmlmZmVyLnN0cmVh",
-            "bWluZ1JlcGx5KAFCDaoCCkdycGNDbGllbnRiBnByb3RvMw=="));
+            "X21hYxgCIAEoCTJaCg5TdHJlYW1pbmdEYXRlcxJIChBHZXRTdHJlYW1pbmdE",
+            "YXRhEhkuc25pZmZlci5zdHJlYW1pbmdSZXF1ZXN0Ghcuc25pZmZlci5zdHJl",
+            "YW1pbmdSZXBseSgBQg2qAgpHcnBjQ2xpZW50YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {

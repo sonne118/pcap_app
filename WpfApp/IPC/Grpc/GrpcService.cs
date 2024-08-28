@@ -15,10 +15,10 @@ namespace wpfapp.IPC.Grpc
     {
         private readonly IMapper _mapper;
         private readonly AsyncConcurrencyQueue<Snapshot> _snapshotsQueue;
-        private StreamingData.StreamingDataClient _streamDataClient;
+        private StreamingDates.StreamingDatesClient _streamDataClient;
         private AsyncClientStreamingCall<streamingRequest, streamingReply>? _clientStreamingCall;
         private CancellationTokenSource cancellationToken = new CancellationTokenSource(TimeSpan.FromSeconds(10));
-        public GrpcService(IBackgroundJobs<Snapshot> backgroundJobs, IMapper mapper, StreamingData.StreamingDataClient streamDataClient)
+        public GrpcService(IBackgroundJobs<Snapshot> backgroundJobs, IMapper mapper, StreamingDates.StreamingDatesClient streamDataClient)
         {
             _snapshotsQueue = backgroundJobs.BackgroundTaskGrpc;
             _streamDataClient = streamDataClient;

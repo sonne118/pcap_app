@@ -6,9 +6,13 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         xmlns:k="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:toggleSwitch="clr-namespace:ToggleSwitch;assembly=ToggleSwitch"
-        xmlns:local="clr-namespace:MVVM"
+        xmlns:local="clr-namespace:MVVM"  d:DataContext="{d:DesignInstance Type=local:GridViewModel}"
         mc:Ignorable="d"        
         Title="grid_pcap" Height="600" Width="700">
+    <!--<Window.DataContext>
+        <local:CommandViewModel/>
+    </Window.DataContext>-->
+  
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <cmd:EventToCommand Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}},Path=OnClosingCommand}" PassEventArgsToCommand="True" />
@@ -156,30 +160,43 @@
             <RowDefinition Height="44*"/>
             <RowDefinition Height="521*"/>
         </Grid.RowDefinitions>
-        <Button Width="52" RenderTransformOrigin="-0.85,-8.699" Margin="0,4,638,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Click="Button_Click_1" Grid.RowSpan="3">
+        <!--Click="Button_Click_1"-->
+        <!--CommandParameter="{Binding  ElementName=btn_g}"  , Mode=OneWay-->
+        <Button Width="52"  Command="{Binding StartStreamService}"  x:Name="btn_g"  RenderTransformOrigin="-0.85,-8.699" Margin="0,4,638,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.RowSpan="3">
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="click">
+                    <cmd:EventToCommand Command="{Binding StartStreamService}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->
             <Button.Template>
-                <ControlTemplate TargetType="Button">
+                <ControlTemplate  TargetType="Button">
                     <Border CornerRadius="10" Background="LightGreen" Margin="6,0,2,5">
                         <ContentPresenter Content="start" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Button Width="91" RenderTransformOrigin="-0.85,-8.699" Margin="0,4,513,29" HorizontalAlignment="Right" Click="Button_Click" Grid.RowSpan="3">
+        <Button Width="91" x:Name="btn_r" Command="{Binding Path=StopStreamService}" RenderTransformOrigin="-0.85,-8.699" Margin="0,4,513,29" HorizontalAlignment="Right"  Grid.RowSpan="3">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border CornerRadius="10" Background="Red" Margin="-22,0,69,4">
                         <ContentPresenter Content="stop" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="click">
+                                <cmd:EventToCommand CommandParameter="{Binding  ElementName=btn_r}" Command="{Binding Path=StopStreamService, Mode=OneWay}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                     </Border>
                 </ControlTemplate>
             </Button.Template>
         </Button>
         <StackPanel Margin="0,0,0,29" Grid.RowSpan="3" Height="30" VerticalAlignment="Bottom" RenderTransformOrigin="0.503,0.501" HorizontalAlignment="Left" Width="545">
-            <ComboBox Name="cDevice" Style="{StaticResource ComboBoxFlatStyle}" ItemsSource="{Binding _ComboBox}"  SelectionChanged="cDevices_SelectionChanged" Width="300" Height="25" RenderTransformOrigin="0.596,0.774">
+            <ComboBox Name="cDevice" Style="{StaticResource ComboBoxFlatStyle}" ItemsSource="{Binding Items}" SelectedItem="{ Binding _SelectedItem}"   Width="300" Height="25" RenderTransformOrigin="0.596,0.774">
+                <!--SelectionChanged="cDevices_SelectionChanged"-->
             </ComboBox>
         </StackPanel>
         <StackPanel Height="19" VerticalAlignment="Top"/>
-        <local:CustomDataGrid MouseDown="datagrid_MouseDown" IsReadOnly="True"  ItemsSource="{Binding _SnifferData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2" >
+        <local:CustomDataGrid MouseDown="datagrid_MouseDown" IsReadOnly="True"  ItemsSource="{Binding _StreamingData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2" >
             <local:CustomDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>

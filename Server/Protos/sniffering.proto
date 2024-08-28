@@ -6,7 +6,7 @@ option csharp_namespace = "GrpcClient";
 
 package sniffer;
 
-service StreamingData {
+service StreamingDates {
     
   rpc GetStreamingData (stream streamingRequest) returns (streamingReply);
 }

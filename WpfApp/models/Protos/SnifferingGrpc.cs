@@ -8,9 +8,9 @@
 using grpc = global::Grpc.Core;
 
 namespace GrpcClient {
-  public static partial class StreamingData
+  public static partial class StreamingDates
   {
-    static readonly string __ServiceName = "sniffer.StreamingData";
+    static readonly string __ServiceName = "sniffer.StreamingDates";
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static void __Helper_SerializeMessage(global::Google.Protobuf.IMessage message, grpc::SerializationContext context)
@@ -64,9 +64,9 @@ namespace GrpcClient {
       get { return global::GrpcClient.SnifferingReflection.Descriptor.Services[0]; }
     }
 
-    /// <summary>Base class for server-side implementations of StreamingData</summary>
-    [grpc::BindServiceMethod(typeof(StreamingData), "BindService")]
-    public abstract partial class StreamingDataBase
+    /// <summary>Base class for server-side implementations of StreamingDates</summary>
+    [grpc::BindServiceMethod(typeof(StreamingDates), "BindService")]
+    public abstract partial class StreamingDatesBase
     {
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
       public virtual global::System.Threading.Tasks.Task<global::GrpcClient.streamingReply> GetStreamingData(grpc::IAsyncStreamReader<global::GrpcClient.streamingRequest> requestStream, grpc::ServerCallContext context)
@@ -76,30 +76,30 @@ namespace GrpcClient {
 
     }
 
-    /// <summary>Client for StreamingData</summary>
-    public partial class StreamingDataClient : grpc::ClientBase<StreamingDataClient>
+    /// <summary>Client for StreamingDates</summary>
+    public partial class StreamingDatesClient : grpc::ClientBase<StreamingDatesClient>
     {
-      /// <summary>Creates a new client for StreamingData</summary>
+      /// <summary>Creates a new client for StreamingDates</summary>
       /// <param name="channel">The channel to use to make remote calls.</param>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public StreamingDataClient(grpc::ChannelBase channel) : base(channel)
+      public StreamingDatesClient(grpc::ChannelBase channel) : base(channel)
       {
       }
-      /// <summary>Creates a new client for StreamingData that uses a custom <c>CallInvoker</c>.</summary>
+      /// <summary>Creates a new client for StreamingDates that uses a custom <c>CallInvoker</c>.</summary>
       /// <param name="callInvoker">The callInvoker to use to make remote calls.</param>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public StreamingDataClient(grpc::CallInvoker callInvoker) : base(callInvoker)
+      public StreamingDatesClient(grpc::CallInvoker callInvoker) : base(callInvoker)
       {
       }
       /// <summary>Protected parameterless constructor to allow creation of test doubles.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      protected StreamingDataClient() : base()
+      protected StreamingDatesClient() : base()
       {
       }
       /// <summary>Protected constructor to allow creation of configured clients.</summary>
       /// <param name="configuration">The client configuration.</param>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      protected StreamingDataClient(ClientBaseConfiguration configuration) : base(configuration)
+      protected StreamingDatesClient(ClientBaseConfiguration configuration) : base(configuration)
       {
       }
 
@@ -115,16 +115,16 @@ namespace GrpcClient {
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      protected override StreamingDataClient NewInstance(ClientBaseConfiguration configuration)
+      protected override StreamingDatesClient NewInstance(ClientBaseConfiguration configuration)
       {
-        return new StreamingDataClient(configuration);
+        return new StreamingDatesClient(configuration);
       }
     }
 
     /// <summary>Creates service definition that can be registered with a server</summary>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    public static grpc::ServerServiceDefinition BindService(StreamingDataBase serviceImpl)
+    public static grpc::ServerServiceDefinition BindService(StreamingDatesBase serviceImpl)
     {
       return grpc::ServerServiceDefinition.CreateBuilder()
           .AddMethod(__Method_GetStreamingData, serviceImpl.GetStreamingData).Build();
@@ -135,7 +135,7 @@ namespace GrpcClient {
     /// <param name="serviceBinder">Service methods will be bound by calling <c>AddMethod</c> on this object.</param>
     /// <param name="serviceImpl">An object implementing the server-side handling logic.</param>
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    public static void BindService(grpc::ServiceBinderBase serviceBinder, StreamingDataBase serviceImpl)
+    public static void BindService(grpc::ServiceBinderBase serviceBinder, StreamingDatesBase serviceImpl)
     {
       serviceBinder.AddMethod(__Method_GetStreamingData, serviceImpl == null ? null : new grpc::ClientStreamingServerMethod<global::GrpcClient.streamingRequest, global::GrpcClient.streamingReply>(serviceImpl.GetStreamingData));
     }

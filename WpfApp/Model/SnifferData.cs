@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace CoreModel.Model
 {
-    public class SnifferData : INotifyPropertyChanged
+    public class StreamingData : INotifyPropertyChanged
     {
         // privatr int id;
         private int source_port;
