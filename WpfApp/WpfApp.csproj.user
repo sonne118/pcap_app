@@ -7,15 +7,15 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="ModalWindow.cs">
+    <Compile Update="View\ModalWindow.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="MainWindow.xaml">
+    <Page Update="View\MainWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="ModalWindow.xaml">
+    <Page Update="View\ModalWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

@@ -1,9 +1,9 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using CoreModel.Model;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
