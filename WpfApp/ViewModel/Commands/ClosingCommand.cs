@@ -27,7 +27,7 @@ namespace MVVM
 
         void OnExit(CancelEventArgs e)
         {
-            var result = MessageBox.Show(_mainWindow, "Do you want to close?", "", MessageBoxButton.YesNo);           
+            var result = MessageBox.Show(_mainWindow, "Do you want to close?", "", MessageBoxButton.YesNo);
             if (result == MessageBoxResult.Yes)
             {
                 Environment.Exit(0);

@@ -6,7 +6,7 @@
         xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:cmd="clr-namespace:GalaSoft.MvvmLight.Command;assembly=GalaSoft.MvvmLight.Platform"
         xmlns:k="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:toggleSwitch="clr-namespace:ToggleSwitch;assembly=ToggleSwitch"
-        xmlns:local="clr-namespace:MVVM"  d:DataContext="{d:DesignInstance Type=local:GridViewModel}"
+        xmlns:local="clr-namespace:MVVM"  d:DataContext="{d:DesignInstance Type=local:CommandViewModel}"
         mc:Ignorable="d"        
         Title="grid_pcap" Height="600" Width="700">
     <!--<Window.DataContext>
@@ -15,7 +15,7 @@
   
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
-            <cmd:EventToCommand Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}},Path=OnClosingCommand}" PassEventArgsToCommand="True" />
+            <cmd:EventToCommand Command="{Binding Path=OnClosingCommand}" PassEventArgsToCommand="True" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.Resources>
@@ -196,7 +196,7 @@
         <local:CustomDataGrid IsReadOnly="True" SelectedItem="_SelectedItemDoubleClick"  ItemsSource="{Binding _StreamingData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2" >
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
-                    <cmd:EventToCommand Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=OnDataGridDoubleClickCommand}"                                                                                        
+                    <cmd:EventToCommand Command="{Binding Path=OnDataGridDoubleClickCommand}"                                                                                        
                                         PassEventArgsToCommand="True" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>

@@ -12,25 +12,22 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Input;
 using System.Windows.Threading;
-using wpfapp.IPC.Grpc;
 using wpfapp.Services.Worker;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
 
 namespace MVVM
 {
-    public class GridViewModel : ViewModelBase
+    public abstract class GridViewModel : ViewModelBase
     {
-        private readonly IServiceScopeFactory _scopeFactory;
-        private readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
-        private readonly IMapper _mapper;
+        protected readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
+        public ObservableCollection<StreamingData> _StreamingData { get; set; } = new ObservableCollection<StreamingData>();
+        public ObservableCollection<string> Items { get; set; }       
+        protected readonly IBackgroundJobs<Snapshot> _backgroundJobs;
+        protected readonly  IServiceScopeFactory _scopeFactory;        
+        protected readonly  IMapper _mapper;
+
         private readonly DispatcherTimer _timer;
-        private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
-        public RelayCommand<Boolean> SetGrpcService { get; private set; }
-        public ICommand StartStreamService { get; private set; }
-        public ICommand StopStreamService { get; private set; }
-        public ObservableCollection<StreamingData> _StreamingData { get; set; }
-        public ObservableCollection<string> Items { get; set; }
         private StreamingData _selectedSnifferData;
         private string _selectedItem;
 
@@ -57,29 +54,21 @@ namespace MVVM
         public GridViewModel(IBackgroundJobs<Snapshot> backgroundJobs,
                              IDevices device,
                              IMapper mapper,
-                             IServiceScopeFactory scopeFactory)
+                             IServiceScopeFactory scopeFactory)                              
         {
-            _scopeFactory = scopeFactory;
-            SetGrpcService = new RelayCommand<bool>(OnExecuteGrpcService);
-            StartStreamService = new RelayCommand(OnExecuteStartService);
-            StopStreamService = new RelayCommand(OnExecuteStopService);
+            _scopeFactory = scopeFactory;        
             _mapper = mapper;
             _backgroundJobs = backgroundJobs;
             if (device?.GetDevices() is IEnumerable<string> ls)
             {
                 Items = new ObservableCollection<string>(ls);
-            }
-            _StreamingData = new ObservableCollection<StreamingData>();
+            }         
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMicroseconds(100);
             _timer.Tick += ProcessQueue;
             _timer.IsEnabled = true;
         }
-        public void Dispose()
-        {
-            _timer.Stop();
-            _timer.Tick -= ProcessQueue;
-        }
+     
 
         private void ProcessQueue(object sender, EventArgs e)
         {
@@ -88,53 +77,7 @@ namespace MVVM
                 var _snifferData = _mapper.Map<StreamingData>(data);
                 _StreamingData.Add(_snifferData);
             }
-        }
-
-        private void OnExecuteGrpcService(bool isChecked)
-        {
-            using (var scope = _scopeFactory.CreateScope())
-            {
-                var service = scope.ServiceProvider.GetRequiredService<IHostedGrpcService>();
-                if (!isChecked)
-                {
-                    service.StartAsync(_stoppingCts.Token);
-                }
-                else
-                {
-                    service.StopAsync(_stoppingCts.Token);
-                }
-            }
-        }
-        private void OnExecuteStartService()
-        {
-            using (var scope = _scopeFactory.CreateScope())
-            {
-                var service = scope.ServiceProvider.GetRequiredService<IHostedService>();
-                service.StartAsync(_stoppingCts.Token);
-            }
-        }
-
-        private void OnExecuteStopService()
-        {
-            using (var scope = _scopeFactory.CreateScope())
-            {
-                var service = scope.ServiceProvider.GetRequiredService<IHostedService>();
-                service.StopAsync(_stoppingCts.Token);
-            }
-        }
-
-        private bool Set<T>(ref T field, T value, bool forceNotify = false, [CallerMemberName] string PropertyName = null)
-        {
-            if (Equals(field, value))
-            {
-                if (forceNotify) OnPropertyChanged(PropertyName);
-                return false;
-            }
-            field = value;
-            OnPropertyChanged(PropertyName);
-
-            return true;
-        }
+        }               
 
         private void SetDevice(string str)
         {
@@ -152,9 +95,11 @@ namespace MVVM
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
-
-    }
-
-    
-
+      
+        public void Dispose()
+        {
+            _timer.Stop();
+            _timer.Tick -= ProcessQueue;
+        }
+    }    
 }

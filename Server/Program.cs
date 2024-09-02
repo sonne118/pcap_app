@@ -1,14 +1,8 @@
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Server.Services;
 using Server.Map;
 using Server.Model;
+using Server.Services;
 using Server.Services.BackgroundJobs;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting.Internal;
-using System;
 
 
 var builder = WebApplication.CreateBuilder(args);
