@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+﻿using GalaSoft.MvvmLight;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace CoreModel.Model
 {
-    public class StreamingData : INotifyPropertyChanged
+    public class StreamingData : ViewModelBase//, INotifyPropertyChanged
     {
         // privatr int id;
         private int source_port;

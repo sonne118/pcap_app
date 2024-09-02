@@ -1,9 +1,10 @@
 ﻿using CoreModel.Model;
 using System.ComponentModel;
+using GalaSoft.MvvmLight;
 
 namespace MVVM
 {
-    public class ModalViewModel : INotifyPropertyChanged
+    public class ModalViewModel : ViewModelBase
     {
         private StreamingData? _data;
         public StreamingData ModalData

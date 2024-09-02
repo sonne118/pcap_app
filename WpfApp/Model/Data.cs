@@ -1,9 +1,10 @@
-﻿using System.ComponentModel;
+﻿using GalaSoft.MvvmLight;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace CoreModel.Model
 {
-    public class Data : INotifyPropertyChanged
+    public class Data : ViewModelBase //INotifyPropertyChanged
     {
         private int id;
         private string? source_ip = null;

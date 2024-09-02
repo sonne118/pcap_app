@@ -1,6 +1,7 @@
 ﻿using System;
 using AutoMapper;
 using CoreModel.Model;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,7 +19,7 @@ using WpfApp.Services.BackgroundJob;
 
 namespace MVVM
 {
-    public class GridViewModel : INotifyPropertyChanged, IDisposable
+    public class GridViewModel : ViewModelBase
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
