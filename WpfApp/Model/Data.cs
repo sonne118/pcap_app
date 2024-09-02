@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace CoreModel.Model
 {
-    public class Data : ViewModelBase //INotifyPropertyChanged
+    public class Data : ViewModelBase 
     {
         private int id;
         private string? source_ip = null;

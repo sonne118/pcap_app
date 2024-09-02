@@ -7,7 +7,7 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="View\ModalWindow.cs">
+    <Compile Update="View\ModalWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

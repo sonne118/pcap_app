@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace CoreModel.Model
 {
-    public class StreamingData : ViewModelBase//, INotifyPropertyChanged
+    public class StreamingData : ViewModelBase
     {
         // privatr int id;
         private int source_port;
