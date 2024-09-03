@@ -9,10 +9,7 @@
         xmlns:local="clr-namespace:MVVM"  d:DataContext="{d:DesignInstance Type=local:CommandViewModel}"
         mc:Ignorable="d"        
         Title="grid_pcap" Height="600" Width="700">
-    <!--<Window.DataContext>
-        <local:CommandViewModel/>
-    </Window.DataContext>-->
-  
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closing">
             <cmd:EventToCommand Command="{Binding Path=OnClosingCommand}" PassEventArgsToCommand="True" />
@@ -161,10 +158,10 @@
             <RowDefinition Height="44*"/>
             <RowDefinition Height="521*"/>
         </Grid.RowDefinitions>
-        <Button Width="52"  Command="{Binding StartStreamService}"  x:Name="btn_g"  RenderTransformOrigin="-0.85,-8.699" Margin="0,4,638,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.RowSpan="3">
+        <Button Width="52"  Command="{Binding OnStartStreamService}"  x:Name="btn_g"  RenderTransformOrigin="-0.85,-8.699" Margin="0,4,638,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.RowSpan="3">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="click">
-                    <cmd:EventToCommand Command="{Binding StartStreamService}" />
+                    <cmd:EventToCommand Command="{Binding OnStartStreamService}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <Button.Template>
@@ -175,14 +172,14 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Button Width="91" x:Name="btn_r" Command="{Binding Path=StopStreamService}" RenderTransformOrigin="-0.85,-8.699" Margin="0,4,513,29" HorizontalAlignment="Right"  Grid.RowSpan="3">
+        <Button Width="91" x:Name="btn_r" Command="{Binding Path=OnStopStreamService}" RenderTransformOrigin="-0.85,-8.699" Margin="0,4,513,29" HorizontalAlignment="Right"  Grid.RowSpan="3">
             <Button.Template>
                 <ControlTemplate TargetType="Button">
                     <Border CornerRadius="10" Background="Red" Margin="-22,0,69,4">
                         <ContentPresenter Content="stop" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="click">
-                                <cmd:EventToCommand CommandParameter="{Binding  ElementName=btn_r}" Command="{Binding Path=StopStreamService, Mode=OneWay}" />
+                                <cmd:EventToCommand CommandParameter="{Binding  ElementName=btn_r}" Command="{Binding Path=OnStopStreamService, Mode=OneWay}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </Border>
@@ -245,10 +242,10 @@
         <toggleSwitch:HorizontalToggleSwitch x:Name="chk" IsChecked="False" IsEnabled="{Binding IsComboGprcEnable}"  CheckedContent="GRPC" Width="88" RenderTransformOrigin="1.452,0.762" Margin="584,0,0,34" Grid.RowSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="Checked">
-                    <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding Path=SetGrpcService, Mode=OneWay}" />
+                    <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding Path=OnSetGrpcService, Mode=OneWay}" />
                 </i:EventTrigger>
                 <i:EventTrigger EventName="Unchecked">
-                    <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding Path=SetGrpcService, Mode=OneWay}" />
+                    <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding Path=OnSetGrpcService, Mode=OneWay}" />
                 </i:EventTrigger>
             </i:Interaction.Triggers>
 

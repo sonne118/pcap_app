@@ -12,7 +12,7 @@ namespace MVVM
 {
     public abstract class GridViewModel : ViewModelBase, IDisposable
     {
-        private IDevices _device;
+        private IDevices _devices;
         protected readonly DispatcherTimer _timer;
         protected readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
         
@@ -23,7 +23,7 @@ namespace MVVM
             get => _items;
             set
             {
-                if (_device?.GetDevices() is IEnumerable<string> ls)
+                if (_devices?.GetDevices() is IEnumerable<string> ls)
                 {
                     _items.AddRange(ls);
                 }
@@ -54,15 +54,15 @@ namespace MVVM
 
         public GridViewModel(IDevices device)
         {
-            _device = device;
+            _devices = device;
              Items = _items;           
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMicroseconds(100);
-            _timer.Tick += ProcessQueue;
+            _timer.Tick += OnProcessQueue;
             _timer.IsEnabled = true;
         }
 
-        public abstract void ProcessQueue(object sender, EventArgs e);
+        public abstract void OnProcessQueue(object sender, EventArgs e);
         public abstract void SetDevice(string str);
         public abstract void OnPropertyChanged([CallerMemberName] string prop = "");
         public abstract void Dispose();

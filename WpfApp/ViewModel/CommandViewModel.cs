@@ -21,11 +21,8 @@ namespace MVVM
         private readonly IMapper _mapper;
         
         public ClosingCommand closingCommand;
-
         public DataGridDoubleClickCommand dataGridDoubleClickCommand;
-        public ICommand OnClosingCommand { get { return closingCommand.ExitCommand; } }
-        public ICommand OnDataGridDoubleClickCommand { get { return dataGridDoubleClickCommand.ShowCommand; } }
-
+       
         public CommandViewModel(IBackgroundJobs<Snapshot> backgroundJobs,
                                 IDevices device,
                                 IMapper mapper,
@@ -35,16 +32,18 @@ namespace MVVM
             _mapper = mapper;
             _backgroundJobs = backgroundJobs;
             _scopeFactory = scopeFactory;
-            SetGrpcService = new RelayCommand<bool>(OnExecuteGrpcService);
-            StartStreamService = new RelayCommand(OnExecuteStartService);
-            StopStreamService = new RelayCommand(OnExecuteStopService);
+            OnSetGrpcService = new RelayCommand<bool>(OnExecuteGrpcService);
+            OnStartStreamService = new RelayCommand(OnExecuteStartService);
+            OnStopStreamService = new RelayCommand(OnExecuteStopService);
             closingCommand = new ClosingCommand(mainWindow);
             dataGridDoubleClickCommand = new DataGridDoubleClickCommand(mainWindow);
         }
 
-        public RelayCommand<Boolean> SetGrpcService { get; private set; }
-        public ICommand StartStreamService { get; private set; }
-        public ICommand StopStreamService { get; private set; }
+        public RelayCommand<Boolean> OnSetGrpcService { get; private set; }
+        public ICommand OnStartStreamService { get; private set; }
+        public ICommand OnStopStreamService { get; private set; }
+        public ICommand OnClosingCommand { get { return closingCommand.ExitCommand; } }
+        public ICommand OnDataGridDoubleClickCommand { get { return dataGridDoubleClickCommand.ShowCommand; } }
 
 
         private void OnExecuteGrpcService(bool isChecked)
@@ -90,7 +89,7 @@ namespace MVVM
             }
         }
 
-        public override void ProcessQueue(object sender, EventArgs e)
+        public override void OnProcessQueue(object sender, EventArgs e)
         {
             while (_backgroundJobs.BackgroundTasks.TryDequeue(out var data))
             {
@@ -109,7 +108,7 @@ namespace MVVM
         public override void Dispose()
         {
             _timer.Stop();
-            _timer.Tick -= ProcessQueue;
+            _timer.Tick -= OnProcessQueue;
         }
     }
 }
