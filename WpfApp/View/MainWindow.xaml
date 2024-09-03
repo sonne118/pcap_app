@@ -195,21 +195,21 @@
         </StackPanel>
         <StackPanel Height="19" VerticalAlignment="Top"/>
         <!--MouseDown="datagrid_MouseDown"-->
-        <local:CustomDataGrid IsReadOnly="True" SelectedItem="{Binding SelectedSnifferData}"  ItemsSource="{Binding _StreamingData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2" >
+        <local:ScrollDataGrid IsReadOnly="True" SelectedItem="{Binding SelectedSnifferData}"  ItemsSource="{Binding _StreamingData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2" >
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <cmd:EventToCommand Command="{Binding Path=OnDataGridDoubleClickCommand}" PassEventArgsToCommand="True">                                                                                
                     <cmd:EventToCommand.CommandParameter>
                         <MultiBinding Converter="{StaticResource MultiValueConverter}">
                             <Binding />
-                                <Binding RelativeSource="{RelativeSource AncestorType= local:CustomDataGrid}" Path="SelectedItem" />
+                                <Binding RelativeSource="{RelativeSource AncestorType= local:ScrollDataGrid}" Path="SelectedItem" />
                         </MultiBinding>
                     </cmd:EventToCommand.CommandParameter>
                     </cmd:EventToCommand>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <!--CommandParameter="{Binding Path=Name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TableRow}}}"-->
-            <local:CustomDataGrid.RowStyle>
+            <local:ScrollDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
                         <DataTrigger Binding="{ Binding Path=Source_port}"  Value="443">
@@ -223,7 +223,7 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </local:CustomDataGrid.RowStyle>
+            </local:ScrollDataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Source_ip"  Width="120" Binding="{Binding Source_ip}"   />
                 <DataGridTextColumn Header="Source_port" Width="50" Binding="{Binding Source_port}" />
@@ -232,7 +232,7 @@
                 <DataGridTextColumn Header="Source_mac" Width="120" Binding="{Binding Source_mac}" />
                 <DataGridTextColumn Header="Dest_mac" Width="120" Binding="{Binding Dest_mac}" />
             </DataGrid.Columns>
-        </local:CustomDataGrid>
+        </local:ScrollDataGrid>
         <!--<StackPanel Height="27" Grid.RowSpan="3"  VerticalAlignment="Top" HorizontalAlignment="Left" >-->
             <toggleSwitch:HorizontalToggleSwitch RenderTransformOrigin="2.682,1.322" Margin="472,0,0,34" Grid.RowSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left">
                 <toggleSwitch:HorizontalToggleSwitch.UncheckedContent>

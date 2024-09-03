@@ -4,7 +4,7 @@ using System.Windows.Controls;
 
 namespace MVVM
 {
-    public sealed class CustomDataGrid : DataGrid
+    public sealed class ScrollDataGrid : DataGrid
     {
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
         {
