@@ -8,11 +8,18 @@ using wpfapp.IPC.Grpc;
 using wpfapp.Services.Worker;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
+using System.Runtime.CompilerServices;
+using System.ComponentModel;
+using CoreModel.Model;
 
 namespace MVVM
 {
     public class CommandViewModel : GridViewModel
     {
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
+        private readonly IMapper _mapper;
+        
         public ClosingCommand closingCommand;
 
         public DataGridDoubleClickCommand dataGridDoubleClickCommand;
@@ -23,8 +30,11 @@ namespace MVVM
                                 IDevices device,
                                 IMapper mapper,
                                 IServiceScopeFactory scopeFactory,
-                                MainWindow mainWindow) : base(backgroundJobs, device, mapper, scopeFactory )
+                                MainWindow mainWindow) : base(device)
         {
+            _mapper = mapper;
+            _backgroundJobs = backgroundJobs;
+            _scopeFactory = scopeFactory;
             SetGrpcService = new RelayCommand<bool>(OnExecuteGrpcService);
             StartStreamService = new RelayCommand(OnExecuteStartService);
             StopStreamService = new RelayCommand(OnExecuteStopService);
@@ -69,5 +79,38 @@ namespace MVVM
                 service.StopAsync(_stoppingCts.Token);
             }
         }
+
+        public override void SetDevice(string str)
+        {
+            using (var scope = _scopeFactory.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<IPutDevice>();
+                Int32.TryParse(str?.Substring(0, 1), out var dev);
+                service.PutDevices(dev);
+            }
+        }
+
+        public override void ProcessQueue(object sender, EventArgs e)
+        {
+            while (_backgroundJobs.BackgroundTasks.TryDequeue(out var data))
+            {
+                var _snifferData = _mapper.Map<StreamingData>(data);
+                _StreamingData.Add(_snifferData);
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        public override void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+
+        public override void Dispose()
+        {
+            _timer.Stop();
+            _timer.Tick -= ProcessQueue;
+        }
     }
 }
+

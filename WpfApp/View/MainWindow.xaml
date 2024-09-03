@@ -79,7 +79,6 @@
                                     </ControlTemplate>
                                 </TextBox.Template>
                             </TextBox>
-                            <!-- Popup showing items -->
                             <Popup Name="Popup" Placement="Bottom" Focusable="False" AllowsTransparency="True" IsOpen="{TemplateBinding ComboBox.IsDropDownOpen}" PopupAnimation="Slide">
                                 <Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding FrameworkElement.ActualWidth}" MaxHeight="{TemplateBinding ComboBox.MaxDropDownHeight}">
                                     <Border Name="DropDownBorder" Background="White" Margin="0, 1, 0, 0" CornerRadius="0" BorderThickness="1,1,1,1" BorderBrush="{StaticResource ComboBoxNormalBorderBrush}"/>
@@ -108,6 +107,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+           
             <Setter Property="ItemContainerStyle">
                 <Setter.Value>
                     <Style TargetType="ComboBoxItem">
@@ -144,7 +144,6 @@
         </Style>
         <Style x:Key="CheckBoxStyle1" TargetType="CheckBox">
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
-            <!-- Other setters for background, template, etc. -->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="CheckBox">
@@ -154,6 +153,7 @@
             </Setter>
         </Style>
     </Window.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="19*"/>
@@ -189,26 +189,26 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
+        
         <StackPanel Margin="0,0,0,29" Grid.RowSpan="3" Height="30" VerticalAlignment="Bottom" RenderTransformOrigin="0.503,0.501" HorizontalAlignment="Left" Width="545">
             <ComboBox Name="cDevice" Style="{StaticResource ComboBoxFlatStyle}" ItemsSource="{Binding Items}" SelectedItem="{ Binding _SelectedItem}"   Width="300" Height="25" RenderTransformOrigin="0.596,0.774">
             </ComboBox>
         </StackPanel>
         <StackPanel Height="19" VerticalAlignment="Top"/>
-        <!--MouseDown="datagrid_MouseDown"-->
+       
         <local:ScrollDataGrid IsReadOnly="True" SelectedItem="{Binding SelectedSnifferData}"  ItemsSource="{Binding _StreamingData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2" >
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
-                    <cmd:EventToCommand Command="{Binding Path=OnDataGridDoubleClickCommand}" PassEventArgsToCommand="True">                                                                                
-                    <cmd:EventToCommand.CommandParameter>
-                        <MultiBinding Converter="{StaticResource MultiValueConverter}">
-                            <Binding />
+                    <cmd:EventToCommand Command="{Binding Path=OnDataGridDoubleClickCommand}" PassEventArgsToCommand="True">
+                        <cmd:EventToCommand.CommandParameter>
+                            <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                                <Binding />
                                 <Binding RelativeSource="{RelativeSource AncestorType= local:ScrollDataGrid}" Path="SelectedItem" />
-                        </MultiBinding>
-                    </cmd:EventToCommand.CommandParameter>
+                            </MultiBinding>
+                        </cmd:EventToCommand.CommandParameter>
                     </cmd:EventToCommand>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            <!--CommandParameter="{Binding Path=Name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TableRow}}}"-->
             <local:ScrollDataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
@@ -233,6 +233,7 @@
                 <DataGridTextColumn Header="Dest_mac" Width="120" Binding="{Binding Dest_mac}" />
             </DataGrid.Columns>
         </local:ScrollDataGrid>
+        
         <!--<StackPanel Height="27" Grid.RowSpan="3"  VerticalAlignment="Top" HorizontalAlignment="Left" >-->
             <toggleSwitch:HorizontalToggleSwitch RenderTransformOrigin="2.682,1.322" Margin="472,0,0,34" Grid.RowSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left">
                 <toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
@@ -260,5 +261,4 @@
             <!--</StackPanel>-->      
     </Grid>
     
-
 </Window>
