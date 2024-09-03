@@ -18,17 +18,18 @@ using WpfApp.Services.BackgroundJob;
 
 namespace MVVM
 {
-    public abstract class GridViewModel : ViewModelBase
+    public abstract class GridViewModel : ViewModelBase, IDisposable
     {
         protected readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
         public ObservableCollection<StreamingData> _StreamingData { get; set; } = new ObservableCollection<StreamingData>();
         public ObservableCollection<string> Items { get; set; }       
-        protected readonly IBackgroundJobs<Snapshot> _backgroundJobs;
+        
+        protected readonly  IBackgroundJobs<Snapshot> _backgroundJobs;
         protected readonly  IServiceScopeFactory _scopeFactory;        
         protected readonly  IMapper _mapper;
+        private   readonly  DispatcherTimer _timer;
 
-        private readonly DispatcherTimer _timer;
-        private StreamingData _selectedSnifferData;
+        protected StreamingData _selectedSnifferData;
         private string _selectedItem;
 
         public StreamingData SelectedSnifferData
@@ -36,8 +37,9 @@ namespace MVVM
             get => _selectedSnifferData;
             set
             {
-                _selectedSnifferData = value;
-                OnPropertyChanged("SelectedSnifferData");
+                Set(ref _selectedSnifferData, value);
+                //_selectedSnifferData = value;
+                //OnPropertyChanged("SelectedSnifferData");
             }
         }
 

@@ -19,6 +19,8 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.Resources>
+        <local:MultiValueConverter x:Key="MultiValueConverter"/>
+       
         <SolidColorBrush x:Key="ComboBoxNormalBorderBrush" Color="#e3e9ef" />
         <SolidColorBrush x:Key="ComboBoxNormalBackgroundBrush" Color="#fff" />
         <SolidColorBrush x:Key="ComboBoxDisabledForegroundBrush" Color="#888" />
@@ -193,11 +195,17 @@
         </StackPanel>
         <StackPanel Height="19" VerticalAlignment="Top"/>
         <!--MouseDown="datagrid_MouseDown"-->
-        <local:CustomDataGrid IsReadOnly="True" SelectedItem="_SelectedItemDoubleClick"  ItemsSource="{Binding _StreamingData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2" >
+        <local:CustomDataGrid IsReadOnly="True" SelectedItem="{Binding SelectedSnifferData}"  ItemsSource="{Binding _StreamingData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2" >
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
-                    <cmd:EventToCommand Command="{Binding Path=OnDataGridDoubleClickCommand}"                                                                                        
-                                        PassEventArgsToCommand="True" />
+                    <cmd:EventToCommand Command="{Binding Path=OnDataGridDoubleClickCommand}" PassEventArgsToCommand="True">                                                                                
+                    <cmd:EventToCommand.CommandParameter>
+                        <MultiBinding Converter="{StaticResource MultiValueConverter}">
+                            <Binding />
+                                <Binding RelativeSource="{RelativeSource AncestorType= local:CustomDataGrid}" Path="SelectedItem" />
+                        </MultiBinding>
+                    </cmd:EventToCommand.CommandParameter>
+                    </cmd:EventToCommand>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
             <!--CommandParameter="{Binding Path=Name, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TableRow}}}"-->
