@@ -17,7 +17,7 @@
     </i:Interaction.Triggers>
     <Window.Resources>
         <local:MultiValueConverter x:Key="MultiValueConverter"/>
-       
+
         <SolidColorBrush x:Key="ComboBoxNormalBorderBrush" Color="#e3e9ef" />
         <SolidColorBrush x:Key="ComboBoxNormalBackgroundBrush" Color="#fff" />
         <SolidColorBrush x:Key="ComboBoxDisabledForegroundBrush" Color="#888" />
@@ -104,7 +104,7 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-           
+
             <Setter Property="ItemContainerStyle">
                 <Setter.Value>
                     <Style TargetType="ComboBoxItem">
@@ -144,7 +144,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="CheckBox">
-                      
+
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -184,52 +184,157 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+
+        <Style x:Key="ScrollDataGridRow"  TargetType="{x:Type local:ScrollDataGrid}" BasedOn="{StaticResource {x:Type DataGrid}}">
+            <Setter Property="RowStyle">
+                <Setter.Value>
+                    <Style TargetType="{x:Type DataGridRow}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{ Binding Path=Source_port}"  Value="443">
+                                <Setter Property="Background" Value="LawnGreen"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{ Binding Path=Dest_port}"  Value="443">
+                                <Setter Property="Background" Value="AntiqueWhite"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{ Binding Path=Dest_mac}"  Value="ff:ff:ff:ff:ff:ff">
+                                <Setter Property="Background" Value="Azure"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                <Setter Property="Background" Value="LightSkyBlue" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TriangleButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Height" Value="100" />
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Polygon Points="10,5 40,25 10,45" Fill="Green" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="0.9" Duration="0:0:0.1" AutoReverse="True"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="0.9" Duration="0:0:0.1" AutoReverse="True"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SquareButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Height" Value="100" />
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border CornerRadius="10" Background="Red">
+                                    <k:Interaction.Triggers>
+                                        <k:EventTrigger EventName="click">
+                                            <cmd:EventToCommand CommandParameter="{Binding ElementName=btn_r}" Command="{Binding OnStopStreamService, Mode=OneWay}" />
+                                        </k:EventTrigger>
+                                    </k:Interaction.Triggers>
+                                    <ContentPresenter Content="stop" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="0.98" Duration="0:0:0.1" AutoReverse="True"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="0.98" Duration="0:0:0.1" AutoReverse="True"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
-    
-    <Grid>
+
+
+    <Grid Margin="0,10,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="319*"/>
+            <ColumnDefinition Width="381*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="19*"/>
             <RowDefinition Height="0*"/>
             <RowDefinition Height="44*"/>
             <RowDefinition Height="521*"/>
         </Grid.RowDefinitions>
-        <Button Width="52"  Command="{Binding OnStartStreamService}"  x:Name="btn_g"  RenderTransformOrigin="-0.85,-8.699" Margin="0,4,638,0" Height="30" VerticalAlignment="Top" HorizontalAlignment="Right" Grid.RowSpan="3">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="click">
-                    <cmd:EventToCommand Command="{Binding OnStartStreamService}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <Button.Template>
-                <ControlTemplate  TargetType="Button">
-                    <Border CornerRadius="10" Background="LightGreen" Margin="6,0,2,5">
-                        <ContentPresenter Content="start" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-        <Button Width="91" x:Name="btn_r" Command="{Binding Path=OnStopStreamService}" RenderTransformOrigin="-0.85,-8.699" Margin="0,4,513,29" HorizontalAlignment="Right"  Grid.RowSpan="3">
-            <Button.Template>
-                <ControlTemplate TargetType="Button">
-                    <Border CornerRadius="10" Background="Red" Margin="-22,0,69,4">
-                        <ContentPresenter Content="stop" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="click">
-                                <cmd:EventToCommand CommandParameter="{Binding  ElementName=btn_r}" Command="{Binding Path=OnStopStreamService, Mode=OneWay}" />
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Border>
-                </ControlTemplate>
-            </Button.Template>
-        </Button>
-        
-        <StackPanel Margin="0,0,0,29" Grid.RowSpan="3" Height="30" VerticalAlignment="Bottom" RenderTransformOrigin="0.503,0.501" HorizontalAlignment="Left" Width="545">
-            <ComboBox Name="cDevice" Style="{StaticResource ComboBoxFlatStyle}" ItemsSource="{Binding Items}" SelectedItem="{ Binding _SelectedItem}"   Width="300" Height="25" RenderTransformOrigin="0.596,0.774">
-            </ComboBox>
-        </StackPanel>
-        <StackPanel Height="19" VerticalAlignment="Top"/>
 
-        <local:ScrollDataGrid IsReadOnly="True" SelectedItem="{Binding  SelectedRow, Mode=TwoWay}"  ItemsSource="{Binding _StreamingData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2"
-              SelectionMode="Single" SelectionUnit="FullRow">
+        <StackPanel Margin="0,0,0,0" Orientation="Vertical" Grid.RowSpan="4" Height="58" Width="700" VerticalAlignment="Top" Grid.ColumnSpan="2" HorizontalAlignment="Left" >
+            <Button  Style="{StaticResource TriangleButtonStyle}" Width="50"  Margin="5,-5,20,0"  Command="{Binding OnStartStreamService}"  x:Name="btn_g"  RenderTransformOrigin="-0.85,-8.699"  HorizontalAlignment="Left" Grid.RowSpan="3">
+                <Button.RenderTransform>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Button.RenderTransform>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="click">
+                        <cmd:EventToCommand Command="{Binding OnStartStreamService}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </Button>
+            <Button  Style="{StaticResource SquareButtonStyle}" Margin="58,-150,20,0"  Width="50" Height="30" x:Name="btn_r" Command="{Binding OnStopStreamService}" RenderTransformOrigin="-0.85,-8.699"  HorizontalAlignment="Left">
+                <Button.RenderTransform>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Button.RenderTransform>
+            </Button>
+
+            <StackPanel Margin="0,-158,50,0"  Grid.ColumnSpan="2" HorizontalAlignment="Right" Height="44" Width="510">
+
+                <ComboBox Margin="20,10,50,0" Name="cDevice" Style="{StaticResource ComboBoxFlatStyle}" ItemsSource="{Binding Items}" SelectedItem="{ Binding _SelectedItem}"   Width="300" Height="25" RenderTransformOrigin="0.596,0.774" HorizontalAlignment="Left">
+                </ComboBox>
+
+                <!--<toggleSwitch:HorizontalToggleSwitch RenderTransformOrigin="2.682,1.322" Margin="0,-2,0,0" Grid.RowSpan="3" VerticalAlignment="Top" Grid.Column="1" Height="25" Width="88">
+                <toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
+                    <StackPanel>
+                        <TextBlock TextAlignment="Center">FILE</TextBlock>
+                    </StackPanel>
+                </toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
+            </toggleSwitch:HorizontalToggleSwitch>-->
+
+
+                <toggleSwitch:HorizontalToggleSwitch Margin="220,-30,0,0"  x:Name="chk" IsChecked="False" IsEnabled="{Binding IsComboGprcEnable}"  CheckedContent="GRPC" Width="87" RenderTransformOrigin="0.739,-0.361"  Grid.RowSpan="3" HorizontalAlignment="Right" Grid.Column="1" Height="35" >
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="Checked">
+                            <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding Path=OnSetGrpcService, Mode=OneWay}" />
+                        </i:EventTrigger>
+                        <i:EventTrigger EventName="Unchecked">
+                            <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding Path=OnSetGrpcService, Mode=OneWay}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+
+                    <toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
+                        <StackPanel>
+                            <TextBlock TextAlignment="Center">GRPC</TextBlock>
+                        </StackPanel>
+                    </toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
+                </toggleSwitch:HorizontalToggleSwitch>
+            </StackPanel>
+        </StackPanel>
+        
+        
+        <local:ScrollDataGrid  Style="{StaticResource ScrollDataGridRow}" IsReadOnly="True" SelectedItem="{Binding  SelectedRow, Mode=TwoWay}"  ItemsSource="{Binding _StreamingData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2"
+              SelectionMode="Single" SelectionUnit="FullRow" Grid.ColumnSpan="2">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <cmd:EventToCommand Command="{Binding Path=OnDataGridDoubleClickCommand}" PassEventArgsToCommand="True">
@@ -242,24 +347,7 @@
                     </cmd:EventToCommand>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            <local:ScrollDataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{ Binding Path=Source_port}"  Value="443">
-                            <Setter Property="Background" Value="LawnGreen"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{ Binding Path=Dest_port}"  Value="443">
-                            <Setter Property="Background" Value="AntiqueWhite"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{ Binding Path=Dest_mac}"  Value="ff:ff:ff:ff:ff:ff">
-                            <Setter Property="Background" Value="Azure"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                            <Setter Property="Background" Value="LightSkyBlue" />
-                        </DataTrigger> 
-                    </Style.Triggers>
-                </Style>
-            </local:ScrollDataGrid.RowStyle>
+    
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Source_ip"  Width="120" Binding="{Binding Source_ip}"   />
                 <DataGridTextColumn Header="Source_port" Width="50" Binding="{Binding Source_port}" />
@@ -276,34 +364,6 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </local:ScrollDataGrid>
-        
-        
-        
-        <!--<StackPanel Height="27" Grid.RowSpan="3"  VerticalAlignment="Top" HorizontalAlignment="Left" >-->
-            <toggleSwitch:HorizontalToggleSwitch RenderTransformOrigin="2.682,1.322" Margin="472,0,0,34" Grid.RowSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left">
-                <toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
-                    <StackPanel>
-                    <TextBlock TextAlignment="Center">FILE</TextBlock>
-                    </StackPanel>
-                </toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
-            </toggleSwitch:HorizontalToggleSwitch>
-        <toggleSwitch:HorizontalToggleSwitch x:Name="chk" IsChecked="False" IsEnabled="{Binding IsComboGprcEnable}"  CheckedContent="GRPC" Width="88" RenderTransformOrigin="1.452,0.762" Margin="584,0,0,34" Grid.RowSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="Checked">
-                    <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding Path=OnSetGrpcService, Mode=OneWay}" />
-                </i:EventTrigger>
-                <i:EventTrigger EventName="Unchecked">
-                    <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding Path=OnSetGrpcService, Mode=OneWay}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-
-            <toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
-                <StackPanel>
-                    <TextBlock TextAlignment="Center">GRPC</TextBlock>
-                </StackPanel>
-            </toggleSwitch:HorizontalToggleSwitch.UncheckedContent>
-        </toggleSwitch:HorizontalToggleSwitch>
-            <!--</StackPanel>-->      
     </Grid>
-    
+
 </Window>

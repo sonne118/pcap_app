@@ -18,8 +18,8 @@ namespace MVVM
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
         private readonly IMapper _mapper;
 
-        public ClosingCommand closingCommand;
-        public DataGridDoubleClickCommand dataGridDoubleClickCommand;
+        public ClosingCommand _closingCommand;
+        public DataGridDoubleClickCommand _dataGridDoubleClickCommand;
 
         public CommandViewModel(IBackgroundJobs<Snapshot> backgroundJobs,
                                 IDevices device,
@@ -30,18 +30,18 @@ namespace MVVM
             _mapper = mapper;
             _backgroundJobs = backgroundJobs;
             _scopeFactory = scopeFactory;
+            _closingCommand = new ClosingCommand(mainWindow);
+            _dataGridDoubleClickCommand = new DataGridDoubleClickCommand(mainWindow);
             OnSetGrpcService = new RelayCommand<bool>(OnExecuteGrpcService);
             OnStartStreamService = new RelayCommand(OnExecuteStartService);
             OnStopStreamService = new RelayCommand(OnExecuteStopService);
-            closingCommand = new ClosingCommand(mainWindow);
-            dataGridDoubleClickCommand = new DataGridDoubleClickCommand(mainWindow);
         }
 
         public RelayCommand<Boolean> OnSetGrpcService { get; private set; }
         public ICommand OnStartStreamService { get; private set; }
         public ICommand OnStopStreamService { get; private set; }
-        public ICommand OnClosingCommand { get { return closingCommand.ExitCommand; } }
-        public ICommand OnDataGridDoubleClickCommand { get { return dataGridDoubleClickCommand.ShowCommand; } }
+        public ICommand OnClosingCommand { get { return _closingCommand.ExitCommand; } }
+        public ICommand OnDataGridDoubleClickCommand { get { return _dataGridDoubleClickCommand.ShowCommand; } }
 
 
         private void OnExecuteGrpcService(bool isChecked)
