@@ -1,5 +1,4 @@
 ﻿using CoreModel.Model;
-using System.ComponentModel;
 using GalaSoft.MvvmLight;
 
 namespace MVVM
@@ -15,19 +14,13 @@ namespace MVVM
                 if (_data != value)
                 {
                     _data = value;
-                    OnPropertyChanged(nameof(ModalData));
+                    Set(ref _data, value);
                 }
             }
         }
         public ModalViewModel(StreamingData data)
         {
             ModalData = data;
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

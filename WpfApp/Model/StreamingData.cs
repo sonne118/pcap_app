@@ -1,83 +1,55 @@
 ﻿using GalaSoft.MvvmLight;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 
 namespace CoreModel.Model
 {
     public class StreamingData : ViewModelBase
     {
-        // privatr int id;
-        private int source_port;
-        private int dest_port;
-        private string? source_ip = null;
-        private string? dest_ip = null;
-        private string? source_mac = null;
-        private string? dest_mac = null;
-
-
+        private int _source_port;
+        private int _dest_port;
+        private string? _source_ip;
+        private string? _dest_ip;
+        private string? _source_mac;
+        private string? _dest_mac;
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => Set(ref _isSelected, value);
+        }
         public int Source_port
         {
-            get { return source_port; }
-            set
-            {
-                source_port = value;
-                OnPropertyChanged("source_port");
-            }
+            get => _source_port;
+            set => Set(ref _source_port, value);
         }
+
         public int Dest_port
         {
-            get { return dest_port; }
-            set
-            {
-                dest_port = value;
-                OnPropertyChanged("dest_port");
-            }
+            get => _dest_port;
+            set => Set(ref _dest_port, value);
         }
+
         public string Source_ip
         {
-            get { return source_ip; }
-            set
-            {
-                source_ip = value;
-                OnPropertyChanged("source_ip");
-            }
+            get => _source_ip;
+            set => Set(ref _source_ip, value);
         }
 
         public string Dest_ip
         {
-            get { return dest_ip; }
-            set
-            {
-                dest_ip = value;
-                OnPropertyChanged("dest_ip");
-            }
+            get => _dest_ip;
+            set => Set(ref _dest_ip, value);
         }
 
         public string Source_mac
         {
-            get { return source_mac; }
-            set
-            {
-                source_mac = value;
-                OnPropertyChanged("source_mac");
-            }
+            get => _source_mac;
+            set => Set(ref _source_mac, value);
         }
 
         public string Dest_mac
         {
-            get { return dest_mac; }
-            set
-            {
-                dest_mac = value;
-                OnPropertyChanged("dest_mac");
-            }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            get => _dest_mac;
+            set => Set(ref _dest_mac, value);
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿using System;
-using CoreModel.Model;
+﻿using CoreModel.Model;
 using GalaSoft.MvvmLight;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Threading;
 using wpfapp.Services.Worker;
@@ -52,6 +51,21 @@ namespace MVVM
             }
         }
 
+        private StreamingData _selectedRow;
+
+        public StreamingData SelectedRow
+        {
+            get => _selectedRow;
+            set
+            {
+                if (Set(ref _selectedRow, value))
+                {
+                    if (_selectedRow != null)
+                        _selectedRow.IsSelected = true;
+                }
+            }
+        }
+
         public GridViewModel(IDevices device)
         {
             _devices = device;
@@ -63,8 +77,7 @@ namespace MVVM
         }
 
         public abstract void OnProcessQueue(object sender, EventArgs e);
-        public abstract void SetDevice(string str);
-        public abstract void OnPropertyChanged([CallerMemberName] string prop = "");
+        public abstract void SetDevice(string str);      
         public abstract void Dispose();
     }
 }

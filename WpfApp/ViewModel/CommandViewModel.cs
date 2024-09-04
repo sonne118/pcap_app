@@ -1,16 +1,14 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
+using CoreModel.Model;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.Windows.Input;
 using wpfapp.IPC.Grpc;
 using wpfapp.Services.Worker;
 using WpfApp.Model;
 using WpfApp.Services.BackgroundJob;
-using System.Runtime.CompilerServices;
-using System.ComponentModel;
-using CoreModel.Model;
 
 namespace MVVM
 {
@@ -19,10 +17,10 @@ namespace MVVM
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
         private readonly IMapper _mapper;
-        
+
         public ClosingCommand closingCommand;
         public DataGridDoubleClickCommand dataGridDoubleClickCommand;
-       
+
         public CommandViewModel(IBackgroundJobs<Snapshot> backgroundJobs,
                                 IDevices device,
                                 IMapper mapper,
@@ -96,13 +94,6 @@ namespace MVVM
                 var _snifferData = _mapper.Map<StreamingData>(data);
                 _StreamingData.Add(_snifferData);
             }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public override void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
         public override void Dispose()

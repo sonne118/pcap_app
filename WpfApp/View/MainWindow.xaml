@@ -149,6 +149,41 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="CustomCheckBox" TargetType="CheckBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <BulletDecorator Background="Transparent">
+                            <BulletDecorator.Bullet>
+                                <Border x:Name="Border" Width="15" Height="15" CornerRadius="3" BorderThickness="1">
+                                    <Border.BorderBrush>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="Gray" Offset="0.0" />
+                                            <GradientStop Color="DarkGray" Offset="1.0" />
+                                        </LinearGradientBrush>
+                                    </Border.BorderBrush>
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="White" Offset="0.0" />
+                                            <GradientStop Color="LightGray" Offset="1.0" />
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Grid>
+                                        <Path x:Name="CheckMark" Visibility="Collapsed" Width="10" Height="10" Stroke="Green" StrokeThickness="2" Data="M 0 5 L 3 8 L 10 0" />
+                                    </Grid>
+                                </Border>
+                            </BulletDecorator.Bullet>
+                            <ContentPresenter />
+                        </BulletDecorator>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     
     <Grid>
@@ -192,8 +227,9 @@
             </ComboBox>
         </StackPanel>
         <StackPanel Height="19" VerticalAlignment="Top"/>
-       
-        <local:ScrollDataGrid IsReadOnly="True" SelectedItem="{Binding SelectedSnifferData}"  ItemsSource="{Binding _StreamingData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2" >
+
+        <local:ScrollDataGrid IsReadOnly="True" SelectedItem="{Binding  SelectedRow, Mode=TwoWay}"  ItemsSource="{Binding _StreamingData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2"
+              SelectionMode="Single" SelectionUnit="FullRow">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <cmd:EventToCommand Command="{Binding Path=OnDataGridDoubleClickCommand}" PassEventArgsToCommand="True">
@@ -218,6 +254,9 @@
                         <DataTrigger Binding="{ Binding Path=Dest_mac}"  Value="ff:ff:ff:ff:ff:ff">
                             <Setter Property="Background" Value="Azure"/>
                         </DataTrigger>
+                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                            <Setter Property="Background" Value="LightSkyBlue" />
+                        </DataTrigger> 
                     </Style.Triggers>
                 </Style>
             </local:ScrollDataGrid.RowStyle>
@@ -228,8 +267,17 @@
                 <DataGridTextColumn Header="Dest_port" Width="50" Binding="{Binding Dest_port}" />
                 <DataGridTextColumn Header="Source_mac" Width="120" Binding="{Binding Source_mac}" />
                 <DataGridTextColumn Header="Dest_mac" Width="120" Binding="{Binding Dest_mac}" />
+                <DataGridTemplateColumn Header="Select">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox Style="{StaticResource CustomCheckBox}"  IsChecked="{Binding IsSelected}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </local:ScrollDataGrid>
+        
+        
         
         <!--<StackPanel Height="27" Grid.RowSpan="3"  VerticalAlignment="Top" HorizontalAlignment="Left" >-->
             <toggleSwitch:HorizontalToggleSwitch RenderTransformOrigin="2.682,1.322" Margin="472,0,0,34" Grid.RowSpan="3" VerticalAlignment="Bottom" HorizontalAlignment="Left">
