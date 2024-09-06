@@ -15,7 +15,9 @@ namespace MVVM
         protected readonly DispatcherTimer _timer;
         protected readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
         
-        public ObservableCollection<StreamingData> _StreamingData { get; set; } = new ObservableCollection<StreamingData>();        
+        public ObservableCollection<StreamingData> _StreamingData { get; set; } = new ObservableCollection<StreamingData>();
+        public ObservableCollection<StreamingData> _SelectedData { get; set; } = new ObservableCollection<StreamingData>();
+
         private ObservableCollection<string> _items = new ObservableCollection<string>();
         public ObservableCollection<string> Items
         {
@@ -37,6 +39,16 @@ namespace MVVM
             set
             {
                 Set(ref _selectedSnifferData, value);
+            }
+        }
+
+        private StreamingData _selectedData;
+        public StreamingData SelectedData
+        {
+            get => _selectedData;
+            set
+            {
+                Set(ref _selectedData, value);
             }
         }
 
@@ -62,6 +74,7 @@ namespace MVVM
                 {
                     if (_selectedRow != null)
                         _selectedRow.IsSelected = true;
+                        _SelectedData.Add(value);
                 }
             }
         }

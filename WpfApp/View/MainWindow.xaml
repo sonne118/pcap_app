@@ -209,48 +209,41 @@
             </Setter>
         </Style>
 
+        <Style x:Key="ScrollSelectedDataGridRow"  TargetType="{x:Type local:ScrollDataGrid}" BasedOn="{StaticResource {x:Type DataGrid}}">
+            <Setter Property="RowStyle">
+                <Setter.Value>
+                    <Style TargetType="{x:Type DataGridRow}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{ Binding Path=Source_port}"  Value="443">
+                                <Setter Property="Background" Value="LawnGreen"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{ Binding Path=Dest_port}"  Value="443">
+                                <Setter Property="Background" Value="AntiqueWhite"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{ Binding Path=Dest_mac}"  Value="ff:ff:ff:ff:ff:ff">
+                                <Setter Property="Background" Value="Azure"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="TriangleButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="100" />
-            <Setter Property="Height" Value="100" />
+            <Setter Property="Width" Value="30" />
+            <Setter Property="Height" Value="30" />
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Grid>
-                            <Polygon Points="10,5 40,25 10,45" Fill="Green" />
+                            <!--<Polygon Points="10,5 40,25 10,45" Fill="Green" />-->
+                            <Path Fill="Green" Data="M18.353 10.252L6.471 3.65c-1.323-.736-1.985-1.103-2.478-.813S3.5 3.884 3.5 5.398V18.6c0 1.514 0 2.271.493 2.561s1.155-.077 2.478-.813l11.882-6.6c1.392-.774 2.088-1.16 2.088-1.749 0-.588-.696-.975-2.088-1.748z" >
+                                <Path.RenderTransform>
+                                    <RotateTransform Angle="0" CenterX="50" CenterY="50"/>
+                                </Path.RenderTransform>
+                            </Path>
                         </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Trigger.EnterActions>
-                                    <BeginStoryboard>
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="0.9" Duration="0:0:0.1" AutoReverse="True"/>
-                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="0.9" Duration="0:0:0.1" AutoReverse="True"/>
-                                        </Storyboard>
-                                    </BeginStoryboard>
-                                </Trigger.EnterActions>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="SquareButtonStyle" TargetType="Button">
-            <Setter Property="Width" Value="100" />
-            <Setter Property="Height" Value="100" />
-            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Border CornerRadius="10" Background="Red">
-                                    <k:Interaction.Triggers>
-                                        <k:EventTrigger EventName="click">
-                                            <cmd:EventToCommand CommandParameter="{Binding ElementName=btn_r}" Command="{Binding OnStopStreamService, Mode=OneWay}" />
-                                        </k:EventTrigger>
-                                    </k:Interaction.Triggers>
-                                    <ContentPresenter Content="stop" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsPressed" Value="True">
                                 <Trigger.EnterActions>
@@ -267,39 +260,79 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="SquareButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Height" Value="100" />
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Path Fill="Brown" Data="m400 32h-352c-26.5 0-48 21.5-48 48v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-352c0-26.5-21.5-48-48-48z" Stretch="Fill"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" To="0.98" Duration="0:0:0.1" AutoReverse="True"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" To="0.98" Duration="0:0:0.1" AutoReverse="True"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TreeViewItemtyle" TargetType="{x:Type TreeViewItem}">
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+        </Style>
     </Window.Resources>
 
 
     <Grid Margin="0,10,0,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="319*"/>
-            <ColumnDefinition Width="381*"/>
+            <ColumnDefinition Width="149*"/>
+            <ColumnDefinition Width="21*"/>
+            <ColumnDefinition Width="180*"/>
+            <ColumnDefinition Width="350*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="19*"/>
             <RowDefinition Height="0*"/>
-            <RowDefinition Height="44*"/>
-            <RowDefinition Height="521*"/>
+            <RowDefinition Height="19*"/>
+            <RowDefinition Height="43*"/>
+            <RowDefinition Height="512*"/>
         </Grid.RowDefinitions>
+        <StackPanel Margin="0,0,0,0" Orientation="Vertical" Grid.RowSpan="3" Height="58" Width="700" VerticalAlignment="Top" Grid.ColumnSpan="4" HorizontalAlignment="Left" >
+            <StackPanel Margin="20,-10,20,0" Height="44" Width="120" Grid.ColumnSpan="2" HorizontalAlignment="Left" >
+                <Button Margin="20,10,20,0" Style="{StaticResource TriangleButtonStyle}" Width="30" Height="30" Command="{Binding OnStartStreamService}"  x:Name="btn_g"  RenderTransformOrigin="-0.85,-8.699"  HorizontalAlignment="Left">
+                    <Button.RenderTransform>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </Button.RenderTransform>
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="click">
+                            <cmd:EventToCommand Command="{Binding OnStartStreamService}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </Button>
+                <Button Margin="55,-35,34,0" Style="{StaticResource SquareButtonStyle}"   Width="19" Height="18" x:Name="btn_r" Command="{Binding OnStopStreamService}" RenderTransformOrigin="-0.85,-8.699"  HorizontalAlignment="Right">
+                    <Button.RenderTransform>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                    </Button.RenderTransform>
+                    <k:Interaction.Triggers>
+                        <k:EventTrigger EventName="click">
+                            <cmd:EventToCommand CommandParameter="{Binding ElementName=btn_r}" Command="{Binding OnStopStreamService, Mode=OneWay}" />
+                        </k:EventTrigger>
+                    </k:Interaction.Triggers>
+                </Button>
+            </StackPanel>
 
-        <StackPanel Margin="0,0,0,0" Orientation="Vertical" Grid.RowSpan="4" Height="58" Width="700" VerticalAlignment="Top" Grid.ColumnSpan="2" HorizontalAlignment="Left" >
-            <Button  Style="{StaticResource TriangleButtonStyle}" Width="50"  Margin="5,-5,20,0"  Command="{Binding OnStartStreamService}"  x:Name="btn_g"  RenderTransformOrigin="-0.85,-8.699"  HorizontalAlignment="Left" Grid.RowSpan="3">
-                <Button.RenderTransform>
-                    <ScaleTransform ScaleX="1" ScaleY="1"/>
-                </Button.RenderTransform>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="click">
-                        <cmd:EventToCommand Command="{Binding OnStartStreamService}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </Button>
-            <Button  Style="{StaticResource SquareButtonStyle}" Margin="58,-150,20,0"  Width="50" Height="30" x:Name="btn_r" Command="{Binding OnStopStreamService}" RenderTransformOrigin="-0.85,-8.699"  HorizontalAlignment="Left">
-                <Button.RenderTransform>
-                    <ScaleTransform ScaleX="1" ScaleY="1"/>
-                </Button.RenderTransform>
-            </Button>
-
-            <StackPanel Margin="0,-158,50,0"  Grid.ColumnSpan="2" HorizontalAlignment="Right" Height="44" Width="510">
+            <StackPanel Margin="0,-40,20,0"  Height="44" Width="510" Grid.ColumnSpan="2" HorizontalAlignment="Right">
 
                 <ComboBox Margin="20,10,50,0" Name="cDevice" Style="{StaticResource ComboBoxFlatStyle}" ItemsSource="{Binding Items}" SelectedItem="{ Binding _SelectedItem}"   Width="300" Height="25" RenderTransformOrigin="0.596,0.774" HorizontalAlignment="Left">
                 </ComboBox>
@@ -331,10 +364,9 @@
                 </toggleSwitch:HorizontalToggleSwitch>
             </StackPanel>
         </StackPanel>
-        
-        
-        <local:ScrollDataGrid  Style="{StaticResource ScrollDataGridRow}" IsReadOnly="True" SelectedItem="{Binding  SelectedRow, Mode=TwoWay}"  ItemsSource="{Binding _StreamingData}" AutoGenerateColumns="False" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2"
-              SelectionMode="Single" SelectionUnit="FullRow" Grid.ColumnSpan="2">
+
+        <local:ScrollDataGrid HorizontalScrollBarVisibility="Disabled" AutoGenerateColumns="False" HeadersVisibility="Column"  ColumnWidth="*" Style="{StaticResource ScrollDataGridRow}" IsReadOnly="True" SelectedItem="{Binding  SelectedRow, Mode=TwoWay}"  ItemsSource="{Binding _StreamingData}" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2"
+              SelectionMode="Single" SelectionUnit="FullRow" Grid.ColumnSpan="4">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseDoubleClick">
                     <cmd:EventToCommand Command="{Binding Path=OnDataGridDoubleClickCommand}" PassEventArgsToCommand="True">
@@ -347,16 +379,16 @@
                     </cmd:EventToCommand>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-    
+
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Source_ip"  Width="120" Binding="{Binding Source_ip}"   />
-                <DataGridTextColumn Header="Source_port" Width="50" Binding="{Binding Source_port}" />
-                <DataGridTextColumn Header="Dest_ip" Width="120" Binding="{Binding Dest_ip}" />
-                <DataGridTextColumn Header="Dest_port" Width="50" Binding="{Binding Dest_port}" />
-                <DataGridTextColumn Header="Source_mac" Width="120" Binding="{Binding Source_mac}" />
-                <DataGridTextColumn Header="Dest_mac" Width="120" Binding="{Binding Dest_mac}" />
+                <DataGridTextColumn Header="Source ip"  Width="120" Binding="{Binding Source_ip}"   />
+                <DataGridTextColumn Header="port" Width="50" Binding="{Binding Source_port}" />
+                <DataGridTextColumn Header="Dest ip" Width="120" Binding="{Binding Dest_ip}" />
+                <DataGridTextColumn Header="port" Width="50" Binding="{Binding Dest_port}" />
+                <DataGridTextColumn Header="Source mac" Width="120" Binding="{Binding Source_mac}" />
+                <DataGridTextColumn Header="Dest mac" Width="120" Binding="{Binding Dest_mac}" />
                 <DataGridTemplateColumn Header="Select">
-                    <DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellTemplate >
                         <DataTemplate>
                             <CheckBox Style="{StaticResource CustomCheckBox}"  IsChecked="{Binding IsSelected}" />
                         </DataTemplate>
@@ -364,6 +396,82 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </local:ScrollDataGrid>
+
+        <Grid  Margin="0,353,0,-109" Grid.Row="3" Grid.ColumnSpan="3" RenderTransformOrigin="0.524,0.518" HorizontalAlignment="Left">
+            <!--<Grid.ColumnDefinitions>
+
+                <ColumnDefinition Width="199*"/>
+                <ColumnDefinition Width="73*"/>
+                <ColumnDefinition Width="243*"/>
+                <ColumnDefinition Width="179*"/>
+
+                <ColumnDefinition Width="65*"/>
+                <ColumnDefinition Width="375*"/>
+                <ColumnDefinition Width="56*"/>
+                <ColumnDefinition Width="198*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>-->
+            <!--<Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0*"/>
+            </Grid.RowDefinitions>-->
+            <!--<Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0*"/>
+            </Grid.RowDefinitions>-->
+            <!--<Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0*"/>
+            </Grid.RowDefinitions>-->
+
+
+            <local:ScrollDataGrid AutoGenerateColumns="False" VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" HeadersVisibility="Column"  ColumnWidth="*"  IsReadOnly="True" Style="{StaticResource ScrollSelectedDataGridRow}" ItemsSource="{Binding _SelectedData}" Width="344" Grid.ColumnSpan="4" HorizontalAlignment="Left" Height="158" VerticalAlignment="Top">
+                <local:ScrollDataGrid.Columns>
+                    <DataGridTextColumn Header="source ip"  Width="120" Binding="{Binding Source_ip}"   />
+                    <DataGridTextColumn Header="port" Width="50" Binding="{Binding Source_port}" />
+                    <DataGridTextColumn Header="dest ip" Width="120" Binding="{Binding Dest_ip}" />
+                    <DataGridTextColumn Header="port" Width="50" Binding="{Binding Dest_port}" />
+                </local:ScrollDataGrid.Columns>
+            </local:ScrollDataGrid>
+            <Grid HorizontalAlignment="Right" Margin="0,0,162,0">
+                <StackPanel Background="Azure" Margin="157,0,-514,112"    >
+                    <TreeView  Height="158" Width="355" >
+                        <TreeViewItem Header="Root"  Style="{StaticResource TreeViewItemtyle}" Height="22" RenderTransformOrigin="0.5,0.5">
+                            <TreeViewItem Header="Child 1">
+                                <TreeViewItem Header="Grandchild 1.1"/>
+                                <TreeViewItem Header="Grandchild 1.2"/>
+                            </TreeViewItem>
+                            <TreeViewItem Header="Child 2">
+                                <TreeViewItem Header="Grandchild 2.1"/>
+                            </TreeViewItem>
+                            <TreeViewItem Header="Child 2">
+                                <TreeViewItem Header="Grandchild 2.1"/>
+                            </TreeViewItem>
+                            <TreeViewItem Header="Child 2">
+                                <TreeViewItem Header="Grandchild 2.1"/>
+                            </TreeViewItem>
+                            <TreeViewItem Header="Child 2">
+                                <TreeViewItem Header="Grandchild 2.1"/>
+                            </TreeViewItem>
+                        </TreeViewItem>
+                    </TreeView>
+
+                </StackPanel>
+            </Grid>
+        </Grid>
+
     </Grid>
+
 
 </Window>

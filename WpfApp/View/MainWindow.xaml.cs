@@ -17,6 +17,11 @@ namespace MVVM
             InitializeComponent();
             DataContext = new CommandViewModel(backgroundJobs, device, mapper, scopeFactory, this);
         }
+
+        private void ScrollDataGrid_ColumnDisplayIndexChanged(object sender, System.Windows.Controls.DataGridColumnEventArgs e)
+        {
+
+        }
     }
 }
 
