@@ -34,9 +34,9 @@ typedef struct ip {
 	u_short ip_sum;		/* checksum */
 	u_char ip_ttl;		/* time to live */	
 	unsigned char crc;
-	//u_char ip_src[4];
-	//u_char ip_dst[4];
-	struct in_addr ip_src, ip_dst; /* source and dest address */
+	u_char ip_src[4];
+	u_char ip_dst[4];
+	//struct in_addr ip_src, ip_dst; /* source and dest address */
 
 }IPHEADER, * PIPHEADER;
 #define IP_HL(ip)  (((ip)->ip_vhl) & 0x0f)
@@ -51,6 +51,7 @@ typedef struct tcphdr {
 	tcp_seq ack;		/* acknowledgement number */
 	u_char offx2;	/* data offset, rsvd */
 	u_short len;
+	uint16_t id;
 	u_short crc;
 #define TH_OFF(th)	(((th)->offx2 & 0xf0) >> 4)
 	u_char flags;

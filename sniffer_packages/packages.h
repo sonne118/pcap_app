@@ -124,8 +124,12 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 			const struct eth_header* eth_Header;
 			const struct ip* ipHeader;
 			const struct tcphdr* tcpHeader;
+			///const struct tcphdr* len;
 			char sourceIp[INET_ADDRSTRLEN];
 			char destIp[INET_ADDRSTRLEN];
+
+			u_int size_ip;
+			u_int size_tcp;
 
 			const unsigned char* ptr1;
 			const unsigned char* ptr2;
@@ -137,6 +141,7 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 			ethernetHeader = (struct ether_header*)_packet;
 			if (ntohs(ethernetHeader->ether_type) == ETHERTYPE_IP) {
 				ipHeader = (struct ip*)(_packet + sizeof(struct ether_header));
+				size_ip = IP_HL(ipHeader) * 4;
 				inet_ntop(AF_INET, &(ipHeader->ip_src), sourceIp, INET_ADDRSTRLEN);
 				inet_ntop(AF_INET, &(ipHeader->ip_dst), destIp, INET_ADDRSTRLEN);
 
@@ -146,6 +151,15 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 				char source_mac[32]; char dest_mac[32];
 				ether_ntoa(ptr1, source_mac, sizeof source_mac);
 				ether_ntoa(ptr2, dest_mac, sizeof dest_mac);
+
+				//ip_header_t   ip_header = (ip_header_t) * (packet + sizeof(ether_header_t));
+				u_int len = ntohs(ipHeader->tlen);
+				u_int id = ntohs(ipHeader->ip_id);
+				short flags_fo = ntohs(ipHeader->flags_fo);
+				u_short checksum = ntohs(ipHeader->ip_sum);
+				//u_char sourceIp = ntohl(ipHeader->ip_src);
+				//u_char destIp = ntohl(ipHeader->ip_dst);
+				int ip_size = 4 * (ipHeader->ver_ihl & 0x0F);
 
 				//ntohs(th->seq), ntohs(th->ack_seq));
 
@@ -163,10 +177,19 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 				//if (ipHeader->ip_p == IPPROTO_TCP )//|| ipHeader->ip_p == IPPROTO_ICMP)
 				{
 					tcpHeader = (tcphdr*)(_packet + sizeof(struct ether_header) + sizeof(struct ip));
+					size_tcp = TH_OFF(tcpHeader) * 4;
 					sourcePort = ntohs(tcpHeader->sport);
 					destPort = ntohs(tcpHeader->dport);
 					data = (u_char*)(_packet + sizeof(struct ether_header) + sizeof(struct ip) + sizeof(struct tcphdr));
 					dataLength = _pkthdr->len - (sizeof(struct ether_header) + sizeof(struct ip) + sizeof(struct tcphdr));
+
+					
+
+				/*	udp_header_t udp_header = (udp_header_t) * (packet + ip_size + sizeof(ether_header_t));
+					udp_header.src_port = ntohs(udp_header.src_port);
+					udp_header.dst_port = ntohs(udp_header.dst_port);
+					udp_header.length = ntohs(udp_header.length);
+					udp_header.checksum = ntohs(udp_header.checksum);*/
 
 
 					int len;
