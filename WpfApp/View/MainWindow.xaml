@@ -381,11 +381,13 @@
             </i:Interaction.Triggers>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Source ip"  Width="120" Binding="{Binding Source_ip}"   />
+                <DataGridTextColumn Header="ID"  Width="50" Binding="{Binding Id}" />
+                <DataGridTextColumn Header="Source ip"  Width="100" Binding="{Binding Source_ip}"   />
                 <DataGridTextColumn Header="port" Width="50" Binding="{Binding Source_port}" />
-                <DataGridTextColumn Header="Dest ip" Width="120" Binding="{Binding Dest_ip}" />
+                <DataGridTextColumn Header="Dest ip" Width="100" Binding="{Binding Dest_ip}" />
                 <DataGridTextColumn Header="port" Width="50" Binding="{Binding Dest_port}" />
-                <DataGridTextColumn Header="Source mac" Width="120" Binding="{Binding Source_mac}" />
+                <DataGridTextColumn Header="Source mac" Width="100" Binding="{Binding Source_mac}" />
+                <DataGridTextColumn Header="Pro" Width="35" Binding="{Binding Proto}" />
                 <DataGridTextColumn Header="Dest mac" Width="120" Binding="{Binding Dest_mac}" />
                 <DataGridTemplateColumn Header="Select">
                     <DataGridTemplateColumn.CellTemplate >

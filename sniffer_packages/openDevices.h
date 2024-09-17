@@ -12,7 +12,7 @@ char errbuf[PCAP_ERRBUF_SIZE];
 class OpDevices
 {
 public:
-	OpDevices() {};
+	 OpDevices();
 
 	~OpDevices() {
 		alldevs = NULL;
@@ -37,6 +37,10 @@ private:
 	pcap_if_t* d;
 	pcap_t* _adhandle;
 };
+
+inline OpDevices::OpDevices()
+{
+}
 
 void OpDevices::SetInum(int dev)
 {

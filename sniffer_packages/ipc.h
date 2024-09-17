@@ -103,9 +103,9 @@ extern "C"
 			std::unique_lock lk(m);
 			quit_flag = true;
 		}
-		oPdev->~OpDevices();		
+		oPdev->~OpDevices();
 		cv.notify_one();
-		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		free(oPdev);
 	}
 }

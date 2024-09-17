@@ -13,8 +13,14 @@
 #include <ipc.h>
 #include <list>
 #include <vector>
-#include <string>
+#include <iostream>
 #include <atomic>
+#include <handleProto.h>
+#include <ipc.h>
+
+#pragma warning(disable:4996) 
+#pragma comment(lib, "wpcap.lib")
+#pragma comment(lib, "ws2_32.lib")
 
 #define buff_max 5
 #define mod %
@@ -29,11 +35,14 @@ class Packages
 {
 public:
 	Packages();
+	Packages(int& src_port, int& dst_port, handleProto p);
 	~Packages();
 	void* producer(std::atomic<bool>& on);
 	void* consumer();
 	void setHandler(HANDLE eventHandle);
-
+    void addToStruct(char proto[22], char packet_srcip[INET_ADDRSTRLEN], char packet_dstip[INET_ADDRSTRLEN], char source_mac[32],char dest_mac[32], int packet_id, int dst_port, int src_port, tagSnapshot &item);
+	void defaultToStruct(tagSnapshot& item);
+	handleProto _proto;
 
 private:
 	pcap_t* descr;
@@ -41,19 +50,29 @@ private:
 	pcap_if_t* d;
 	int i = 0;
 	struct pcap_pkthdr* _pkthdr;
-	const u_char* _packet;
+	const u_char* packetd_ptr;
 	pcap_t* _adhandle;
 	HANDLE _eventHandles;
+public:
+	int  src_port;
+	int  dst_port;
 };
 
-Packages::Packages() {};
+inline Packages::Packages()
+{
+	src_port = 0;
+	dst_port = 0;
+}
+
+inline Packages::Packages(int& src_port, int& dst_port, handleProto p) : _proto(&src_port, &dst_port, &_proto) {
+
+};
 
 Packages ::~Packages() {
 	_adhandle = NULL;
 	_eventHandles = NULL;
 	delete _adhandle;
 	delete _eventHandles;
-
 };
 
 inline void Packages::setHandler(HANDLE eventHandle) {
@@ -67,7 +86,7 @@ inline void* Packages::consumer() {
 
 	while (true) {
 		while (free_index == full_index) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
 		mtx.lock();
 
@@ -76,19 +95,20 @@ inline void* Packages::consumer() {
 			consumed_item = shared_buff[full_index];
 			full_index = (full_index + 1) mod buff_max;
 			snapshot = consumed_item;
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			WriteFile(hPipe, &snapshot, sizeof(tagSnapshot), NULL, NULL);
 		}
 		mtx.unlock();
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
 	CloseHandle(hPipe);
 }
 
 inline void* Packages::producer(std::atomic<bool>& on) {
 
-	int res; tagSnapshot new_item{};
+	int link_hdr_length = 0;
+	int res;
 
 	while (true) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(500));
@@ -104,117 +124,126 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
-		while ((res = pcap_next_ex(_adhandle, &_pkthdr, &_packet)) >= 0 && on.load()) {
-
+		while ((res = pcap_next_ex(_adhandle, &_pkthdr, &packetd_ptr)) >= 0 && on.load()) {
+			tagSnapshot new_item;char proto[22];u_int size_ip;
+			
 			WaitForSingleObject(_eventHandles, INFINITE);
 
 			if (res == 0) {
-				strcpy_s(new_item.source_ip, "192.168.1.1");
-				strcpy_s(new_item.dest_ip, "192.168.1.100");
-				strcpy_s(new_item.source_mac, "FF:FF:FF:FF:FF:FF");
-				strcpy_s(new_item.dest_mac, "FF:FF:FF:FF:FF:FF");
-				new_item.dest_port = 8080;
-				new_item.source_port = 8081;
-				shared_buff[free_index] = new_item;
-				free_index = (free_index + 1) mod buff_max;
+			Packages::defaultToStruct(new_item);
+			shared_buff[free_index] = new_item;
+			free_index = (free_index + 1) mod buff_max;
 				continue;
 			}
-
-			const struct ether_header* ethernetHeader;
-			const struct eth_header* eth_Header;
-			const struct ip* ipHeader;
-			const struct tcphdr* tcpHeader;
-			///const struct tcphdr* len;
-			char sourceIp[INET_ADDRSTRLEN];
-			char destIp[INET_ADDRSTRLEN];
-
-			u_int size_ip;
-			u_int size_tcp;
-
-			const unsigned char* ptr1;
-			const unsigned char* ptr2;
-			u_int sourcePort, destPort;
-			u_char* data;
-			int dataLength = 0;
-			std::string dataStr = "";
-
-			ethernetHeader = (struct ether_header*)_packet;
-			if (ntohs(ethernetHeader->ether_type) == ETHERTYPE_IP) {
-				ipHeader = (struct ip*)(_packet + sizeof(struct ether_header));
-				size_ip = IP_HL(ipHeader) * 4;
-				inet_ntop(AF_INET, &(ipHeader->ip_src), sourceIp, INET_ADDRSTRLEN);
-				inet_ntop(AF_INET, &(ipHeader->ip_dst), destIp, INET_ADDRSTRLEN);
-
-				ptr1 = ethernetHeader->ether_shost;
-				ptr2 = ethernetHeader->ether_dhost;
-
-				char source_mac[32]; char dest_mac[32];
-				ether_ntoa(ptr1, source_mac, sizeof source_mac);
-				ether_ntoa(ptr2, dest_mac, sizeof dest_mac);
-
-				//ip_header_t   ip_header = (ip_header_t) * (packet + sizeof(ether_header_t));
-				u_int len = ntohs(ipHeader->tlen);
-				u_int id = ntohs(ipHeader->ip_id);
-				short flags_fo = ntohs(ipHeader->flags_fo);
-				u_short checksum = ntohs(ipHeader->ip_sum);
-				//u_char sourceIp = ntohl(ipHeader->ip_src);
-				//u_char destIp = ntohl(ipHeader->ip_dst);
-				int ip_size = 4 * (ipHeader->ver_ihl & 0x0F);
-
-				//ntohs(th->seq), ntohs(th->ack_seq));
-
-				std::string proto = "";
-				if (ipHeader->ip_p == 0x06)
-					proto = "Protocol: TCP (6)";
-				else if (ipHeader->ip_p == 0x11)
-					proto = "Protocol: UDP";
-				else if (ipHeader->ip_p == 0x0501)
-					proto = "Protocol: ICMP";
-				else if (ipHeader->ip_p == 0x0501)
-					proto = "Protocol: IPV4";
+						
+			struct ether_header* eptr{};
+			struct tcphdr* tcp_header;
+			struct udphdr* udp_header;
+			struct icmp* icmp_header;
+			struct ip* ip_hdr;
+			struct tcphdr* tcpip_header;
+			const unsigned char* dst_ptr_mac;
+			const unsigned char* src_ptr_mac;
+			char source_mac[32]; char dest_mac[32];
+			packetd_ptr += link_hdr_length;
+			eptr = (struct ether_header*)packetd_ptr;
+			ip_hdr = (struct ip*)(packetd_ptr + sizeof(struct ether_header));
 
 
-				//if (ipHeader->ip_p == IPPROTO_TCP )//|| ipHeader->ip_p == IPPROTO_ICMP)
-				{
-					tcpHeader = (tcphdr*)(_packet + sizeof(struct ether_header) + sizeof(struct ip));
-					size_tcp = TH_OFF(tcpHeader) * 4;
-					sourcePort = ntohs(tcpHeader->sport);
-					destPort = ntohs(tcpHeader->dport);
-					data = (u_char*)(_packet + sizeof(struct ether_header) + sizeof(struct ip) + sizeof(struct tcphdr));
-					dataLength = _pkthdr->len - (sizeof(struct ether_header) + sizeof(struct ip) + sizeof(struct tcphdr));
-
-					
-
-				/*	udp_header_t udp_header = (udp_header_t) * (packet + ip_size + sizeof(ether_header_t));
-					udp_header.src_port = ntohs(udp_header.src_port);
-					udp_header.dst_port = ntohs(udp_header.dst_port);
-					udp_header.length = ntohs(udp_header.length);
-					udp_header.checksum = ntohs(udp_header.checksum);*/
+			char packet_srcip[INET_ADDRSTRLEN];
+			char packet_dstip[INET_ADDRSTRLEN];
+			strcpy_s(packet_srcip, inet_ntoa(ip_hdr->ip_src));
+			strcpy_s(packet_dstip, inet_ntoa(ip_hdr->ip_dst));
+			
+			dst_ptr_mac = eptr->ether_shost;
+			src_ptr_mac = eptr->ether_dhost;
+			ether_ntoa(src_ptr_mac, source_mac, sizeof source_mac);
+			ether_ntoa(src_ptr_mac, dest_mac, sizeof dest_mac);
 
 
-					int len;
-					len = ntohs(ipHeader->tlen);
+			int packet_id = ntohs(ip_hdr->ip_id),
+				packet_ttl = ip_hdr->ip_ttl,
+				packet_tos = ip_hdr->ip_tos,
+				packet_len = ntohs(ip_hdr->ip_len),
+				packet_hlen = ip_hdr->ip_vhl;
 
-					while (((free_index + 1) mod buff_max) == full_index) {
-						std::this_thread::sleep_for(std::chrono::milliseconds(100));
-					}
-					mtx.lock();
-					//std::cout << "sourceIp"<< sourceIp << std::endl; ///tester
-					strcpy_s(new_item.source_ip, sourceIp);
-					strcpy_s(new_item.dest_ip, destIp);
-					strcpy_s(new_item.source_mac, source_mac);
-					strcpy_s(new_item.dest_mac, dest_mac);
-					new_item.dest_port = destPort;
-					new_item.source_port = sourcePort;
 
-					shared_buff[free_index] = new_item;
-					free_index = (free_index + 1) mod buff_max;
-					mtx.unlock();
+			int protocol_type = ip_hdr->ip_p;
+			dst_port = std::stoi(inet_ntoa(ip_hdr->ip_dst));
+			src_port = std::stoi(inet_ntoa(ip_hdr->ip_src));
+
+
+			switch (protocol_type) {
+
+			case IPPROTO_TCP:
+				tcpip_header = (tcphdr*)(packetd_ptr + sizeof(struct ether_header) + sizeof(struct ip));
+				dst_port = ntohs(tcpip_header->dport);
+				src_port = ntohs(tcpip_header->sport);
+				break;
+			case IPPROTO_UDP:
+				udp_header = (struct udphdr*)packetd_ptr;
+				src_port = udp_header->uh_sport;
+				dst_port = udp_header->uh_dport;
+				break;
+			case IPPROTO_ICMP:
+				icmp_header = (struct icmp*)packetd_ptr;
+				int icmp_type = icmp_header->icmp_type;
+				int icmp_type_code = icmp_header->icmp_code;
+				break;
+			}
+
+			auto iter = _proto.caseMap.find(protocol_type);
+			_proto.dst_port = &dst_port;
+			_proto.src_port = &src_port;
+
+			if (iter != _proto.caseMap.end()) {
+				iter->second();
+				strcpy(proto, _proto.protoStr);
+			}
+
+			if (ntohs(eptr->ether_type) == IPv4_ETHERTYPE) {
+				ip_hdr = (struct ip*)(packetd_ptr + SIZE_ETHERNET);
+				size_ip = IP_HL(ip_hdr) * 4;
+				if (IP_V(ip_hdr) == 4) {
 
 				}
 			}
+
+			while (((free_index + 1) mod buff_max) == full_index) {
+				std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			}
+			mtx.lock();
+			
+			Packages::addToStruct(proto, packet_srcip, packet_dstip, source_mac, dest_mac, packet_id, dst_port, src_port, new_item);						  
+			shared_buff[free_index] = new_item;
+			free_index = (free_index + 1) mod buff_max;
+			mtx.unlock();
 		}
 	}
-}
+	return 0;	
+};
+
+inline void Packages::addToStruct(char proto[22], char packet_srcip[INET_ADDRSTRLEN], char packet_dstip[INET_ADDRSTRLEN], char source_mac[32],
+	char dest_mac[32], int packet_id, int dst_port, int src_port, tagSnapshot &item)
+{	
+	strcpy(item.proto, proto);
+	strcpy(item.source_ip, packet_srcip);
+	strcpy(item.dest_ip, packet_dstip);
+	strcpy(item.source_mac, source_mac);
+	strcpy(item.dest_mac, dest_mac);
+	item.id = packet_id;
+	item.dest_port = dst_port;
+	item.source_port = src_port;	
+};
+inline void Packages::defaultToStruct(tagSnapshot& item){
+
+	item.id = 1000;
+	strcpy(item.source_ip, "192.168.1.1");
+	strcpy(item.dest_ip, "192.168.1.100");
+	strcpy(item.source_mac, "ff:ff:ff:ff:ff:ff");
+	strcpy(item.dest_mac, "ff:ff:ff:ff:ff:ff");
+	item.dest_port = 8080;
+	item.source_port = 8081;
+};
 
 #endif

@@ -3,47 +3,41 @@
 #include <iostream>
 #include <WinSock2.h>
 
+#define SIZE_ETHERNET 14
 #define ETHER_ADDR_LEN 6
-#ifndef ETHERTYPE_IP
-#define ETHERTYPE_IP		0x0800	
-#endif
+#define SIZE_ETHERNET 14
+#define ETHERTYPE_IP   0x0800	
+#define ETHERTYPE_ARP  0x0806 
+#define IPv4_ETHERTYPE 0x800
+#define ETHERTYPE_ARP       0x0806 
+#define ETHERTYPE_REVARP    0x8035
+#define ETHERTYPE_NS        0x0600 
 
-//Ethernet Header
 typedef struct ether_header {
 	unsigned char ether_dhost[ETHER_ADDR_LEN];
 	unsigned char ether_shost[ETHER_ADDR_LEN];
 	unsigned short ether_type;
 }ETHHEADER, * PETHHEADER;
 
-//IPv4 Header
-typedef struct ip {
-	unsigned char	ip_vhl;	 /* version << 4 | header length >> 2 */
-	unsigned char ver_ihl;
-	unsigned char tos;       /* type of service */
-	unsigned short tlen;     /* total length */
-	u_short ip_id;		/* identification */
-	unsigned short identification;
-	unsigned short flags_fo;
-	unsigned char ttl;
-	unsigned short	ip_off; /* fragment offset field */
-#define IP_RF 0x8000		/* reserved fragment flag */
-#define IP_DF 0x4000		/* don't fragment flag */
-#define IP_MF 0x2000		/* more fragments flag */
-#define IP_OFFMASK 0x1fff	/* mask for fragmenting bits */
-	unsigned char ip_p;  /* protocol */
-	u_short ip_sum;		/* checksum */
-	u_char ip_ttl;		/* time to live */	
-	unsigned char crc;
-	u_char ip_src[4];
-	u_char ip_dst[4];
-	//struct in_addr ip_src, ip_dst; /* source and dest address */
-
-}IPHEADER, * PIPHEADER;
-#define IP_HL(ip)  (((ip)->ip_vhl) & 0x0f)
-#define IP_V(ip)  (((ip)->ip_vhl) >> 4)
+struct ip {
+	u_char  ip_vhl;                 /* version << 4 | header length >> 2 */
+	u_char  ip_tos;                 /* type of service */
+	u_short ip_len;                 /* total length */
+	u_short ip_id;                  /* identification */
+	u_short ip_off;                 /* fragment offset field */
+#define IP_RF 0x8000            /* reserved fragment flag */
+#define IP_DF 0x4000            /* dont fragment flag */
+#define IP_MF 0x2000            /* more fragments flag */
+#define IP_OFFMASK 0x1fff       /* mask for fragmenting bits */
+	u_char  ip_ttl;                 /* time to live */
+	u_char  ip_p;                   /* protocol */
+	u_short ip_sum;                 /* checksum */
+	struct  in_addr ip_src, ip_dst;  /* source and dest address */
+};
+#define IP_HL(ip)               (((ip)->ip_vhl) & 0x0f)
+#define IP_V(ip)                (((ip)->ip_vhl) >> 4)
 
 typedef u_int tcp_seq;
-
 typedef struct tcphdr {
 	u_short sport;       /* source port */
 	u_short dport;       /* destination port */
@@ -69,11 +63,44 @@ typedef struct tcphdr {
 	u_short th_urp;		/* urgent pointer */
 }TCPHEADER, * PTCPHEADER;
 
+struct udphdr {
+	u_short	uh_sport;		/* source port */
+	u_short	uh_dport;		/* destination port */
+	u_short	uh_ulen;		/* udp length */
+	u_short	uh_sum;			/* udp checksum */
+};
+
+struct icmp {
+	uint8_t  icmp_type;		/* type of message, see below */
+	uint8_t  icmp_code;		/* type sub code */
+	uint16_t icmp_cksum;		/* ones complement cksum of struct */
+	union {
+		uint8_t   ih_pptr;		/* ICMP_PARAMPROB */
+		struct in_addr ih_gwaddr;	/* ICMP_REDIRECT */
+		struct ih_idseq {
+			uint16_t  icd_id;
+			uint16_t  icd_seq;
+		} ih_idseq;
+		int32_t   ih_void;
+		/* ICMP_UNREACH_NEEDFRAG -- Path MTU Discovery (RFC1191) */
+		struct ih_pmtu {
+			uint16_t  ipm_void;
+			uint16_t  ipm_nextmtu;
+		} ih_pmtu;
+		struct ih_rtradv {
+			uint8_t   irt_num_addrs;
+			uint8_t   irt_wpa;
+			uint16_t  irt_lifetime;
+		} ih_rtradv;
+	} icmp_hun;
+};
 
 #pragma pack(push, 2)
 typedef struct tagSnapshot {
+	int id;
 	int  source_port;
 	int  dest_port;
+	char proto[22];
 	char source_ip[22];
 	char dest_ip[22];
 	char source_mac[22];

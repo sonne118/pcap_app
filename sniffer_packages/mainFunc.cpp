@@ -13,17 +13,19 @@
 int mainFunc(HANDLE eventHandle) {
 
 	int file = 0; bool dev = true;
-	
-	Packages pack;
-	auto lmd=[&pack](HANDLE eventHandle) {pack.setHandler(eventHandle); };
+	handleProto p;
+	int  src_port = 0;
+	int  dst_port = 0;
+	Packages pack(src_port, dst_port, p);
+	auto lmd = [&pack](HANDLE eventHandle) {pack.setHandler(eventHandle); };
 	lmd(eventHandle);
-	
+
 	if (dev || file)
 	{
 		std::vector<std::unique_ptr<std::thread>> threads;
-		threads.emplace_back(std::make_unique<std::thread>([&pack]() {pack.producer(std::ref(quit_flag));})); 
-		threads.emplace_back(std::make_unique<std::thread>([&pack]() {pack.consumer();}));		
-		
+		threads.emplace_back(std::make_unique<std::thread>([&pack]() {pack.producer(std::ref(quit_flag));}));
+		threads.emplace_back(std::make_unique<std::thread>([&pack]() {pack.consumer();}));
+
 		for (auto& thread : threads) {
 			thread->join();
 		}

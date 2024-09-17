@@ -32,10 +32,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\sniffer_packages\sniffer_packages.vcxproj" />
-	</ItemGroup>
-
-	<ItemGroup>
 	
 	 <!-- <Protobuf Include=".\Protos\snifferData.proto" GrpcServices="Client" Link="Protos\snifferData.proto" /> -->
 	  <Compile Update="Properties\Resources.Designer.cs">
@@ -70,6 +66,10 @@
 
   <ItemGroup>
     <Folder Include="ssl\" />
+  </ItemGroup> 
+
+  <ItemGroup>
+    <ProjectReference Include="..\sniffer_packages\sniffer_packages.vcxproj" />
   </ItemGroup>
 
 </Project>

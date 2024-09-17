@@ -5,10 +5,13 @@ namespace WpfApp.Model
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct Snapshot
     {
+        public int id;
         public int source_port;
 
         public int dest_port;
 
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 22)]
+        public string proto;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 22)]
         public string source_ip;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 22)]
