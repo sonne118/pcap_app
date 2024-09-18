@@ -16,7 +16,7 @@ int mainFunc(HANDLE eventHandle) {
 	handleProto p;
 	int  src_port = 0;
 	int  dst_port = 0;
-	Packages pack(src_port, dst_port, p);
+	Packages pack(&src_port, &dst_port, p);
 	auto lmd = [&pack](HANDLE eventHandle) {pack.setHandler(eventHandle); };
 	lmd(eventHandle);
 

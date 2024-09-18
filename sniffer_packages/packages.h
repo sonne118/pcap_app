@@ -35,7 +35,7 @@ class Packages
 {
 public:
 	Packages();
-	Packages(int& src_port, int& dst_port, handleProto p);
+	Packages(int* src_port, int* dst_port, handleProto p);
 	~Packages();
 	void* producer(std::atomic<bool>& on);
 	void* consumer();
@@ -64,8 +64,10 @@ inline Packages::Packages()
 	dst_port = 0;
 }
 
-inline Packages::Packages(int& src_port, int& dst_port, handleProto p) : _proto(&src_port, &dst_port, &_proto) {
-
+inline Packages::Packages(int* _src_port, int* _dst_port, handleProto p) : _proto(_src_port, _dst_port, &_proto) {
+	p = _proto;
+	_src_port = &src_port;
+	_dst_port = &dst_port;
 };
 
 Packages ::~Packages() {

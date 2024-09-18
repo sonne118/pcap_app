@@ -62,8 +62,10 @@ inline handleProto::handleProto() :protoStr() {
 	dst_port = nullptr;
 }
 
-inline handleProto::handleProto(int* src_port, int* dst_port, handleProto* proto) {
+inline handleProto::handleProto(int* _src_port, int* _dst_port, handleProto* proto) {
 	p = proto;
+	src_port = _src_port;
+	dst_port = _dst_port;
 	caseMap[0] = std::bind(&handleProto::handlePROTO_IP, proto);
 	caseMap[6] = std::bind(&handleProto::handlePROTO_TCP, proto);
 	caseMap[17] = std::bind(&handleProto::handlePROTO_UDP, proto);
