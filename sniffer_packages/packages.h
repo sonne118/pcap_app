@@ -26,7 +26,6 @@
 #define mod %
 
 tagSnapshot shared_buff[buff_max];
-
 std::atomic<int> free_index(0);
 std::atomic<int> full_index(0);
 std::mutex mtx;
@@ -48,7 +47,7 @@ private:
 	pcap_t* descr;
 	pcap_if_t* alldevs;
 	pcap_if_t* d;
-	int i = 0;
+	int i;
 	struct pcap_pkthdr* _pkthdr;
 	const u_char* packetd_ptr;
 	pcap_t* _adhandle;
@@ -62,19 +61,28 @@ public:
 
 inline Packages::Packages()
 {
+	i = 0;
 	src_port = 0;
 	dst_port = 0;
+	src_porth = nullptr;
+	dst_porth = nullptr;
+	_adhandle = nullptr;
+	_eventHandles = nullptr;
+	packetd_ptr = nullptr;
+	_pkthdr = nullptr;
+	d = nullptr;
+	alldevs = nullptr;
+	descr = nullptr;
 }
 
-inline Packages::Packages(handleProto p) :_proto(&_proto) {
-	p = _proto;
+inline Packages::Packages(handleProto pp) :_proto(&_proto) {
 	_proto._dst_port = &dst_port;
 	_proto._src_port = &src_port;
 	src_porth = &src_port;
 	dst_porth = &dst_port;
 };
 
-Packages ::~Packages() {
+inline Packages ::~Packages() {
 	_adhandle = NULL;
 	_eventHandles = NULL;
 	delete _adhandle;
@@ -88,7 +96,6 @@ inline void Packages::setHandler(HANDLE eventHandle) {
 inline void* Packages::consumer() {
 	tagSnapshot consumed_item{};
 	tagSnapshot snapshot;
-
 
 	while (true) {
 		while (free_index == full_index) {
@@ -134,7 +141,6 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 			tagSnapshot new_item;char proto[22];u_int size_ip;
 
 			WaitForSingleObject(_eventHandles, INFINITE);
-
 			if (res == 0) {
 				Packages::defaultToStruct(new_item);
 				shared_buff[free_index] = new_item;
@@ -155,7 +161,6 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 			eptr = (struct ether_header*)packetd_ptr;
 			ip_hdr = (struct ip*)(packetd_ptr + sizeof(struct ether_header));
 
-
 			char packet_srcip[INET_ADDRSTRLEN];
 			char packet_dstip[INET_ADDRSTRLEN];
 			strcpy_s(packet_srcip, inet_ntoa(ip_hdr->ip_src));
@@ -166,21 +171,17 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 			ether_ntoa(src_ptr_mac, source_mac, sizeof source_mac);
 			ether_ntoa(src_ptr_mac, dest_mac, sizeof dest_mac);
 
-
 			int packet_id = ntohs(ip_hdr->ip_id),
 				packet_ttl = ip_hdr->ip_ttl,
 				packet_tos = ip_hdr->ip_tos,
 				packet_len = ntohs(ip_hdr->ip_len),
 				packet_hlen = ip_hdr->ip_vhl;
 
-
 			int protocol_type = ip_hdr->ip_p;
 			*dst_porth = std::stoi(inet_ntoa(ip_hdr->ip_dst));
 			*src_porth = std::stoi(inet_ntoa(ip_hdr->ip_src));
 
-
 			switch (protocol_type) {
-
 			case IPPROTO_TCP:
 				tcpip_header = (tcphdr*)(packetd_ptr + sizeof(struct ether_header) + sizeof(struct ip));
 				*dst_porth = ntohs(tcpip_header->dport);

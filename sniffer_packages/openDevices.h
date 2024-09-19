@@ -12,16 +12,8 @@ char errbuf[PCAP_ERRBUF_SIZE];
 class OpDevices
 {
 public:
-	 OpDevices();
-
-	~OpDevices() {
-		alldevs = NULL;
-		d= NULL;
-		_adhandle = NULL;
-		delete alldevs;
-	    delete d;
-		delete _adhandle;
-	};
+	OpDevices();
+	~OpDevices();
 
 public:
 	void SetInum(int dev);
@@ -40,6 +32,21 @@ private:
 
 inline OpDevices::OpDevices()
 {
+	i = 0;
+	inum = 0;
+	d = nullptr;;
+	alldevs = nullptr;
+	_adhandle = nullptr;
+}
+
+inline OpDevices::~OpDevices()
+{
+	alldevs = NULL;
+	d = NULL;
+	_adhandle = NULL;
+	delete alldevs;
+	delete d;
+	delete _adhandle;
 }
 
 void OpDevices::SetInum(int dev)
