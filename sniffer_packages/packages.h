@@ -76,6 +76,9 @@ inline Packages::Packages()
 	d = nullptr;
 	alldevs = nullptr;
 	descr = nullptr;
+	protoh = nullptr;	
+	proto = '\0';
+	new_proto[22] ='\0';	
 }
 
 inline Packages::Packages(handleProto pp) :_proto(&_proto) {
@@ -207,8 +210,7 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 			auto iter = _proto.caseMap.find(protocol_type);
 
 			if (iter != _proto.caseMap.end()) {
-				iter->second();
-				//strcpy(proto, _proto.protoStr);
+				iter->second();				
 			}
 
 			if (ntohs(eptr->ether_type) == IPv4_ETHERTYPE) {
