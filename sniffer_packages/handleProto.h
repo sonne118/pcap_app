@@ -53,7 +53,7 @@ public:
 	std::map<int, std::function<void()>> caseMap;
 	int* _src_port;
 	int* _dst_port;
-	char protoStr[22];
+	char* protoStr;
 private:
 	handleProto* p;
 };

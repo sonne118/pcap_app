@@ -39,7 +39,7 @@ public:
 	void* producer(std::atomic<bool>& on);
 	void* consumer();
 	void setHandler(HANDLE eventHandle);
-	void addToStruct(char proto[22], char packet_srcip[INET_ADDRSTRLEN], char packet_dstip[INET_ADDRSTRLEN], char source_mac[32], char dest_mac[32], int packet_id, int dst_port, int src_port, tagSnapshot& item);
+	void addToStruct(char proto[22], char packet_srcip[22], char packet_dstip[22], char source_mac[32], char dest_mac[32], int packet_id, int dst_port, int src_port, tagSnapshot& item);
 	void defaultToStruct(tagSnapshot& item);
 	handleProto _proto;
 
@@ -52,6 +52,9 @@ private:
 	const u_char* packetd_ptr;
 	pcap_t* _adhandle;
 	HANDLE _eventHandles;
+	char proto;
+	char* protoh;
+	char new_proto[22];
 public:
 	int  src_port;
 	int  dst_port;
@@ -78,8 +81,10 @@ inline Packages::Packages()
 inline Packages::Packages(handleProto pp) :_proto(&_proto) {
 	_proto._dst_port = &dst_port;
 	_proto._src_port = &src_port;
+	_proto.protoStr = &proto;
 	src_porth = &src_port;
 	dst_porth = &dst_port;
+	protoh = &proto;
 };
 
 inline Packages ::~Packages() {
@@ -138,7 +143,7 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
 		while ((res = pcap_next_ex(_adhandle, &_pkthdr, &packetd_ptr)) >= 0 && on.load()) {
-			tagSnapshot new_item;char proto[22];u_int size_ip;
+			tagSnapshot new_item;u_int size_ip;
 
 			WaitForSingleObject(_eventHandles, INFINITE);
 			if (res == 0) {
@@ -203,7 +208,7 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 
 			if (iter != _proto.caseMap.end()) {
 				iter->second();
-				strcpy(proto, _proto.protoStr);
+				//strcpy(proto, _proto.protoStr);
 			}
 
 			if (ntohs(eptr->ether_type) == IPv4_ETHERTYPE) {
@@ -218,8 +223,9 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 				std::this_thread::sleep_for(std::chrono::milliseconds(500));
 			}
 			mtx.lock();
-
-			Packages::addToStruct(proto, packet_srcip, packet_dstip, source_mac, dest_mac, packet_id, dst_port, src_port, new_item);
+			
+			strcpy(new_proto, protoh);
+			Packages::addToStruct(new_proto, packet_srcip, packet_dstip, source_mac, dest_mac, packet_id, dst_port, src_port, new_item);
 			shared_buff[free_index] = new_item;
 			free_index = (free_index + 1) mod buff_max;
 			mtx.unlock();
@@ -228,7 +234,7 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 	return 0;
 };
 
-inline void Packages::addToStruct(char proto[22], char packet_srcip[INET_ADDRSTRLEN], char packet_dstip[INET_ADDRSTRLEN], char source_mac[32],
+inline void Packages::addToStruct(char proto[22], char packet_srcip[22], char packet_dstip[22], char source_mac[32],
 	char dest_mac[32], int packet_id, int dst_port, int src_port, tagSnapshot& item)
 {
 	strcpy(item.proto, proto);
