@@ -14,9 +14,7 @@ int mainFunc(HANDLE eventHandle) {
 
 	int file = 0; bool dev = true;
 	handleProto p;
-	int  src_port = 0;
-	int  dst_port = 0;
-	Packages pack(&src_port, &dst_port, p);
+	Packages pack(p);
 	auto lmd = [&pack](HANDLE eventHandle) {pack.setHandler(eventHandle); };
 	lmd(eventHandle);
 

@@ -13,7 +13,7 @@ class handleProto
 public:
 	~handleProto() = default;
 	handleProto();
-	handleProto(int* src_port, int* dst_port, handleProto* proto);
+	handleProto(handleProto* proto);
 
 public:
 	void* handlePROTO_IP();
@@ -50,22 +50,20 @@ public:
 
 public:
 	std::map<int, std::function<void()>> caseMap;
-	int* src_port;
-	int* dst_port;
+	int* _src_port;
+	int* _dst_port;
 	char protoStr[22];
 private:
 	handleProto* p;
 };
 
 inline handleProto::handleProto() :protoStr() {
-	src_port = nullptr;
-	dst_port = nullptr;
+	_src_port = nullptr;
+	_dst_port = nullptr;
 }
 
-inline handleProto::handleProto(int* _src_port, int* _dst_port, handleProto* proto) {
+inline handleProto::handleProto(handleProto* proto) {
 	p = proto;
-	src_port = _src_port;
-	dst_port = _dst_port;
 	caseMap[0] = std::bind(&handleProto::handlePROTO_IP, proto);
 	caseMap[6] = std::bind(&handleProto::handlePROTO_TCP, proto);
 	caseMap[17] = std::bind(&handleProto::handlePROTO_UDP, proto);
@@ -105,8 +103,8 @@ void* handleProto::handlePROTO_IP()
 
 void* handleProto::handlePROTO_TCP()
 {
-	int sp = *src_port;
-	int dp = *dst_port;
+	int sp = *_src_port;
+	int dp = *_dst_port;
 	if (sp == 443 || dp == 443)
 		strcpy(protoStr, "TLS");
 	else if (sp == 80 || dp == 80)
@@ -120,8 +118,8 @@ void* handleProto::handlePROTO_TCP()
 
 void* handleProto::handlePROTO_UDP()
 {
-	int sp = *src_port;
-	int dp = *dst_port;
+	int sp = *_src_port;
+	int dp = *_dst_port;
 	if (sp == 53 || dp == 53)
 		strcpy(protoStr, "DNS");
 	else if (sp == 67 || dp == 68)
@@ -145,7 +143,7 @@ void* handleProto::handlePROTO_ICMP()
 
 void* handleProto::handlePROTO_IGMP()
 {
-	strcpy(protoStr, "IGMP"); 
+	strcpy(protoStr, "IGMP");
 	return 0;
 }
 
