@@ -1,90 +1,96 @@
 version: '3.8'
 
-services:
-  server:
-    image: ${DOCKER_REGISTRY-}server
-    container_name: server
+services:  
+  loadbalancing.api:
+    image: ${DOCKER_REGISTRY-}loadbalancing.api
+    container_name: loadbalancing.api
+    hostname: http://localhost:5010
     build:
       context: .
       dockerfile: server/Dockerfile
-    cpus: 1
-    mem_limit: "0.5G"
+    #cpus: 1
+    #mem_limit: "0.5G"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-    ports:
-      - 5000:8080
-      - 5000:5001
+      - ASPNETCORE_URLS=https://+:;http://+
+      - ASPNETCORE_HTTPS_PORT=5000  
+    ports:   
+      - 5010:5000    
     networks:
       - proxybackend
 
-  server2:
-    image: ${DOCKER_REGISTRY-}server2
-    container_name: server2
+  loadbalancing.api2:
+    image: ${DOCKER_REGISTRY-}loadbalancing.api2
+    container_name: loadbalancing.api2
+    hostname: http://localhost:5011
     build:
       context: .
       dockerfile: server/Dockerfile
-    cpus: 1
-    mem_limit: "0.5G"
+    #cpus: 1
+    #mem_limit: "0.5G"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-    ports:      
-      #- 6000:8080
-      - 6001:8080
-      - 6000:5001
+      - ASPNETCORE_URLS=https://+:;http://+
+      - ASPNETCORE_HTTPS_PORT=5000 
+    ports:           
+      - 5011:5000
     networks:
       - proxybackend
 
-  server3:
-    image: ${DOCKER_REGISTRY-}server3
-    container_name: server3
+  loadbalancing.api3:
+    image: ${DOCKER_REGISTRY-}loadbalancing.api3
+    container_name: loadbalancing.api3
+    hostname: http://localhost:5012
     build:
       context: .
       dockerfile: server/Dockerfile
-    cpus: 1
-    mem_limit: "0.5G"
+    #cpus: 1
+    #mem_limit: "0.5G"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-    ports:     
-      #- 7000:8080
-       - 7001:8080
-       - 7000:5001
+      - ASPNETCORE_URLS=https://+:;http://+
+      - ASPNETCORE_HTTPS_PORT=5000 
+    ports:           
+       - 5012:5000
     networks:
       - proxybackend
 
-  server4:
-    image: ${DOCKER_REGISTRY-}server4
-    container_name: server4
+  loadbalancing.api4:
+    image: ${DOCKER_REGISTRY-}loadbalancing.api4
+    container_name: loadbalancing.api4
+    hostname: http://localhost:5013
     build:
       context: .
       dockerfile: server/Dockerfile
-    cpus: 1
-    mem_limit: "0.5G"
+   # cpus: 1
+    #mem_limit: "0.5G"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production     
+      - ASPNETCORE_ENVIRONMENT=Production 
+      - ASPNETCORE_URLS=https://+:;http://+
+      - ASPNETCORE_HTTPS_PORT=5000  
     ports:
-      - 8001:8080
-      #- 8001:8081
-      - 8000:5001
+      - 5013:5000
     networks:
       - proxybackend
 
-  server5:
-    image: ${DOCKER_REGISTRY-}server5
-    container_name: server5
+  loadbalancing.api5:
+    image: ${DOCKER_REGISTRY-}loadbalancing.api5
+    container_name: loadbalancing.api5
+    hostname: http://localhost:5014
     build:
       context: .
       dockerfile: server/Dockerfile
-    cpus: 1
-    mem_limit: "0.5G"
+    #cpus: 1
+    #mem_limit: "0.5G"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production   
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=https://+:;http://+
+      - ASPNETCORE_HTTPS_PORT=5000 - 
     ports:
-      - 9001:8080
-      #- 9001:8081
-      - 9000:5001
+     - 5014:5000
     networks:
       - proxybackend
-
+ 
   loadbalancer:
     image: ${DOCKER_REGISTRY-}loadbalancer
     #volumes:       
@@ -94,28 +100,38 @@ services:
       context: .
       dockerfile: loadbalancer/Dockerfile
     cpus: 1
-    mem_limit: "0.5G"
+    #mem_limit: "0.5G"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - 'ASPNETCORE_URLS=https://+;http://+'
-      - ASPNETCORE_HTTPS_PORT=5001     
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/server.pfx      
+      - ASPNETCORE_URLS=https://+:;http://+
+      - ASPNETCORE_HTTPS_PORT=5001         
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/server.pfx   
       - ASPNETCORE_Kestrel__Certificates__Default__Password=11111 
       #- PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/mssql-tools/bin
     volumes:
-      - ~/.aspnet/https:/https:ro #this is very important
-    # - ./https/server.pfx:/https/server.pfx:ro
+      - ${USERPROFILE}\.aspnet\https:/https/
+      #- ~/.aspnet/https:/https:ro #this is very important
+      #- ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/:ro
+      # ./https/server.pfx:/https/server.pfx:ro
       # - ~/.aspnet/https:/https/:ro
       #- ~/.aspnet/ssl:/ssl:ro #this is very important
-    ports:
-      - 3000:8080
-      - 3001:8081     
-      - 5001:5001
-      - 443:443
+    ports:               
+      - 5000:5000 
+      - 5001:5001   
+    depends_on:
+     loadbalancing.api:
+      condition: service_started
+     loadbalancing.api2:
+      condition: service_started
+     loadbalancing.api3:
+      condition: service_started
+     loadbalancing.api4:
+      condition: service_started
+     loadbalancing.api5:
+      condition: service_started
     networks:
       - proxybackend
-
-
+  
 networks:
   proxybackend:
     name: proxybackend
