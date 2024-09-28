@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 //string? certPath = Environment.GetEnvironmentVariable("CERTIFICATE_PATH");
 //string? certPass = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
-var path = Path.Combine(builder.Environment.ContentRootPath, "ssl\\server.pfx");
+//var path = Path.Combine(builder.Environment.ContentRootPath, "ssl\\server.pfx");
 
 builder.Services.AddCors(options =>
 {
@@ -29,7 +29,7 @@ builder.WebHost.ConfigureKestrel(option =>
     option.ListenAnyIP(5000, listenOptions =>
     {
         //listenOptions.UseHttps(certPath, certPass);
-       // listenOptions.UseHttps(path, "11111");  
+        //listenOptions.UseHttps(path, "11111");  
        //listenOptions.ht
         listenOptions.Protocols = HttpProtocols.Http2;
     });
