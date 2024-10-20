@@ -8,7 +8,7 @@
 #include <atlsafe.h>
 #include <random>
 #include <functional>
-#include <openDevices.h>
+#include <builderDevice.h>
 #include <vector>
 #include <string.h>
 #include <mutex>
@@ -23,6 +23,7 @@ std::condition_variable cv;
 
 pcap_t* _adhandle1;
 
+
 HANDLE hPipe = ::CreateNamedPipe(_T("\\\\.\\pipe\\testpipe"),
 	PIPE_ACCESS_DUPLEX,
 	PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
@@ -36,11 +37,11 @@ extern "C" __declspec(dllexport) LPSAFEARRAY fnDevCPPDLL();
 
 LPSAFEARRAY fnDevCPPDLL()
 {
-	std::vector<std::string> listdev; OpDevices* oPdev;
-	oPdev = new OpDevices();
-	listdev = oPdev->listalldevs();
-	CComSafeArray<BSTR> a(listdev.size());
+	std::vector<std::string> listdev;
+	builderDevice::Builder builder(0);
+	listdev = builder.ListDev().build().getDevices();
 
+	CComSafeArray<BSTR> a(listdev.size());
 	std::vector<std::string>::const_iterator it;
 	int i = 0;
 	for (it = listdev.begin(); it != listdev.end(); ++it, ++i)
@@ -85,28 +86,24 @@ extern "C"
 {
 	void __declspec(dllexport) __stdcall fnPutdevCPPDLL(int dev) {
 
-		d1 = dev;
-		OpDevices* oPdev;
-		pcap_t* _adhandle2 = nullptr;
-		_adhandle1 = nullptr;
+		d1 = dev; _adhandle1 = nullptr;
+		builderDevice::Builder builder(dev);
+		builderDevice builderdev(builder);
 
 		if (quit_flag)
 			quit_flag = false;
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-		//TODO: pattern builder
-		oPdev = new OpDevices();
-		oPdev->SetInum(dev);
-		oPdev->Findalldevs();
-		_adhandle1 = oPdev->OpenDevices();
+
+		_adhandle1 = builder.Finddev().OpenDevices().build().getHandler();
 		{
 			std::unique_lock lk(m);
 			quit_flag = true;
 		}
-		oPdev->~OpDevices();
+		builder.~Builder();
+		builderdev.~builderDevice();
 		cv.notify_one();
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-		free(oPdev);
 	}
 }
 #endif 

@@ -23,10 +23,9 @@
     <ClCompile Include="mainFunc.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="builderDevice.h" />
     <ClInclude Include="ether_ntoa.h" />
     <ClInclude Include="ipc.h" />
-    <ClInclude Include="openDevices.h" />
+    <ClInclude Include="builderDevice.h" />
     <ClInclude Include="packages.h" />
     <ClInclude Include="struct.h" />
   </ItemGroup>
