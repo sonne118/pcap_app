@@ -16,25 +16,22 @@ public:
 	public:
 		Builder(int dev);
 		~Builder();
-
 	public:
 		Builder& Finddev();
 		Builder& OpenDevices();
 		Builder& ListDev();
 		Builder& OpenFile();
 		builderDevice build();
-
 	private:
-		int i = 0;
+		int i;
 		int inum;
 		pcap_if_t* alldevs;
 		pcap_if_t* d;
 		pcap_t* _adhandle;
 		std::vector<std::string> _list;
-
+		
 		friend class builderDevice;
 	};
-
 private:
 	int inum;
 	pcap_t* adhandle;
@@ -48,7 +45,6 @@ public:
 	builderDevice(const Builder& builder);
 	~builderDevice();
 };
-
 
 inline builderDevice::Builder::Builder(int dev) : inum(dev), i(0), d(nullptr), alldevs(nullptr), _adhandle(nullptr)
 {
@@ -70,7 +66,6 @@ inline builderDevice::Builder& builderDevice::Builder::Finddev()
 	{
 		exit(1);
 	}
-
 	for (d = alldevs; d; d = d->next)
 	{
 		std::cout << ++i << "." << d->name << std::endl;
@@ -79,7 +74,6 @@ inline builderDevice::Builder& builderDevice::Builder::Finddev()
 		else
 			std::cout << "No description available" << std::endl;
 	}
-
 	return *this;
 };
 
@@ -127,7 +121,6 @@ inline builderDevice::Builder& builderDevice::Builder::ListDev()
 		else
 			std::cout << "No description available" << std::endl;
 	}
-
 	return *this;
 };
 
@@ -163,6 +156,5 @@ inline builderDevice::~builderDevice()
 	inum = NULL;
 	adhandle = nullptr;
 }
-
 #endif
 
