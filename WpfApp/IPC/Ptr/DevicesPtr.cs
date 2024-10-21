@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Google.Protobuf.WellKnownTypes;
+using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace wpfapp.Services.IPC.Ptr
@@ -7,14 +9,34 @@ namespace wpfapp.Services.IPC.Ptr
     {
         //[DllImport("sniffer_packages.dll")]
         [DllImport(@"D:\repo\test2\pcap_app12\2\pcap_app\x64\Debug\sniffer_packages.dll", EntryPoint =
-        "fnDevCPPDLL", CallingConvention = CallingConvention.StdCall)]
-        [return: MarshalAs(UnmanagedType.SafeArray)]
-        private extern static string[] fnDevCPPDLL();
+        "fnDevCPPDLL", CallingConvention = CallingConvention.Cdecl)]
+        public extern static void fnDevCPPDLL(IntPtr[] data, int[] sizes, ref int count);
 
         public static IEnumerable<string> GetAllDevices()
         {
-            foreach (string item in fnDevCPPDLL())
-                yield return item;
+            int count = 3;
+            IntPtr[] data = new IntPtr[count];
+            int[] sizes = new int[count];
+
+            fnDevCPPDLL(data, sizes, ref count);
+            string[] res = new string[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                try
+                {
+                    res[i] = Marshal.PtrToStringAnsi(data[i], sizes[i]);
+                    yield return res[i];
+                }
+                finally
+                {
+                    if (data[i] != IntPtr.Zero)
+                    {
+                        data[i] = IntPtr.Zero;
+                        Marshal.FreeHGlobal(data[i]);
+                    }
+                }
+            }
         }
     }
 }
