@@ -9,6 +9,7 @@
 #include <random>
 #include <functional>
 #include <builderDevice.h>
+#include <handleProto.h>
 
 int mainFunc(HANDLE eventHandle) {
 

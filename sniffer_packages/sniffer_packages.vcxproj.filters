@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mainFunc.cpp">
+    <ClCompile Include="handleProto.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="handleProto.h">
+    <ClCompile Include="mainFunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -12,6 +12,8 @@
 #include <vector>
 #include <string.h>
 #include <mutex>
+#include <string>
+#include <cstring>
 
 int mainFunc(HANDLE eventHandle);
 
@@ -33,24 +35,21 @@ HANDLE hPipe = ::CreateNamedPipe(_T("\\\\.\\pipe\\testpipe"),
 	0,
 	NULL);
 
-extern "C" __declspec(dllexport) LPSAFEARRAY fnDevCPPDLL();
 
-LPSAFEARRAY fnDevCPPDLL()
+extern "C" __declspec(dllexport) void fnDevCPPDLL(char** data, int* sizes, int* count)
 {
-	std::vector<std::string> listdev;
+	std::vector<std::string> listdev; int size;
 	builderDevice::Builder builder(0);
 	listdev = builder.ListDev().build().getDevices();
 
-	CComSafeArray<BSTR> a(listdev.size());
-	std::vector<std::string>::const_iterator it;
-	int i = 0;
-	for (it = listdev.begin(); it != listdev.end(); ++it, ++i)
+	*count = listdev.size();
+	for (int i = 0; i < *count; ++i)
 	{
-		a.SetAt(i, A2BSTR_EX((*it).c_str()), FALSE);
+		sizes[i] = listdev[i].size();;
+		data[i] = new char[sizes[i] + 1];
+		std::strcpy(data[i], listdev[i].c_str());
 	}
-	return a.Detach();
 }
-
 
 extern "C" {
 	void __declspec(dllexport) __stdcall fnCPPDLL(int d)
@@ -78,7 +77,6 @@ extern "C" {
 		std::cout << " main thread " << std::endl;
 
 		CloseHandle(eventHandle);
-		CloseHandle(hThread);
 	}
 }
 

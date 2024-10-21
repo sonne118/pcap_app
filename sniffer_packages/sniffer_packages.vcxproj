@@ -117,7 +117,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WINx64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WINx64;_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>D:\repo\test2\pcap_app12\2\pcap_app\sniffer_packages;D:\repo\test2\pcap_app12\pcap_app\header\WpdPack\WpdPack\Include\pcap;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalUsingDirectories>D:\repo\test2\pcap_app12\2\pcap_app\1\pcap_app\header\WpdPack\WpdPack\Include;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>

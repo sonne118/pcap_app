@@ -1,6 +1,6 @@
 ﻿#pragma once
-#ifndef HANDLEPROTO_H
-#define HANDLEPROTO_H
+#ifndef HANDLE_PROTO_H
+#define HANDLE_PROTO_H
 #include <iostream>
 #include <map>
 #include <functional>
@@ -68,21 +68,23 @@ inline handleProto::~handleProto()
 	delete p;
 }
 
-handleProto::handleProto() :protoStr() {
-	_src_port = nullptr;
-	_dst_port = nullptr;
-	p = nullptr;
+inline handleProto::handleProto() :protoStr() {
+	_src_port = 0;
+	_dst_port = 0;
+	 p = nullptr;
+	//initialize();
 }
 
-handleProto::handleProto(handleProto* proto) {
+inline handleProto::handleProto(handleProto* proto) {
 
-	this->~handleProto();
-	new (this) handleProto();
+	//this->~handleProto();
+	//new (this) handleProto();
+	proto = this;
 	p = proto;
 	initialize();
 }
 
- void* handleProto::initialize()
+ inline void* handleProto::initialize()
 {
 	caseMap[0] = std::bind(&handleProto::handlePROTO_IP, p);
 	caseMap[6] = std::bind(&handleProto::handlePROTO_TCP, p);
@@ -116,12 +118,12 @@ handleProto::handleProto(handleProto* proto) {
 	return 0;
 }
 
-void handleProto::handlePROTO_IP()
+ inline void handleProto::handlePROTO_IP()
 {
 	strcpy(protoStr, "IP");
 }
 
-void handleProto::handlePROTO_TCP()
+inline void handleProto::handlePROTO_TCP()
 {
 	int sp = *_src_port;
 	int dp = *_dst_port;
@@ -135,7 +137,7 @@ void handleProto::handlePROTO_TCP()
 		strcpy(protoStr, "TCP");
 }
 
-void handleProto::handlePROTO_UDP()
+inline void handleProto::handlePROTO_UDP()
 {
 	int sp = *_src_port;
 	int dp = *_dst_port;
@@ -147,142 +149,142 @@ void handleProto::handlePROTO_UDP()
 		strcpy(protoStr, "UDP");
 }
 
-void handleProto::handlePROTO_PUP()
+inline void handleProto::handlePROTO_PUP()
 {
 	strcpy(protoStr, "PUP");
 }
 
-void handleProto::handlePROTO_ICMP()
+inline void handleProto::handlePROTO_ICMP()
 {
 	strcpy(protoStr, "ICMP");
 }
 
-void handleProto::handlePROTO_IGMP()
+inline void handleProto::handlePROTO_IGMP()
 {
 	strcpy(protoStr, "IGMP");
 }
 
-void handleProto::handlePROTO_GGP()
+inline void handleProto::handlePROTO_GGP()
 {
 	strcpy(protoStr, "GGP");
 }
 
-void handleProto::handlePROTO_IDP()
+inline void handleProto::handlePROTO_IDP()
 {
 	strcpy(protoStr, "IDP");
 }
 
-void handleProto::handlePROTO_ST()
+inline void handleProto::handlePROTO_ST()
 {
 	strcpy(protoStr, "ST");
 }
 
-void handleProto::handlePROTO_RDP()
+inline void handleProto::handlePROTO_RDP()
 {
 	strcpy(protoStr, "RDP");
 }
 
-void handleProto::handlePROTO_ND()
+inline void handleProto::handlePROTO_ND()
 {
 	strcpy(protoStr, "ND");
 }
 
-void handleProto::handlePROTO_L2TP()
+inline void handleProto::handlePROTO_L2TP()
 {
 	strcpy(protoStr, "L2TP");
 }
 
-void handleProto::handlePROTO_PIM()
+inline void handleProto::handlePROTO_PIM()
 {
 	strcpy(protoStr, "PIM");
 }
 
-void handleProto::handlePROTO_PGM()
+inline void handleProto::handlePROTO_PGM()
 {
 	strcpy(protoStr, "PGM");
 }
 
-void handleProto::handlePROTO_SCTP()
+inline void handleProto::handlePROTO_SCTP()
 {
 	strcpy(protoStr, "SCTP");
 }
 
-void handleProto::handlePROTO_CBT()
+inline void handleProto::handlePROTO_CBT()
 {
 	strcpy(protoStr, "CBT");
 }
 
-void handleProto::handlePROTO_EGP()
+inline void handleProto::handlePROTO_EGP()
 {
 	strcpy(protoStr, "EGP");
 }
 
-void handleProto::handlePROTO_IGP()
+inline void handleProto::handlePROTO_IGP()
 {
 	strcpy(protoStr, "IGP");
 }
 
-void handleProto::handlePROTO_IPV4()
+inline void handleProto::handlePROTO_IPV4()
 {
 	strcpy(protoStr, "IPV4");
 }
 
-void handleProto::handlePROTO_IPV6()
+inline void handleProto::handlePROTO_IPV6()
 {
 	strcpy(protoStr, "IPV6");
 }
 
-void handleProto::handlePROTO_ROUTING()
+inline void handleProto::handlePROTO_ROUTING()
 {
 	strcpy(protoStr, "ROUTING");
 }
 
-void handleProto::handlePROTO_FRAGMENT()
+inline void handleProto::handlePROTO_FRAGMENT()
 {
 	strcpy(protoStr, "FRAGMENT");
 }
 
-void handleProto::handlePROTO_ESP()
+inline void handleProto::handlePROTO_ESP()
 {
 	strcpy(protoStr, "ESP");
 }
 
-void handleProto::handlePROTO_AH()
+inline void handleProto::handlePROTO_AH()
 {
 	strcpy(protoStr, "AH");
 }
 
-void handleProto::handlePROTO_RESERVED_IPSEC()
+inline void handleProto::handlePROTO_RESERVED_IPSEC()
 {
 	strcpy(protoStr, "RESERVED_IPSEC");
 }
 
-void handleProto::handlePROTO_ICMPV6()
+inline void handleProto::handlePROTO_ICMPV6()
 {
 	strcpy(protoStr, "ICMPV6");
 }
 
-void handleProto::handlePROTO_NONE()
+inline void handleProto::handlePROTO_NONE()
 {
 	strcpy(protoStr, "NONE");
 }
 
-void handleProto::handlePROTO_DSTOPTS()
+inline void handleProto::handlePROTO_DSTOPTS()
 {
 	strcpy(protoStr, "PROTO_DSTOPTS");
 }
 
-void handleProto::handlePROTO_RAW()
+inline void handleProto::handlePROTO_RAW()
 {
 	strcpy(protoStr, "PROTO_RAW");
 }
 
-void handleProto::handlePROTO_MAX()
+inline void handleProto::handlePROTO_MAX()
 {
 	strcpy(protoStr, "PROTO_MAX");
 }
 
-void* handleProto::handleDefault()
+inline void* handleProto::handleDefault()
 {
 	return 0;
 }

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef OpDevices_HEADER
-#define OpDevices_HEADER
+#ifndef BUILDER_DEVICE_H
+#define BUILDER_DEVICE_H
 
 #include <pcap.h>
 #include <iostream>
@@ -57,7 +57,7 @@ inline builderDevice::Builder::~Builder()
 	_adhandle = NULL;
 	delete alldevs;
 	delete d;
-	delete _adhandle;
+	//delete _adhandle;
 };
 
 inline builderDevice::Builder& builderDevice::Builder::Finddev()

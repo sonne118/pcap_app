@@ -64,7 +64,7 @@ public:
 
 inline Packages::Packages():i(0), src_port(0),dst_port(0),d(nullptr),src_porth(nullptr),dst_porth(nullptr),_adhandle(nullptr), _eventHandles(nullptr), packetd_ptr(nullptr), _pkthdr(nullptr), alldevs(nullptr), descr(nullptr), protoh(nullptr),proto('\0')
 {
-	new_proto[22] ='\0';	
+	//new_proto[22] ='\0';	
 }
 
 inline Packages::Packages(handleProto pp) :_proto(&_proto) {
