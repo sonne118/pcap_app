@@ -2,9 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using wpfapp.Services.BackgroundJobs;
-using WpfApp.Model;
+using wpfapp.models;
 
-namespace WpfApp.Services.BackgroundJob
+namespace wpfapp.Services.BackgroundJob
 {
     public class BackgroundJobs : IBackgroundJobs<Snapshot>
     {

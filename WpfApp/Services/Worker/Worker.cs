@@ -7,12 +7,13 @@ using System.IO.Pipes;
 using System.Threading;
 using System.Threading.Tasks;
 using wpfapp.Services.Worker;
-using WpfApp.Model;
-using WpfApp.Services.BackgroundJob;
+using wpfapp.Services.BackgroundJob;
+using wpfapp.models;
+using wpfapp.IPC.Grpc;
 
-namespace WpfApp.Services.Worker
+namespace wpfapp.Services.Worker
 {
-    public class Worker : BackgroundService
+    public class Worker : BackgroundService//, IWorker
     {
         private readonly int timeout = 10000;
         private readonly ILogger<Worker> _logger;
@@ -24,7 +25,7 @@ namespace WpfApp.Services.Worker
                       IBackgroundJobs<Snapshot> backgroundJobs,
                       IServiceScopeFactory scopeFactory)
         {
-            _logger = logger;
+            //_logger = logger;
             _backgroundJobs = backgroundJobs;
             _scopeFactory = scopeFactory;
             streamData.GetStream(3);
@@ -36,7 +37,7 @@ namespace WpfApp.Services.Worker
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
                 await using var pipe = new NamedPipeClientStream(".", "testpipe", PipeDirection.InOut);
                 using (BinaryReader stream = new BinaryReader(pipe))
@@ -87,5 +88,15 @@ namespace WpfApp.Services.Worker
                 service_j.CleanBackgroundTask();
             }
         }
+
+        //async Task IWorker.ExecuteAsync(CancellationToken cancellationToken)
+        //{
+        //    await ExecuteAsync(cancellationToken);
+        //}
+
+        //async Task IWorker.StopAsync(CancellationToken cancellationToken)
+        //{
+        //    await StopAsync(cancellationToken);
+        //}
     }
 }

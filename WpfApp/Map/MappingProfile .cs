@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using CoreModel.Model;
 using GrpcClient;
-using WpfApp.Model;
+using wpfapp.models;
 
-namespace WpfApp.Map
+namespace wpfapp.Map
 {
     public class AppMappingProfile : Profile
     {
@@ -17,6 +17,7 @@ namespace WpfApp.Map
                 .ForMember(dest => dest.DestIp, opt => opt.MapFrom(src => src.dest_ip))
                 .ForMember(dest => dest.SourceMac, opt => opt.MapFrom(src => src.source_mac))
                 .ForMember(dest => dest.DestMac, opt => opt.MapFrom(src => src.dest_mac));
+            //.ForMember(dest => dest.Host, opt => opt.MapFrom(src => src.host_name));
         }
     }
 }

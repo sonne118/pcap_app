@@ -89,8 +89,8 @@ namespace MVVM
             _timer.IsEnabled = true;
         }
 
-        public abstract void OnProcessQueue(object sender, EventArgs e);
-        public abstract void SetDevice(string str);      
-        public abstract void Dispose();
+        public virtual void OnProcessQueue(object sender, EventArgs e) { }
+        public virtual void SetDevice(string str) { }
+        public virtual void Dispose() { }
     }
 }

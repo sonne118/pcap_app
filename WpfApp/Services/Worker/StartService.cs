@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using wpfapp.Services.Worker;
 
-namespace WpfApp.Services.Worker
+namespace wpfapp.Services.Worker
 {
     public class StartService : IHostedService
     {

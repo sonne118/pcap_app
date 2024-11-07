@@ -1,66 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<OutputType>WinExe</OutputType>		
-		<TargetFramework>net8.0-windows7.0</TargetFramework>
-		<Nullable>enable</Nullable>
-		<UseWPF>true</UseWPF>
-		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<UserSecretsId>33151b79-c239-45a7-805a-675ac1c63a5d</UserSecretsId> 
-	</PropertyGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
 
-	<ItemGroup>
-	  <None Remove="Protos\sniffering.proto" />
-	</ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="AutoMapper" Version="11.0.0" />
-	  <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-	  <PackageReference Include="Google.Protobuf" Version="3.27.2" />
-	  <PackageReference Include="Grpc" Version="2.46.6" />
-	  <PackageReference Include="Grpc.Net.Client" Version="2.63.0" />
-	  <PackageReference Include="Grpc.Net.ClientFactory" Version="2.63.0" />
-	  <PackageReference Include="Grpc.Tools" Version="2.64.0">
-	    <PrivateAssets>all</PrivateAssets>
-	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	  </PackageReference>
-	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
-	  <PackageReference Include="MvvmLight" Version="5.4.1.1" />
-	  <PackageReference Include="Prism.Wpf" Version="8.1.97" />
-	  <PackageReference Include="ToggleSwitch" Version="1.2.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	
-	 <!-- <Protobuf Include=".\Protos\snifferData.proto" GrpcServices="Client" Link="Protos\snifferData.proto" /> -->
-	  <Compile Update="Properties\Resources.Designer.cs">
-	    <DesignTime>True</DesignTime>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Resources.resx</DependentUpon>
-	  </Compile>
-	  <Compile Update="Properties\Settings.Designer.cs">
-	    <DesignTimeSharedInput>True</DesignTimeSharedInput>
-	    <AutoGen>True</AutoGen>
-	    <DependentUpon>Settings.settings</DependentUpon>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <EmbeddedResource Update="Properties\Resources.resx">
-	    <Generator>ResXFileCodeGenerator</Generator>
-	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-	  </EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="Properties\Settings.settings">
-	    <Generator>SettingsSingleFileGenerator</Generator>
-	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-	  </None>
-	</ItemGroup>
-	
-	 <ItemGroup> 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Google.Protobuf" Version="3.29.0-rc2" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.29.0-rc2" />
+    <PackageReference Include="Grpc" Version="2.46.6" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.67.0-pre1" />
+    <PackageReference Include="Grpc.Net.ClientFactory" Version="2.67.0-pre1" />
+    <PackageReference Include="Grpc.Tools" Version="2.67.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0-rc.2.24473.5" />
+    <PackageReference Include="MvvmLight" Version="5.4.1.1" />
+    <PackageReference Include="Prism.Wpf" Version="9.0.537" />
+    <PackageReference Include="ToggleSwitch" Version="1.2.0" />
+  </ItemGroup>
+  
+  <ItemGroup> 
     <Protobuf Include="Protos\sniffering.proto" OutputDir="%(RelativePath)models/" /> 
     </ItemGroup> 
 
@@ -68,8 +41,5 @@
     <Folder Include="ssl\" />
   </ItemGroup> 
 
-  <ItemGroup>
-    <ProjectReference Include="..\sniffer_packages\sniffer_packages.vcxproj" />
-  </ItemGroup>
 
 </Project>

@@ -8,17 +8,19 @@ namespace wpfapp.Services.IPC.Ptr
     public static class DevicesPtr
     {
         //[DllImport("sniffer_packages.dll")]
-        [DllImport(@"D:\repo\test2\pcap_app12\2\pcap_app\x64\Debug\sniffer_packages.dll", EntryPoint =
+        [DllImport(@"D:\repo\test2\cpp\examples\x64\Debug\sniffer_packages.dll", EntryPoint =
         "fnDevCPPDLL", CallingConvention = CallingConvention.Cdecl)]
         public extern static void fnDevCPPDLL(IntPtr[] data, int[] sizes, ref int count);
 
         public static IEnumerable<string> GetAllDevices()
         {
-            int count = 3;
+            int count = 0;
+            fnDevCPPDLL(null, null, ref count);
             IntPtr[] data = new IntPtr[count];
             int[] sizes = new int[count];
 
             fnDevCPPDLL(data, sizes, ref count);
+
             string[] res = new string[count];
 
             for (int i = 0; i < count; i++)

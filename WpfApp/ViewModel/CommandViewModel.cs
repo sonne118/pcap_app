@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using CoreModel.Model;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Reactive.Disposables;
 using System.Windows.Input;
 using wpfapp.IPC.Grpc;
 using wpfapp.Services.Worker;
@@ -16,7 +16,6 @@ namespace MVVM
     {
         private readonly IServiceScopeFactory _scopeFactory;
         private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
-        private readonly IMapper _mapper;
 
         public ClosingCommand _closingCommand;
         public DataGridDoubleClickCommand _dataGridDoubleClickCommand;
@@ -25,9 +24,8 @@ namespace MVVM
                                 IDevices device,
                                 IMapper mapper,
                                 IServiceScopeFactory scopeFactory,
-                                MainWindow mainWindow) : base(device)
+                                MainWindow mainWindow) : base(device, mapper, backgroundJobs)
         {
-            _mapper = mapper;
             _backgroundJobs = backgroundJobs;
             _scopeFactory = scopeFactory;
             _closingCommand = new ClosingCommand(mainWindow);
@@ -35,6 +33,7 @@ namespace MVVM
             OnSetGrpcService = new RelayCommand<bool>(OnExecuteGrpcService);
             OnStartStreamService = new RelayCommand(OnExecuteStartService);
             OnStopStreamService = new RelayCommand(OnExecuteStopService);
+
         }
 
         public RelayCommand<Boolean> OnSetGrpcService { get; private set; }
@@ -83,23 +82,38 @@ namespace MVVM
             {
                 var service = scope.ServiceProvider.GetRequiredService<IPutDevice>();
                 Int32.TryParse(str?.Substring(0, 1), out var dev);
-                service.PutDevices(dev);
+
+                _worker.DoWork += (s, e) =>
+                {
+                    service.PutDevices(dev);
+                };
+                _worker.RunWorkerAsync();
             }
         }
 
         public override void OnProcessQueue(object sender, EventArgs e)
         {
-            while (_backgroundJobs.BackgroundTasks.TryDequeue(out var data))
+            if (_backgroundJobs.BackgroundTasks.TryPeek(out var data))
             {
-                var _snifferData = _mapper.Map<StreamingData>(data);
-                _StreamingData.Add(_snifferData);
+                _dataSubject.OnNext(data);
             }
         }
 
         public override void Dispose()
         {
+            _disposable.Dispose();
             _timer.Stop();
             _timer.Tick -= OnProcessQueue;
+        }
+    }
+
+    public static class DisposableExtensions
+    {
+        public static T DisposeWith<T>(this T disposable, CompositeDisposable container)
+            where T : IDisposable
+        {
+            container.Add(disposable);
+            return disposable;
         }
     }
 }

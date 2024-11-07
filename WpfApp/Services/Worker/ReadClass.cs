@@ -2,8 +2,9 @@
 using System.IO;
 using System.Runtime.InteropServices;
 using WpfApp.Model;
+using wpfapp.models;
 
-namespace WpfApp.Services.Worker
+namespace wpfapp.Services.Worker
 {
     public static class ReadClass
     {

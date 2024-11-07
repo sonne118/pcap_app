@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 
-namespace WpfApp.Services.Worker
+namespace wpfapp.Services.Worker
 {
     public class ObjectPool<V, T>
     {

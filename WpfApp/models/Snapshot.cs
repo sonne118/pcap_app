@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace WpfApp.Model
+namespace wpfapp.models
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct Snapshot
@@ -20,6 +20,8 @@ namespace WpfApp.Model
         public string source_mac;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 22)]
         public string dest_mac;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 22)]
+        public string host_name;
         public override string ToString() =>
             $"{source_ip}:{source_port} -> {dest_ip}:{dest_port}->source_mac:{source_mac}->dest_mac:{dest_mac}";
     }

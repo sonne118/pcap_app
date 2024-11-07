@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using WpfApp.Model;
 
-namespace WpfApp.Services.Reader
+namespace wpfapp.Services.Reader
 {
     public class AccumulateData : IAccumulateData
     {

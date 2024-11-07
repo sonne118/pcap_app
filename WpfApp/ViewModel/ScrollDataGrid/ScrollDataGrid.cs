@@ -2,7 +2,7 @@
 using System.Collections.Specialized;
 using System.Windows.Controls;
 
-namespace MVVM
+namespace wpfapp.ViewModel
 {
     public sealed class ScrollDataGrid : DataGrid
     {

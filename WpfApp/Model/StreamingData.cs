@@ -12,6 +12,7 @@ namespace CoreModel.Model
         private string? _dest_ip;
         private string? _source_mac;
         private string? _dest_mac;
+        private string? _host_name;
         private bool _isSelected;
 
         public int Id
@@ -64,6 +65,12 @@ namespace CoreModel.Model
         {
             get => _dest_mac;
             set => Set(ref _dest_mac, value);
+        }
+
+        public string Host_name
+        {
+            get => _host_name;
+            set => Set(ref _host_name, value);
         }
     }
 }

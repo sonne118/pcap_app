@@ -14,9 +14,19 @@ namespace wpfapp.Services.BackgroundJobs
             _bufferBlock.Post(item);          
         }
 
+        public async IAsyncEnumerator<T> TryDequeue()
+        {
+
+            while (await _bufferBlock.OutputAvailableAsync())
+            {
+                yield return  await _bufferBlock.ReceiveAsync();
+
+            }
+        }
+
         public async IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken token = default)
         {
-            await _enumerationSemaphore.WaitAsync(token);
+            //await _enumerationSemaphore.WaitAsync(token);
 
             try
             {
@@ -28,7 +38,7 @@ namespace wpfapp.Services.BackgroundJobs
             }
             finally
             {
-                _enumerationSemaphore.Release();
+                //_enumerationSemaphore.Release();
             }
         }
     }

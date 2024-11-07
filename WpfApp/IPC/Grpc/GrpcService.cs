@@ -6,8 +6,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using wpfapp.Services.BackgroundJobs;
-using WpfApp.Model;
-using WpfApp.Services.BackgroundJob;
+using wpfapp.models;
+using wpfapp.Services.BackgroundJob;
 
 namespace wpfapp.IPC.Grpc
 {
