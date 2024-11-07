@@ -1,20 +1,15 @@
 ﻿using GrpcClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MVVM;
-using System;
 using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
-using wpfapp;
 using wpfapp.IPC.Grpc;
-using wpfapp.models;
-using wpfapp.Services.Worker;
 using wpfapp.Map;
+using wpfapp.models;
 using wpfapp.Services.BackgroundJob;
 using wpfapp.Services.Worker;
-using System.Windows.Navigation;
 using wpfapp.ViewModel;
 
 namespace wpfapp
@@ -93,7 +88,6 @@ namespace wpfapp
             startupForm.Show();
 
             base.OnStartup(e);
-
         }
     }
 }

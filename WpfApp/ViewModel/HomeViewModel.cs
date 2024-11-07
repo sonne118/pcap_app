@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using CoreModel.Model;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MVVM;
-using System.Diagnostics;
 using System.Windows.Input;
 using wpfapp.IPC.Grpc;
 using wpfapp.models;
@@ -26,15 +24,13 @@ namespace wpfapp.ViewModel
         public HomeViewModel(IBackgroundJobs<Snapshot> backgroundJobs,
                                 IDevices device,
                                 IMapper mapper,
-                                IServiceScopeFactory scopeFactory) : base(device)
-        //MainWindow mainWindow) : base(device)
+                                IServiceScopeFactory scopeFactory) : base(device, mapper, backgroundJobs)
         {
-            Debug.WriteLine("HomeModelView");
             _mapper = mapper;
             _backgroundJobs = backgroundJobs;
             _scopeFactory = scopeFactory;
-            // _closingCommand = new ClosingCommand(mainWindow);
-            //_dataGridDoubleClickCommand = new DataGridDoubleClickCommand(mainWindow);
+         // _closingCommand = new ClosingCommand(mainWindow);
+         // _dataGridDoubleClickCommand = new DataGridDoubleClickCommand(mainWindow);
             OnSetGrpcService = new RelayCommand<bool>(OnExecuteGrpcService);
             OnStartStreamService = new RelayCommand(OnExecuteStartService);
             OnStopStreamService = new RelayCommand(OnExecuteStopService);
@@ -44,8 +40,10 @@ namespace wpfapp.ViewModel
         public RelayCommand<Boolean> OnSetGrpcService { get; private set; }
         public ICommand OnStartStreamService { get; private set; }
         public ICommand OnStopStreamService { get; private set; }
-        // public ICommand OnClosingCommand { get { return _closingCommand.ExitCommand; } }
-        //public ICommand OnDataGridDoubleClickCommand { get { return _dataGridDoubleClickCommand.ShowCommand; } }
+
+      //public ICommand OnClosingCommand { get { return _closingCommand.ExitCommand; } }
+
+      //public ICommand OnDataGridDoubleClickCommand { get { return _dataGridDoubleClickCommand.ShowCommand; } }
 
 
         private void OnExecuteGrpcService(bool isChecked)
@@ -83,11 +81,9 @@ namespace wpfapp.ViewModel
 
         public override void OnProcessQueue(object sender, EventArgs e)
         {
-
-            while (_backgroundJobs.BackgroundTasks.TryDequeue(out var data))
+            if (_backgroundJobs.BackgroundTasks.TryPeek(out var data))
             {
-                var _snifferData = _mapper.Map<StreamingData>(data);
-                _StreamingData.Add(_snifferData);
+                _dataSubject.OnNext(data);
             }
         }
 
@@ -95,6 +91,10 @@ namespace wpfapp.ViewModel
         {
             _timer.Stop();
             _timer.Tick -= OnProcessQueue;
+        }
+
+        public override void SetDevice(string str)
+        {
         }
     }
 }

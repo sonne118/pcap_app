@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using wpfapp.Utilities;
-using System.Windows.Input;
-using wpfapp.View;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using MVVM;
+using System.Windows.Input;
 using wpfapp.models;
 using wpfapp.Services.BackgroundJob;
 using wpfapp.Services.Worker;
-using MVVM;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using wpfapp.Utilities;
 
 namespace wpfapp.ViewModel
 {
-   public class NavigationViewModel : GridViewModel
+    public class NavigationViewModel : GridViewModel
     {
         private object _currentView;
         private IBackgroundJobs<Snapshot>? _backgroundJobs;
@@ -26,54 +18,13 @@ namespace wpfapp.ViewModel
         private IServiceScopeFactory? _scopeFactory;
         private IPutDevice _putDevice;
 
-
-        //public object CurrentView
-        //{
-        //    get { return _currentView; }
-        //    set { _currentView = value; OnPropertyChanged(); }
-        //}
         public object CurrentView
         {
             get => _currentView;
             set
             {
                 Set(ref _currentView, value);
-                //{
-                //if (_currentView != null)
-                //    _currentView.IsSelected = true;
-                //_currentView.Add(value);
-                //}
             }
-        }
-
-        public IBackgroundJobs<Snapshot> BackgroundJobs
-        {
-            get { return _backgroundJobs; }
-            set { _backgroundJobs = value; }
-        }
-
-        public IMapper Mapper
-        {
-            get { return _mapper; }
-            set { _mapper = value; }
-        }
-
-        public IDevices Devices
-        {
-            get { return _devices; }
-            set { _devices = value; }
-        }
-
-        public IPutDevice PutDevice
-        {
-            get { return _putDevice; }
-            set { _putDevice = value; }
-        }
-
-        public IServiceScopeFactory ScopeFactory
-        {
-            get { return _scopeFactory; }
-            set { _scopeFactory = value; }
         }
 
         public ICommand HomeCommand { get; set; }
@@ -82,9 +33,11 @@ namespace wpfapp.ViewModel
         public ICommand TreeCommand { get; set; }
         public ICommand SettingsCommand { get; set; }
 
-       
-        private void Home(object obj) => CurrentView = new HomeViewModel(BackgroundJobs, Devices, Mapper, ScopeFactory);  //, this
 
+        private void Home(object obj) => CurrentView = new HomeViewModel(_backgroundJobs,
+                                                                         _devices,
+                                                                         _mapper,
+                                                                         _scopeFactory);  //, this
         private void Dashboard(object obj) => CurrentView = new DashboardViewModel();
         private void Tree(object obj) => CurrentView = new TreeViewModel();
         private void File(object obj) => CurrentView = new FileViewModel();
@@ -95,7 +48,7 @@ namespace wpfapp.ViewModel
                        IDevices devices,
                        IPutDevice putDevice,
                        IMapper mapper,
-                       IServiceScopeFactory scopeFactory) : base(devices)
+                       IServiceScopeFactory scopeFactory) : base(devices, mapper, backgroundJobs)
         {
             _backgroundJobs = backgroundJobs;
             _devices = devices;
@@ -108,27 +61,28 @@ namespace wpfapp.ViewModel
             TreeCommand = new RelayCommand(Tree);
             SettingsCommand = new RelayCommand(Settings);
 
-            //// Startup Page
-            CurrentView = new HomeViewModel(BackgroundJobs, Devices, Mapper, ScopeFactory);
+            // Startup Page
+            CurrentView = new HomeViewModel(_backgroundJobs, _devices, _mapper, _scopeFactory);
         }
 
         public override void SetDevice(string str)
         {
-            ///////// using (var scope = _scopeFactory.CreateScope())
+            using (var scope = _scopeFactory.CreateScope())
             {
-
-                //var service = ServiceLocator.Current.GetInstance<IPutDevice>();
-                //////var service = scope.ServiceProvider.GetRequiredService<IPutDevice>();
+                var service = scope.ServiceProvider.GetRequiredService<IPutDevice>();
                 Int32.TryParse(str?.Substring(0, 1), out var dev);
-                _putDevice.PutDevices(dev);
-                //service.PutDevices(dev);
+
+                _worker.DoWork += (s, e) =>
+                {
+                    service.PutDevices(dev);
+                };
+                _worker.RunWorkerAsync();
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string propName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
-        }
+        public override void OnProcessQueue(object sender, EventArgs e) { }
+
+        public override void Dispose() { }
+
     }
 }

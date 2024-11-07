@@ -16,9 +16,7 @@ using System.Windows.Shapes;
 
 namespace wpfapp
 {
-    /// <summary>
-    /// Lógica de interacción para MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -31,7 +29,6 @@ namespace wpfapp
             Tg_Btn.IsChecked = false;
         }
 
-        // Start: MenuLeft PopupButton //
         private void btnHome_MouseEnter(object sender, MouseEventArgs e)
         {
             if (Tg_Btn.IsChecked == false)
@@ -183,9 +180,7 @@ namespace wpfapp
             Popup.Visibility = Visibility.Collapsed;
             Popup.IsOpen = false;
         }
-        // End: MenuLeft PopupButton //
 
-        // Start: Button Close | Restore | Minimize 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
             Close();
@@ -207,12 +202,10 @@ namespace wpfapp
 
         private void btnHome_Click(object sender, RoutedEventArgs e)
         {
-            //fContainer.Navigate(new System.Uri("Pages/Home.xaml", UriKind.RelativeOrAbsolute));
         }
 
         private void btnDashboard_Click(object sender, RoutedEventArgs e)
         {
-            //fContainer.Navigate(new System.Uri("Pages/Dashboard.xaml", UriKind.RelativeOrAbsolute));
         }
 
         private void btnProductStock_Click(object sender, RoutedEventArgs e)

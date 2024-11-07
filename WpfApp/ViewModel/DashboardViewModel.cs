@@ -8,12 +8,8 @@ using wpfapp.Services.Worker;
 
 namespace wpfapp.ViewModel
 {
-    public class DashboardViewModel//: GridViewModel
+    public class DashboardViewModel
     {
-
-        //private readonly IServiceScopeFactory _scopeFactory;
-        //private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
-        //private readonly IMapper _mapper;
         private readonly IDevices _devices;
         public DashboardViewModel()
                                

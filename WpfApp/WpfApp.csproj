@@ -30,6 +30,8 @@
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.0-rc.2.24473.5" />
     <PackageReference Include="MvvmLight" Version="5.4.1.1" />
     <PackageReference Include="Prism.Wpf" Version="9.0.537" />
+    <PackageReference Include="System.Reactive" Version="6.0.1" />
+    <PackageReference Include="System.Reactive.Linq" Version="6.0.1" />
     <PackageReference Include="ToggleSwitch" Version="1.2.0" />
   </ItemGroup>
   
