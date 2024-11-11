@@ -67,8 +67,8 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </Button>
-                        <Button x:Name="btnProducts" Style="{DynamicResource PopupButtonStyle}"  MouseEnter="btnProducts_MouseEnter" MouseLeave="btnProducts_MouseLeave">
-                            <ctls:MenuItem GroupName="MenuItem" IndicatorBrush="{DynamicResource PrimaryBlueColor}" Icon="{DynamicResource products}" IconWidth="16" Text="Products" VerticalAlignment="Center"/>
+                        <Button x:Name="btnFile" Style="{DynamicResource PopupButtonStyle}"  MouseEnter="btnFile_MouseEnter" MouseLeave="btnFile_MouseLeave">
+                            <ctls:MenuItem GroupName="MenuItem" IndicatorBrush="{DynamicResource PrimaryBlueColor}" Icon="{DynamicResource file}" IconWidth="16" Text="Pcap file " VerticalAlignment="Center"/>
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="Click">
                                     <cmd:EventToCommand Command="{Binding Path= TreeCommand }"  />
