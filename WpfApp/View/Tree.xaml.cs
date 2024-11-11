@@ -2,7 +2,6 @@
 
 namespace wpfapp.View
 {
-
     public partial class Tree : UserControl
     {
         public Tree()

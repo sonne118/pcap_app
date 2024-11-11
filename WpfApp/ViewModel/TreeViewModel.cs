@@ -5,7 +5,6 @@ namespace wpfapp.ViewModel
 {
     public class TreeViewModel
     {
-
         private readonly IDevices _devices;
         public TreeViewModel()
         {

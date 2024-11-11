@@ -11,25 +11,17 @@
         <view:Dashboard />
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type vm:FileViewModel}">
+        <view:fileview />
+    </DataTemplate>
+
     <DataTemplate DataType="{x:Type vm:TreeViewModel}">
         <view:Tree />
     </DataTemplate>
 
-    <!--
-    <DataTemplate DataType="{x:Type vm:OrderVM}">
-        <view:Orders />
-    </DataTemplate>
 
-    <DataTemplate DataType="{x:Type vm:TransactionVM}">
-        <view:Transactions />
+    <DataTemplate DataType="{x:Type vm:SettitngsViewModel}">
+        <view:SettingsView />
     </DataTemplate>
-
-    <DataTemplate DataType="{x:Type vm:ShipmentVM}">
-        <view:Shipments />
-    </DataTemplate>
-
-    <DataTemplate DataType="{x:Type vm:SettingVM}">
-        <view:Settings />
-    </DataTemplate>-->
 
 </ResourceDictionary>

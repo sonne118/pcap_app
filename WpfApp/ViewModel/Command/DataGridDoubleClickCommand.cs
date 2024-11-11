@@ -1,6 +1,4 @@
-﻿using CoreModel.Model;
-using GalaSoft.MvvmLight.CommandWpf;
-using wpfapp.View;
+﻿using GalaSoft.MvvmLight.CommandWpf;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

@@ -12,22 +12,6 @@
       xmlns:ViewModel="clr-namespace:wpfapp.ViewModel"  
       d:DataContext="{d:DesignInstance Type=ViewModel:HomeViewModel}">
 
-    <!--DataContext="{Binding Home, Source={StaticResource locator}}">-->
-
-
-    <!--<UserControl.DataContext>
-        <ViewModel:HomeViewModel />
-    </UserControl.DataContext>-->
-
-    <!--<UserControl.DataContext>
-        <ViewModel:HomeViewModel>
-    </UserControl.DataContext>-->
-
-    <!--<Border CornerRadius="5" Background="{DynamicResource SecundaryBackgroundColor}">
-        <TextBlock Text="Home" FontSize="30" Foreground="{DynamicResource PrimaryTextColor}" FontWeight="Bold"
-               VerticalAlignment="Center" HorizontalAlignment="Center"/>
-    </Border>-->
-
     <Border CornerRadius="5" Background="{DynamicResource SecundaryBackgroundColor}">
         <local1:ScrollDataGrid  RowBackground="Azure" VerticalContentAlignment="Center" HorizontalScrollBarVisibility="Disabled" AutoGenerateColumns="False" HeadersVisibility="Column"  ColumnWidth="*" Style="{StaticResource ScrollDataGridRow}" IsReadOnly="True" SelectedItem="{Binding  SelectedRow, Mode=TwoWay}"  ItemsSource="{Binding _StreamingData}" Margin="0,25,0,160"  Grid.Row="2" Grid.RowSpan="2"
       SelectionMode="Single" SelectionUnit="FullRow" Grid.ColumnSpan="4">

@@ -1,48 +1,73 @@
 ﻿using AutoMapper;
+using CoreModel.Model;
 using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MVVM;
+using System.Collections.Concurrent;
 using System.Windows.Input;
 using wpfapp.IPC.Grpc;
 using wpfapp.models;
 using wpfapp.Services.BackgroundJob;
-using wpfapp.Services.Worker;
 
 namespace wpfapp.ViewModel
 {
-    public class HomeViewModel : GridViewModel
+    public class HomeViewModel : HomeAbstract
     {
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly IBackgroundJobs<Snapshot> _backgroundJobs;
-        private readonly IMapper _mapper;
-        private readonly IDevices _devices;
-
+        private IMapper _mapper;
         public ClosingCommand _closingCommand;
         public DataGridDoubleClickCommand _dataGridDoubleClickCommand;
 
-        public HomeViewModel(IBackgroundJobs<Snapshot> backgroundJobs,
-                                IDevices device,
-                                IMapper mapper,
-                                IServiceScopeFactory scopeFactory) : base(device, mapper, backgroundJobs)
+        private  ConcurrentQueue<Snapshot> _backgroundJobs;
+        public ConcurrentQueue<Snapshot> BackgroundJobs
         {
-            _mapper = mapper;
-            _backgroundJobs = backgroundJobs;
+            get { return _backgroundJobs; }
+            set
+            {
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    var service = scope.ServiceProvider.GetRequiredService<IBackgroundJobs<Snapshot>>();
+                    if (service?.BackgroundTasks is ConcurrentQueue<Snapshot> dic)
+                        _backgroundJobs = dic;
+                    else _backgroundJobs = value;
+                }
+            }
+        }
+
+        public IMapper Mapper
+        {
+            get { return _mapper; }
+            set
+            {
+                using (var scope = _scopeFactory.CreateScope())
+                {
+                    var service = scope.ServiceProvider.GetRequiredService<IMapper> ();
+                    if (service is Mapper mapper)
+                        _mapper = mapper;
+                    else _mapper = value;
+                }
+            }
+        }
+
+        public HomeViewModel(IServiceScopeFactory scopeFactory) 
+        //MainWindow mainWindow) : base(device)
+        {
             _scopeFactory = scopeFactory;
-         // _closingCommand = new ClosingCommand(mainWindow);
-         // _dataGridDoubleClickCommand = new DataGridDoubleClickCommand(mainWindow);
+            // _closingCommand = new ClosingCommand(mainWindow);
+            //_dataGridDoubleClickCommand = new DataGridDoubleClickCommand(mainWindow);
             OnSetGrpcService = new RelayCommand<bool>(OnExecuteGrpcService);
             OnStartStreamService = new RelayCommand(OnExecuteStartService);
             OnStopStreamService = new RelayCommand(OnExecuteStopService);
-            _devices = device;
+            BackgroundJobs = _backgroundJobs;
+            Mapper = _mapper;
         }
 
         public RelayCommand<Boolean> OnSetGrpcService { get; private set; }
         public ICommand OnStartStreamService { get; private set; }
         public ICommand OnStopStreamService { get; private set; }
-
+        
       //public ICommand OnClosingCommand { get { return _closingCommand.ExitCommand; } }
-
+        
       //public ICommand OnDataGridDoubleClickCommand { get { return _dataGridDoubleClickCommand.ShowCommand; } }
 
 
@@ -81,9 +106,11 @@ namespace wpfapp.ViewModel
 
         public override void OnProcessQueue(object sender, EventArgs e)
         {
-            if (_backgroundJobs.BackgroundTasks.TryPeek(out var data))
+
+            while (BackgroundJobs.TryDequeue(out var data))
             {
-                _dataSubject.OnNext(data);
+                var _snifferData = Mapper.Map<StreamingData>(data);
+                _StreamingData.Add(_snifferData);
             }
         }
 
@@ -91,10 +118,6 @@ namespace wpfapp.ViewModel
         {
             _timer.Stop();
             _timer.Tick -= OnProcessQueue;
-        }
-
-        public override void SetDevice(string str)
-        {
         }
     }
 }

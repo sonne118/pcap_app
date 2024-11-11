@@ -1,15 +1,19 @@
 ﻿using GrpcClient;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
+using wpfapp;
 using wpfapp.IPC.Grpc;
-using wpfapp.Map;
 using wpfapp.models;
+using wpfapp.Services.Worker;
+using wpfapp.Map;
 using wpfapp.Services.BackgroundJob;
 using wpfapp.Services.Worker;
+using System.Windows.Navigation;
 using wpfapp.ViewModel;
 
 namespace wpfapp
@@ -44,8 +48,8 @@ namespace wpfapp
                     services.AddSingleton<IStreamData, StreamData>();
                     services.AddSingleton<IHostedService, StartService>();
                     services.AddHostedService(s => s.GetRequiredService<StartService>());
-                    services.AddSingleton<IDevices, Devices>();
-                    services.AddSingleton<IPutDevice, PutDevice>();
+                    services.AddScoped<IDevices, Devices>();
+                    services.AddTransient<IPutDevice, PutDevice>();
                     services.AddSingleton<IHostedGrpcService, GrpcService>();
                     services.AddGrpcClient<StreamingDates.StreamingDatesClient>(options =>
                     {
@@ -58,7 +62,7 @@ namespace wpfapp
                          handler.ClientCertificates.Add(new X509Certificate2(certPath, certPass));
                          return handler;
                      });
-                    services.AddScoped<NavigationViewModel>();
+                    services.AddSingleton<NavigationViewModel>();
 
                     services.AddAutoMapper(typeof(AppMappingProfile));
                 })
@@ -74,7 +78,7 @@ namespace wpfapp
         //    base.OnStartup(e);
         //}
 
-        protected override async void OnExit(ExitEventArgs e)
+        protected  async void OnExit(object sender, ExitEventArgs e)
         {
             await AppHost!.StopAsync();
             AppHost.Dispose();
@@ -88,6 +92,7 @@ namespace wpfapp
             startupForm.Show();
 
             base.OnStartup(e);
+
         }
     }
 }
