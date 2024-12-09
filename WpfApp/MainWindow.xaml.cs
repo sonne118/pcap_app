@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
@@ -6,6 +7,7 @@ namespace wpfapp
 {
     public partial class MainWindow : Window
     {
+        public RoutedEvent ClosingEvent { get; private set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -16,7 +18,6 @@ namespace wpfapp
             Tg_Btn.IsChecked = false;
         }
 
-        // Start: MenuLeft PopupButton //
         private void btnHome_MouseEnter(object sender, MouseEventArgs e)
         {
             if (Tg_Btn.IsChecked == false)
@@ -85,13 +86,7 @@ namespace wpfapp
             Popup.Visibility = Visibility.Collapsed;
             Popup.IsOpen = false;
         }
-        // End: MenuLeft PopupButton //
 
-        // Start: Button Close | Restore | Minimize 
-        private void btnClose_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
 
         private void btnRestore_Click(object sender, RoutedEventArgs e)
         {
@@ -105,7 +100,27 @@ namespace wpfapp
         {
             WindowState = WindowState.Minimized;
         }
-        // End: Button Close | Restore | Minimize
 
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            var args = new CancelEventArgs();
+            OnClosing(args);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            RaiseEvent(new RoutedEventArgs(ClosingEvent, e));
+        }
+
+        private void cDevice_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void btn_g_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

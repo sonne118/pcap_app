@@ -39,7 +39,7 @@ public:
 	void* producer(std::atomic<bool>& on);
 	void* consumer();
 	void setHandler(HANDLE eventHandle);
-	void addToStruct(char proto[22], char packet_srcip[22], char packet_dstip[22], char source_mac[32], char dest_mac[32], int packet_id, int dst_port, int src_port, tagSnapshot& item);
+	void addToStruct(char proto[22], char packet_srcip[22], char packet_dstip[22], char source_mac[32], char dest_mac[32], int packet_id, int dst_port, int src_port,char host_names[22],tagSnapshot& item);
 	void defaultToStruct(tagSnapshot& item);
 	handleProto _proto;
 
@@ -142,6 +142,9 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 				continue;
 			}
 
+			struct hostent* host;
+			char* host_names;
+			std::string str = "Not found";
 			struct ether_header* eptr{};
 			struct tcphdr* tcp_header;
 			struct udphdr* udp_header;
@@ -164,6 +167,15 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 			src_ptr_mac = eptr->ether_dhost;
 			ether_ntoa(src_ptr_mac, source_mac, sizeof source_mac);
 			ether_ntoa(src_ptr_mac, dest_mac, sizeof dest_mac);
+
+			// Perform a reverse DNS lookup
+			host = gethostbyaddr(packet_dstip, sizeof(ip_hdr->ip_dst), AF_INET);
+			if (host != nullptr) {
+				host_names = host->h_name;
+			}
+			else {				
+				host_names = str.data();
+			}
 
 			int packet_id = ntohs(ip_hdr->ip_id),
 				packet_ttl = ip_hdr->ip_ttl,
@@ -213,7 +225,7 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 			mtx.lock();
 			
 			strcpy(new_proto, protoh);
-			Packages::addToStruct(new_proto, packet_srcip, packet_dstip, source_mac, dest_mac, packet_id, dst_port, src_port, new_item);
+			Packages::addToStruct(new_proto, packet_srcip, packet_dstip, source_mac, dest_mac, packet_id, dst_port, src_port, host_names, new_item);
 			shared_buff[free_index] = new_item;
 			free_index = (free_index + 1) mod buff_max;
 			mtx.unlock();
@@ -223,7 +235,7 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 };
 
 inline void Packages::addToStruct(char proto[22], char packet_srcip[22], char packet_dstip[22], char source_mac[32],
-	char dest_mac[32], int packet_id, int dst_port, int src_port, tagSnapshot& item)
+	char dest_mac[32], int packet_id, int dst_port, int src_port, char host_names[22], tagSnapshot& item)
 {
 	strcpy(item.proto, proto);
 	strcpy(item.source_ip, packet_srcip);
@@ -233,6 +245,7 @@ inline void Packages::addToStruct(char proto[22], char packet_srcip[22], char pa
 	item.id = packet_id;
 	item.dest_port = dst_port;
 	item.source_port = src_port;
+	strcpy(item.host_name, host_names);
 };
 inline void Packages::defaultToStruct(tagSnapshot& item) {
 
@@ -243,6 +256,7 @@ inline void Packages::defaultToStruct(tagSnapshot& item) {
 	strcpy(item.dest_mac, "ff:ff:ff:ff:ff:ff");
 	item.dest_port = 8080;
 	item.source_port = 8081;
+	strcpy(item.host_name, "mx-ll-49.48.52-46.dynamic.3bb.in.th");
 };
 
 #endif

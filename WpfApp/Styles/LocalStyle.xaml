@@ -1,8 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:wpfapp.ViewModel">
+                    xmlns:local="clr-namespace:wpfapp.ViewModel"
+                     xmlns:CustCheckBox="clr-namespace:wpfapp.Utilities">
 
     <local:MultiValueConverter x:Key="MultiValueConverter"/>
+
+    <!--<local:EventArgsConverter x:Key="EventArgsConverter"/>-->
 
     <SolidColorBrush x:Key="ComboBoxNormalBorderBrush" Color="LightCyan" />
     <SolidColorBrush x:Key="ComboBoxNormalBackgroundBrush" Color="LightGray" />

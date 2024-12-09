@@ -13,12 +13,11 @@ namespace wpfapp.ViewModel
 {
     public class HomeViewModel : HomeAbstract
     {
+        public DataGridDoubleClickCommand DataGridDoubleClickCommand;
         private readonly IServiceScopeFactory _scopeFactory;
         private IMapper _mapper;
-        public ClosingCommand _closingCommand;
-        public DataGridDoubleClickCommand _dataGridDoubleClickCommand;
 
-        private  ConcurrentQueue<Snapshot> _backgroundJobs;
+        private ConcurrentQueue<Snapshot> _backgroundJobs;
         public ConcurrentQueue<Snapshot> BackgroundJobs
         {
             get { return _backgroundJobs; }
@@ -33,7 +32,6 @@ namespace wpfapp.ViewModel
                 }
             }
         }
-
         public IMapper Mapper
         {
             get { return _mapper; }
@@ -41,35 +39,27 @@ namespace wpfapp.ViewModel
             {
                 using (var scope = _scopeFactory.CreateScope())
                 {
-                    var service = scope.ServiceProvider.GetRequiredService<IMapper> ();
+                    var service = scope.ServiceProvider.GetRequiredService<IMapper>();
                     if (service is Mapper mapper)
                         _mapper = mapper;
                     else _mapper = value;
                 }
             }
         }
-
-        public HomeViewModel(IServiceScopeFactory scopeFactory) 
-        //MainWindow mainWindow) : base(device)
+        public HomeViewModel(IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory;
-            // _closingCommand = new ClosingCommand(mainWindow);
-            //_dataGridDoubleClickCommand = new DataGridDoubleClickCommand(mainWindow);
-            OnSetGrpcService = new RelayCommand<bool>(OnExecuteGrpcService);
-            OnStartStreamService = new RelayCommand(OnExecuteStartService);
-            OnStopStreamService = new RelayCommand(OnExecuteStopService);
+          //  OnSetGrpcService = new RelayCommand<bool>(OnExecuteGrpcService);
+           // OnStartStreamService = new RelayCommand(OnExecuteStartService);
+           // OnStopStreamService = new RelayCommand(OnExecuteStopService);
+            DataGridDoubleClickCommand = new DataGridDoubleClickCommand();
             BackgroundJobs = _backgroundJobs;
             Mapper = _mapper;
         }
-
-        public RelayCommand<Boolean> OnSetGrpcService { get; private set; }
-        public ICommand OnStartStreamService { get; private set; }
-        public ICommand OnStopStreamService { get; private set; }
-        
-      //public ICommand OnClosingCommand { get { return _closingCommand.ExitCommand; } }
-        
-      //public ICommand OnDataGridDoubleClickCommand { get { return _dataGridDoubleClickCommand.ShowCommand; } }
-
+       // public RelayCommand<Boolean> OnSetGrpcService { get; private set; }
+       // public ICommand OnStartStreamService { get; private set; }
+       // public ICommand OnStopStreamService { get; private set; }
+        public ICommand OnDataGridDoubleClickCommand { get { return DataGridDoubleClickCommand.ShowCommand; } }
 
         private void OnExecuteGrpcService(bool isChecked)
         {
@@ -94,7 +84,6 @@ namespace wpfapp.ViewModel
                 service.StartAsync(_stoppingCts.Token);
             }
         }
-
         private void OnExecuteStopService()
         {
             using (var scope = _scopeFactory.CreateScope())
@@ -103,7 +92,6 @@ namespace wpfapp.ViewModel
                 service.StopAsync(_stoppingCts.Token);
             }
         }
-
         public override void OnProcessQueue(object sender, EventArgs e)
         {
 
@@ -113,7 +101,6 @@ namespace wpfapp.ViewModel
                 _StreamingData.Add(_snifferData);
             }
         }
-
         public override void Dispose()
         {
             _timer.Stop();

@@ -2,17 +2,19 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using wpfapp.View;
+using CoreModel.Model;
 
 namespace wpfapp.ViewModel
 {
     public class DataGridDoubleClickCommand
     {
         public RelayCommand<(RoutedEventArgs, object)> _showCommand { get; private set; }
-        private UserControl _mainWindow;
-        public DataGridDoubleClickCommand(UserControl mainWindow)
+      
+        public DataGridDoubleClickCommand() 
         {
             _showCommand = new RelayCommand<(RoutedEventArgs, object)>(OnExecuted);
-            _mainWindow = mainWindow;
+         
         }
         public ICommand ShowCommand
         {
@@ -26,15 +28,15 @@ namespace wpfapp.ViewModel
 
         private void OnExecuted((RoutedEventArgs events, object commandParameter) args)
         {
-            //var e = args.events;
-            //var data = args.commandParameter as StreamingData;
-            //ModalViewModel viewModel = new ModalViewModel(data);
-            //ModalWindow modalWindow = new ModalWindow
-            //{
-            //    DataContext = viewModel.ModalData
-            //};
+            var e = args.events;
+            var data = args.commandParameter as StreamingData;
+            ModalViewModel viewModel = new ModalViewModel(data);
+            wpfapp.View.ModalWindow modalWindow = new wpfapp.View.ModalWindow
+            {
+                DataContext = viewModel.ModalData
+            };
 
-            //modalWindow.ShowDialog();
+            modalWindow.ShowDialog();
         }
     }
 }

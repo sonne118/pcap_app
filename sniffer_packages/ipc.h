@@ -43,11 +43,14 @@ extern "C" __declspec(dllexport) void fnDevCPPDLL(char** data, int* sizes, int* 
 	listdev = builder.ListDev().build().getDevices();
 
 	*count = listdev.size();
-	for (int i = 0; i < *count; ++i)
+	if (data != nullptr)
 	{
-		sizes[i] = listdev[i].size();;
-		data[i] = new char[sizes[i] + 1];
-		std::strcpy(data[i], listdev[i].c_str());
+		for (int i = 0; i < *count; ++i)
+		{
+			sizes[i] = listdev[i].size();;
+			data[i] = new char[sizes[i] + 1];
+			std::strcpy(data[i], listdev[i].c_str());
+		}
 	}
 }
 

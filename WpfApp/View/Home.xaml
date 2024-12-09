@@ -8,6 +8,7 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"     
       xmlns:local1="clr-namespace:wpfapp.ViewModel"  
+      xmlns:CustCheckBox="clr-namespace:wpfapp.Utilities"
       Style="{StaticResource Page_Style}"
       xmlns:ViewModel="clr-namespace:wpfapp.ViewModel"  
       d:DataContext="{d:DesignInstance Type=ViewModel:HomeViewModel}">
@@ -21,13 +22,13 @@
                         <cmd:EventToCommand.CommandParameter>
                             <MultiBinding Converter="{StaticResource MultiValueConverter}">
                                 <Binding />
-                                <Binding RelativeSource="{RelativeSource AncestorType= local1:ScrollDataGrid}" Path="SelectedItem" />
+                                <Binding RelativeSource="{RelativeSource AncestorType= ViewModel:ScrollDataGrid}" Path="SelectedItem" />
                             </MultiBinding>
                         </cmd:EventToCommand.CommandParameter>
                     </cmd:EventToCommand>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
-            <DataGrid.Resources>
+            <!--<DataGrid.Resources>
                 <Style TargetType="{x:Type DataGrid}">
                     <Setter Property="Background" Value="Green"/>
                 </Style>
@@ -43,7 +44,7 @@
                 <Style TargetType="{x:Type Button}" x:Key="{ComponentResourceKey ResourceId=DataGridSelectAllButtonStyle, TypeInTargetAssembly={x:Type DataGrid}}">
                     <Setter Property="Background" Value="Black" />
                 </Style>
-            </DataGrid.Resources>
+            </DataGrid.Resources>-->
             <DataGrid.Columns>
                 <DataGridTextColumn  Header="ID"  Width="40" Binding="{Binding Id}" />
                 <DataGridTextColumn Header="Source ip"  Width="80" Binding="{Binding Source_ip}"   />
@@ -57,7 +58,7 @@
                 <DataGridTemplateColumn Header="Select">
                     <DataGridTemplateColumn.CellTemplate >
                         <DataTemplate>
-                            <CheckBox Style="{StaticResource CustomCheckBox}"  IsChecked="{Binding IsSelected  }" />
+                            <CheckBox Style="{StaticResource CustomCheckBox}" MouseRightButtonDown ="CheckBox_MouseRightButtonDown" IsChecked ="{Binding IsSelected,  Mode=OneWay}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -66,6 +66,9 @@
     <Page Update="Utilities\DataTemplate.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="View\ModalWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\SettingsView.xaml">
       <SubType>Designer</SubType>
     </Page>

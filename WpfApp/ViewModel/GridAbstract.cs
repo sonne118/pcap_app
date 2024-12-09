@@ -1,6 +1,7 @@
 ﻿using CoreModel.Model;
 using GalaSoft.MvvmLight;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace wpfapp.ViewModel
@@ -42,7 +43,7 @@ namespace wpfapp.ViewModel
             {
                 if (Set(ref _selectedRow, value))
                 {
-                    if (_selectedRow != null)
+                    if (_selectedRow != null)/// && Mouse.PrimaryDevice.RightButton is (MouseButtonState.Pressed| MouseButtonState.Released))
                         _selectedRow.IsSelected = true;
                         _SelectedData.Add(value);
                 }

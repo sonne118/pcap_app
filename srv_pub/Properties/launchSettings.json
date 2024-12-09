@@ -1,0 +1,24 @@
+{
+  "profiles": {
+    "Server": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "CERTIFICATE_PATH": "ssl\\server.pfx",
+        "CERTIFICATE_PASSWORD": "11111"
+      },
+      "dotnetRunMessages": true,
+      ///"applicationUrl": "http://localhost:5000"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "environmentVariables": {
+        //"ASPNETCORE_HTTPS_PORTS": "8081",
+        "ASPNETCORE_HTTP_PORTS": "5000"
+      },
+      "publishAllPorts": true,
+      "useSSL": false
+    }
+  }
+}

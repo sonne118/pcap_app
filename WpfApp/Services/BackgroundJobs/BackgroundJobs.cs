@@ -1,8 +1,6 @@
 ﻿using System.Collections.Concurrent;
-using System.Threading;
-using System.Threading.Tasks;
-using wpfapp.Services.BackgroundJobs;
 using wpfapp.models;
+using wpfapp.Services.BackgroundJobs;
 
 namespace wpfapp.Services.BackgroundJob
 {
@@ -11,15 +9,5 @@ namespace wpfapp.Services.BackgroundJob
         public ConcurrentQueue<Snapshot> BackgroundTasks { get; set; } = new();
         public AsyncConcurrencyQueue<Snapshot> BackgroundTaskGrpc { get; set; } = new();
 
-        public BackgroundJobs()
-        {
-            //Task.Run(() => {
-            //    for (int i = 0; i < 100000; i++)
-            //    {
-            //        BackgroundTaskGrpc.Enqueue(i);
-            //        Thread.Sleep(5000);
-            //    }
-            //});
-        }      
     }
 }

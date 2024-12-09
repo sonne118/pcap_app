@@ -103,6 +103,7 @@ inline builderDevice::Builder& builderDevice::Builder::OpenDevices()
 inline builderDevice::Builder& builderDevice::Builder::ListDev()
 {
 	int i = 0;std::vector<std::string> list;
+	size_t lastWhitespace;
 
 	if (pcap_findalldevs_ex(PCAP_SRC_IF_STRING, NULL, &alldevs, errbuf) == -1)
 	{
@@ -114,8 +115,13 @@ inline builderDevice::Builder& builderDevice::Builder::ListDev()
 		++i;
 		if (d->description)
 		{
-			auto str = std::to_string(i).append("_").append(d->name).append(d->description);
-			list.push_back(str);
+			auto str = std::to_string(i)
+				.append("_")
+				.append(d->description)
+				.substr(0, 53);            //.append(d->name)
+			lastWhitespace = str.find_last_of(" \t\n\r");
+				            
+			list.push_back(str.erase(lastWhitespace));
 			this->_list = list;
 		}
 		else
