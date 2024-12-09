@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "wpfapp": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "CERTIFICATE_PATH": "ssl\\client.pfx",
+        "CERTIFICATE_PASSWORD": "11111"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:5001",
+      "nativeDebugging": true
+    }
+  }
+}
