@@ -1,9 +1,7 @@
-﻿using Kafka;
-using Serialization;
+﻿using Serialization;
 using Microsoft.Extensions.Logging;
-using kafka;
 
-namespace WebApi.MessageHandlers
+namespace kafka
 {
     internal sealed class MessageHandler : IMessageHandler
     {

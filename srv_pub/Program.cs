@@ -10,6 +10,7 @@ string? certPath = Environment.GetEnvironmentVariable("CERTIFICATE_PATH");
 string? certPass = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
 var path = Path.Combine(builder.Environment.ContentRootPath, "ssl\\server.pfx");
 
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>

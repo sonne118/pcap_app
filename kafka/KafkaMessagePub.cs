@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Serialization;
 
-namespace Kafka.Internal;
+namespace kafka;
 
 public class KafkaMessagePub : IKafkaMessagePub
 {
@@ -20,13 +20,13 @@ public class KafkaMessagePub : IKafkaMessagePub
         _logger = logger;
         var producerConfig = new ProducerConfig
         {
-            BootstrapServers = configuration["BootstrapServers"],
+            BootstrapServers = configuration["KafkaServer"],
 
-            SecurityProtocol = SecurityProtocol.SaslSsl,
+            //SecurityProtocol = SecurityProtocol.SaslSsl,
             SaslMechanism = SaslMechanism.Plain,
 
-            SaslUsername = configuration["SaslUsername"],
-            SaslPassword = configuration["SaslPassword"],
+            //SaslUsername = configuration["SaslUsername"],
+            //SaslPassword = configuration["SaslPassword"],
 
             LingerMs = 200,
             BatchSize = 10 * 1024,

@@ -1,4 +1,4 @@
-﻿namespace Kafka
+﻿namespace kafka
 {
     public interface IMessageHandler
     {

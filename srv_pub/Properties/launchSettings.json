@@ -5,7 +5,10 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "CERTIFICATE_PATH": "ssl\\server.pfx",
-        "CERTIFICATE_PASSWORD": "11111"
+        "CERTIFICATE_PASSWORD": "11111",
+        "BootstrapServers": "localhost:9092",
+        "SaslUsername" : "admin"
+
       },
       "dotnetRunMessages": true,
       ///"applicationUrl": "http://localhost:5000"

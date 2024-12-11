@@ -13,9 +13,14 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "wpfapp", "wpfapp\wpfapp.csproj", "{2F693993-C59F-4D7C-961C-2E2CEF74AA06}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "kafka", "kafka\kafka.csproj", "{89F1B527-380B-4C94-9EB0-20137F485A17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "kafka", "kafka\kafka.csproj", "{89F1B527-380B-4C94-9EB0-20137F485A17}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "outbox", "outbox\outbox.csproj", "{44020AD4-A1DE-4C21-A11A-65F965815B30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "outbox", "outbox\outbox.csproj", "{44020AD4-A1DE-4C21-A11A-65F965815B30}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B519854F-B051-456D-AA92-8775F8124753}"
+	ProjectSection(SolutionItems) = preProject
+		kafka-compose.yml = kafka-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

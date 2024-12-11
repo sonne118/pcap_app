@@ -1,6 +1,6 @@
 ﻿using Confluent.Kafka;
 
-namespace Kafka.Internal;
+namespace kafka;
 
 public static class ConsumerExtensions
 {

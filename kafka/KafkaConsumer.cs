@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serialization;
 
-namespace Kafka.Internal;
+namespace kafka;
 
 public sealed class KafkaConsumer(
     IConfiguration configuration,
@@ -21,12 +21,12 @@ public sealed class KafkaConsumer(
     {
         _consumerConfig = new ConsumerConfig
         {
-            BootstrapServers = configuration["BootstrapServers"],
+            BootstrapServers = configuration["KafkaServer"],
             SecurityProtocol = SecurityProtocol.SaslSsl,
             SaslMechanism = SaslMechanism.Plain,
-            SaslUsername = configuration["SaslUsername"],
-            SaslPassword = configuration["SaslPassword"],
-            GroupId = "testGroup",
+            //SaslUsername = configuration["SaslUsername"],
+            //SaslPassword = configuration["SaslPassword"],
+            GroupId = "SnapshotGroup",
             AutoOffsetReset = AutoOffsetReset.Latest,
             EnableAutoCommit = false
         };
