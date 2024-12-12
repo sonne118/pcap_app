@@ -22,8 +22,8 @@ public sealed class KafkaConsumer(
         _consumerConfig = new ConsumerConfig
         {
             BootstrapServers = configuration["KafkaServer"],
-            SecurityProtocol = SecurityProtocol.SaslSsl,
-            SaslMechanism = SaslMechanism.Plain,
+           // SecurityProtocol = SecurityProtocol.SaslSsl,
+            //SaslMechanism = SaslMechanism.Plain,
             //SaslUsername = configuration["SaslUsername"],
             //SaslPassword = configuration["SaslPassword"],
             GroupId = "SnapshotGroup",

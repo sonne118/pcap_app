@@ -1,4 +1,5 @@
 ﻿using GrpcClient;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.IO;
@@ -22,20 +23,17 @@ namespace wpfapp
         private readonly string? certPass;
         static App()
         {
-            path = Environment.GetEnvironmentVariable("CERTIFICATE_PATH");
             basePath = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName;
         }
 
         public static IHost? AppHost { get; private set; }
         public App()
         {
-            if (path is not null && Path.Exists(basePath))
-            {
-                certPath = Path.GetFullPath(path, basePath);
-            }
-            certPass = Environment.GetEnvironmentVariable("CERTIFICATE_PASSWORD");
-
             AppHost = Host.CreateDefaultBuilder()
+                 .ConfigureAppConfiguration((hostingContext, config) =>
+                 {
+                     config.AddJsonFile("appsettings.json", optional: true);
+                 })
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<MainWindow>();
@@ -53,9 +51,14 @@ namespace wpfapp
                     })
                      .ConfigurePrimaryHttpMessageHandler(() =>
                      {
+                         var serviceProvider = services.BuildServiceProvider();
+                         var _configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                         var path = _configuration["Certificate:Path"];
+                         var certPassword = _configuration["Certificate:Password"];
+                         var certPath = Path.GetFullPath(path, basePath);
                          var handler = new HttpClientHandler();
                          handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-                         handler.ClientCertificates.Add(new X509Certificate2(certPath, certPass));
+                         handler.ClientCertificates.Add(new X509Certificate2(certPath, certPassword));
                          return handler;
                      });
                     services.AddSingleton<NavigationViewModel>();
