@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 
-namespace UnitOfWork;
+namespace outbox;
 
 public interface IUnitOfWork
 {

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Serialization.Internal;
+namespace outbox;
 
 internal sealed class Serializer : ISerializer
 {

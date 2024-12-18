@@ -1,10 +1,7 @@
-﻿using System.Collections.Immutable;
-using Kafka.Internal;
-using Kafka;
-using UnitOfWork;
-using Outbox;
+﻿using kafka;
+using System.Collections.Immutable;
 
-namespace Outbox.Internal;
+namespace outbox;
 
 internal sealed class Relay : IRelay
 {
@@ -27,9 +24,10 @@ internal sealed class Relay : IRelay
 
         try
         {
-            var records = await _outbox.ReserveAsync(BatchSize, ReservationTimeout, cancellationToken);
+                var records = await _outbox.ReserveAsync(BatchSize, ReservationTimeout, cancellationToken);
 
-            var builder = ImmutableArray.CreateBuilder<Message>(records.Length);
+             //var builder = ImmutableArray.CreateBuilder<Message>(records.Length);
+            var builder = ImmutableArray.CreateBuilder<Message>();
 
             foreach (var record in records)
             {
@@ -44,15 +42,16 @@ internal sealed class Relay : IRelay
                 };
                 builder.Add(message);
             }
-           
-            await _kafkaMessageSender.SendAsync(builder.ToImmutable(), cancellationToken);
 
-            await _outbox.MarkAsProcessedAsync(records, cancellationToken);
-            await transaction.CommitAsync(cancellationToken);
-        }
+
+                await _kafkaMessageSender.SendAsync(builder.ToImmutable(), cancellationToken);
+
+                 await _outbox.MarkAsProcessedAsync(records, cancellationToken);
+                 await transaction.CommitAsync(cancellationToken);
+            }
         catch
         {
-            await transaction.RollbackAsync(cancellationToken);
+          await transaction.RollbackAsync(cancellationToken);
             throw;
         }
     }

@@ -1,0 +1,32 @@
+﻿version: '3'
+services:
+  sqlite:
+    container_name: sqlite-container
+    image: sqlite:latest
+    volumes:
+      - sqlite-data:/mydatabase
+    ports:
+      - "5432:5432"
+    restart: always
+
+# volumes:
+#   sqlite-data:
+
+# version: '3'
+
+# services:
+#  sqlite3:
+#    image: nouchka/sqlite3
+#    container_name: "sqlite3db"
+#    stdin_open: true
+#    tty: true
+#    volumes:
+#      - ./db/database.db:/root/db/database.db
+#    command: ".open root/db/database.db"
+
+ networks:
+      - proxybackend
+  
+  # docker-compose -f docker-compose-sqlite.yaml up -d
+
+  # docker run -v %cd%\mnt:/app/mnt

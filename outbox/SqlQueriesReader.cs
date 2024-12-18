@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace Outbox.Internal;
+namespace outbox;
 
 internal static class SqlQueriesReader
 {

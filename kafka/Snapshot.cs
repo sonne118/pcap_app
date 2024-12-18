@@ -1,6 +1,6 @@
 ﻿namespace kafka
 {
-    public class Snapshot
+    public class SnapshotMessage
     {
         public int source_port { get; set; }
         public int dest_port { get; set; }

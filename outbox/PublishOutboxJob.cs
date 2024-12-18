@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Outbox.Internal;
+namespace outbox;
 
 internal sealed class PublishOutboxJob(IServiceProvider serviceProvider, ILogger<PublishOutboxJob> logger) : BackgroundService
 {

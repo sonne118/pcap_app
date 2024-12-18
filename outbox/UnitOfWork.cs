@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace UnitOfWork.Internal
+namespace outbox
 {
     internal sealed class UnitOfWork(DbContext db) : IUnitOfWork
     {

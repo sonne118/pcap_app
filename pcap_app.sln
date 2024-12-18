@@ -19,8 +19,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "outbox", "outbox\outbox.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B519854F-B051-456D-AA92-8775F8124753}"
 	ProjectSection(SolutionItems) = preProject
+		docker-compose-mysql.yml = docker-compose-mysql.yml
+		docker-compose-sqlite.yml = docker-compose-sqlite.yml
 		kafka-compose.yml = kafka-compose.yml
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "srv_sub", "..\srv_sub\srv_sub.csproj", "{C49D0524-46C2-435D-AA23-B991BF645A0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -116,6 +120,18 @@ Global
 		{44020AD4-A1DE-4C21-A11A-65F965815B30}.Release|x64.Build.0 = Release|Any CPU
 		{44020AD4-A1DE-4C21-A11A-65F965815B30}.Release|x86.ActiveCfg = Release|Any CPU
 		{44020AD4-A1DE-4C21-A11A-65F965815B30}.Release|x86.Build.0 = Release|Any CPU
+		{C49D0524-46C2-435D-AA23-B991BF645A0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C49D0524-46C2-435D-AA23-B991BF645A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C49D0524-46C2-435D-AA23-B991BF645A0D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C49D0524-46C2-435D-AA23-B991BF645A0D}.Debug|x64.Build.0 = Debug|Any CPU
+		{C49D0524-46C2-435D-AA23-B991BF645A0D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C49D0524-46C2-435D-AA23-B991BF645A0D}.Debug|x86.Build.0 = Debug|Any CPU
+		{C49D0524-46C2-435D-AA23-B991BF645A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C49D0524-46C2-435D-AA23-B991BF645A0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C49D0524-46C2-435D-AA23-B991BF645A0D}.Release|x64.ActiveCfg = Release|Any CPU
+		{C49D0524-46C2-435D-AA23-B991BF645A0D}.Release|x64.Build.0 = Release|Any CPU
+		{C49D0524-46C2-435D-AA23-B991BF645A0D}.Release|x86.ActiveCfg = Release|Any CPU
+		{C49D0524-46C2-435D-AA23-B991BF645A0D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

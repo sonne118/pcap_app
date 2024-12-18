@@ -1,4 +1,4 @@
-﻿namespace Serialization;
+﻿namespace outbox;
 
 public interface ISerializer
 {

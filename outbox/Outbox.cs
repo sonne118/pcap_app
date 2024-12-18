@@ -3,9 +3,9 @@ using System.Collections.Immutable;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Serialization;
 
-namespace Outbox.Internal
+
+namespace outbox
 {
     internal sealed class Outbox : IOutbox
     {

@@ -1,4 +1,4 @@
-﻿namespace Outbox;
+﻿namespace outbox;
 
 public interface IRelay
 {      

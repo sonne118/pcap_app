@@ -3,24 +3,33 @@ using System.Text;
 using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Serialization;
+using Microsoft.Extensions.Hosting;
+using System.Threading;
 
 namespace kafka;
 
-public class KafkaMessagePub : IKafkaMessagePub
+public class KafkaMessagePub : IKafkaMessagePub      ///BackgroundService 
 {
-    private readonly ISerializer _serializer;
+    private readonly ISerializerer _serializer;
     private readonly ILogger<KafkaMessagePub> _logger;
     private readonly IProducer<string, string> _producer;
     private readonly string _defaultKey = Guid.NewGuid().ToString();
+    private readonly ITopicRepository _topicRepository;
+    private readonly IConfiguration _configuration;
+    ///private ProducerConfig producerConfig;
 
-    public KafkaMessagePub(IConfiguration configuration, ISerializer serializer, ILogger<KafkaMessagePub> logger)
+    public KafkaMessagePub(IConfiguration configuration,
+                           ISerializerer serializer,
+                           ILogger<KafkaMessagePub> logger,
+                           ITopicRepository topicRepository)
     {
+        _configuration = configuration;
+        _topicRepository = topicRepository;
         _serializer = serializer;
         _logger = logger;
-        var producerConfig = new ProducerConfig
+      var  producerConfig = new ProducerConfig
         {
-            BootstrapServers = configuration["KafkaServer"],
+            BootstrapServers = _configuration["KafkaServer"],
 
             //SecurityProtocol = SecurityProtocol.SaslSsl,
             SaslMechanism = SaslMechanism.Plain,
@@ -49,9 +58,82 @@ public class KafkaMessagePub : IKafkaMessagePub
 
         _producer = new ProducerBuilder<string, string>(producerConfig)
             .Build();
+        //BeginProduction();
     }
 
-    public Task SendAsync(ImmutableArray<Message> messages, CancellationToken cancellationToken)
+    //protected async override Task ExecuteAsync(CancellationToken stoppingToken)
+    //{
+
+    //    _producerConfig = new ProducerConfig
+    //    {
+    //        BootstrapServers = _configuration["KafkaServer"],
+
+    //        //SecurityProtocol = SecurityProtocol.SaslSsl,
+    //        SaslMechanism = SaslMechanism.Plain,
+
+    //        //SaslUsername = configuration["SaslUsername"],
+    //        //SaslPassword = configuration["SaslPassword"],
+
+    //        LingerMs = 200,
+    //        BatchSize = 10 * 1024,
+    //        MessageTimeoutMs = 10000,
+
+    //        // Enable receiving delivery reports
+    //        EnableDeliveryReports = true,
+
+    //        // Receive acknowledgement from all sync replicas
+    //        //Acks = Acks.All,
+
+    //        // Number of times to retry before giving up
+    //        MessageSendMaxRetries = 3,
+    //        // Duration to retry before next attempt
+    //        RetryBackoffMs = 1000,
+
+    //        // Set to true if you don't want to reorder messages on retry
+    //        //EnableIdempotence = true
+    //    };
+
+    //   await BeginProduction();
+
+    //    //await BeginProduction();
+
+    //    var producerBuilder = new ProducerBuilder<int, string>(_producerConfig);
+    //    using (var p = producerBuilder.Build())
+    //    {
+    //        while (!stoppingToken.IsCancellationRequested)
+    //        {
+    //            var dr = await p.ProduceAsync(_configuration["Topic"], new Message<int, string>
+    //            {
+    //                // Only keys 1 - 9 exist in the database, so to create some failures we'll pick PKs that
+    //                // don't exist.
+    //                Key = new Random().Next(1, 18),
+    //                Value = $"{new Random().Next(1, 180)}"
+    //            });
+    //            Console.WriteLine($"Delivered '{dr.Value}' to '{dr.TopicPartitionOffset}'");
+
+    //            // sleep 1s, but respond to cancellation
+    //            stoppingToken.WaitHandle.WaitOne(TimeSpan.FromSeconds(1));
+    //        }
+    //    }
+    //   //// return Task.CompletedTask;
+        
+    //}
+
+
+    private async Task BeginProduction()
+    {
+        // Try and create the primary topic (for first time requests)
+        await _topicRepository.TryCreateTopic(_configuration["Topic"]);
+
+        // Try and create the delay topic (for failed requests)
+        await _topicRepository.TryCreateTopic(_configuration["RetryTopic"]);
+
+        // Create the deadletter topic (for failed retry requests)
+        await _topicRepository.TryCreateTopic(_configuration["DeadletterTopic"]);
+    }
+
+
+    public  Task SendAsync(ImmutableArray<Message> messages, CancellationToken cancellationToken)
     {
         foreach (var message in messages)
         {
@@ -64,11 +146,11 @@ public class KafkaMessagePub : IKafkaMessagePub
                     new Message<string, string> { Key = message.Key ?? _defaultKey, Value = kafkaPayload, Headers = PrepareHeaders(message.Metadata, message.Created, message.PayloadType) }, report =>
                     {
                         if (report.Status != PersistenceStatus.Persisted)
-                            //throw new Exception($"Failed to send message to Kafka, Id: {message.Id}, Topic: {topic}");
+                            //throw new Exception($"Failed to send message to Kafka, Id: {message.id}, Topic: {report.Error.Code}");
                             _logger.LogError("Failed kafka message producing with Key {Key}, Error: {error}", report.Message.Key, report.Error.Code);
                     });
 
-                _logger.LogInformation("Message sent to Kafka, Id: {Id}, Topic: {Topic}", message.Key, message.Topic);
+                 _logger.LogInformation("Message sent to Kafka, Id: {Id}, Topic: {Topic}", message.Key, message.Topic);
             }
             catch (ProduceException<Null, string> ex)
             {
@@ -78,6 +160,7 @@ public class KafkaMessagePub : IKafkaMessagePub
 
         _producer.Flush(cancellationToken);
         return Task.CompletedTask;
+
     }
 
     private Headers PrepareHeaders(Dictionary<string, string>? metadata, DateTimeOffset messageTimestamp, string messageType)

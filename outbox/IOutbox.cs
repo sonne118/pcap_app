@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 
-namespace Outbox;
+namespace outbox;
 
 public interface IOutbox
 {
