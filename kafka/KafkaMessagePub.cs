@@ -61,64 +61,6 @@ public class KafkaMessagePub : IKafkaMessagePub      ///BackgroundService
         //BeginProduction();
     }
 
-    //protected async override Task ExecuteAsync(CancellationToken stoppingToken)
-    //{
-
-    //    _producerConfig = new ProducerConfig
-    //    {
-    //        BootstrapServers = _configuration["KafkaServer"],
-
-    //        //SecurityProtocol = SecurityProtocol.SaslSsl,
-    //        SaslMechanism = SaslMechanism.Plain,
-
-    //        //SaslUsername = configuration["SaslUsername"],
-    //        //SaslPassword = configuration["SaslPassword"],
-
-    //        LingerMs = 200,
-    //        BatchSize = 10 * 1024,
-    //        MessageTimeoutMs = 10000,
-
-    //        // Enable receiving delivery reports
-    //        EnableDeliveryReports = true,
-
-    //        // Receive acknowledgement from all sync replicas
-    //        //Acks = Acks.All,
-
-    //        // Number of times to retry before giving up
-    //        MessageSendMaxRetries = 3,
-    //        // Duration to retry before next attempt
-    //        RetryBackoffMs = 1000,
-
-    //        // Set to true if you don't want to reorder messages on retry
-    //        //EnableIdempotence = true
-    //    };
-
-    //   await BeginProduction();
-
-    //    //await BeginProduction();
-
-    //    var producerBuilder = new ProducerBuilder<int, string>(_producerConfig);
-    //    using (var p = producerBuilder.Build())
-    //    {
-    //        while (!stoppingToken.IsCancellationRequested)
-    //        {
-    //            var dr = await p.ProduceAsync(_configuration["Topic"], new Message<int, string>
-    //            {
-    //                // Only keys 1 - 9 exist in the database, so to create some failures we'll pick PKs that
-    //                // don't exist.
-    //                Key = new Random().Next(1, 18),
-    //                Value = $"{new Random().Next(1, 180)}"
-    //            });
-    //            Console.WriteLine($"Delivered '{dr.Value}' to '{dr.TopicPartitionOffset}'");
-
-    //            // sleep 1s, but respond to cancellation
-    //            stoppingToken.WaitHandle.WaitOne(TimeSpan.FromSeconds(1));
-    //        }
-    //    }
-    //   //// return Task.CompletedTask;
-        
-    //}
-
 
     private async Task BeginProduction()
     {
@@ -131,7 +73,6 @@ public class KafkaMessagePub : IKafkaMessagePub      ///BackgroundService
         // Create the deadletter topic (for failed retry requests)
         await _topicRepository.TryCreateTopic(_configuration["DeadletterTopic"]);
     }
-
 
     public  Task SendAsync(ImmutableArray<Message> messages, CancellationToken cancellationToken)
     {
