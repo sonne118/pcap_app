@@ -1,1 +1,1 @@
-UPDATE Outbox SET IsProcessed = 1 WHERE Id IN @Ids
+UPDATE dbo.Outbox SET IsProcessed = 1 WHERE Id IN @Ids

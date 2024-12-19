@@ -1,1 +1,1 @@
-DELETE FROM Outbox where IsProcessed = 1
+DELETE FROM dbo.Outbox where IsProcessed = 1

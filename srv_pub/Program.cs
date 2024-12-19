@@ -1,5 +1,6 @@
 using kafka;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.EntityFrameworkCore;
 using outbox;
 using Server.Map;
 using Server.Model;
@@ -39,6 +40,8 @@ builder.Services.AddGrpc();
 //builder.Services.AddSignalR();
  builder.Services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
 
+
+builder.Services.AddScoped<IOutboxInitializer, OutboxInitializer>();
 builder.Services.AddKafkaPublish("");
 builder.Services.AddOutbox();
 
@@ -51,6 +54,11 @@ builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 //builder.Services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
 
 var app = builder.Build();
+
+//using var scope = app.Services.CreateScope();
+//var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//var outboxInitializer = scope.ServiceProvider.GetRequiredService<IOutboxInitializer>();
+//await outboxInitializer.InitializeAsync(CancellationToken.None);
 
 app.MapGrpcService<StreamingService>();
 

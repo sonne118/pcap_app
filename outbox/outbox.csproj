@@ -5,6 +5,32 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  
+   <ItemGroup>
+    <None Remove="Queries\DeleteProcessed.sql" />
+    <None Remove="Queries\InsertInOutbox.sql" />
+    <None Remove="Queries\MarkAsProcessed.sql" />
+    <None Remove="Queries\OutboxTable.sql" />
+    <None Remove="Queries\ReserveForProcessing.sql" />
+  </ItemGroup>
+
+ <ItemGroup>
+    <EmbeddedResource Include="Queries\DeleteProcessed.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Queries\InsertInOutbox.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Queries\MarkAsProcessed.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Queries\OutboxTable.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Queries\ReserveForProcessing.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />

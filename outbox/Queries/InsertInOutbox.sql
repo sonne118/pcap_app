@@ -1,2 +1,2 @@
-INSERT INTO Outbox(RawData,MessageType,Topic,PartitionBy,IsSequential,Metadata)
+INSERT INTO dbo.Outbox(RawData,MessageType,Topic,PartitionBy,IsSequential,Metadata)
 VALUES(@RawData,@MessageType,@Topic,@PartitionBy,@IsSequential,@Metadata)

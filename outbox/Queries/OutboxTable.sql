@@ -1,25 +1,18 @@
-begin
-IF NOT EXISTS (
-    SELECT * FROM sys.tables t
-    JOIN sys.schemas s ON (t.schema_id = s.schema_id)
-    WHERE s.name = 'dbo' AND t.name = 'Outbox')
 
-	CREATE TABLE Outbox(
-	Id		                uniqueidentifier not null default newsequentialid() PRIMARY KEY,
-	DateTimestamp			datetimeoffset(7) not null default SYSDATETIMEOFFSET(),
-	RawData					NVARCHAR(MAX) not null,
-    MessageType             NVARCHAR(255) not null,
-    Topic 				    NVARCHAR(255) not null,
-    PartitionBy             NVARCHAR(255) null,
-	IsProcessed				INT DEFAULT 0,
-    IsSequential            INT DEFAULT 0,
-    Metadata                NVARCHAR(MAX) null,
-    ReservedAt              datetimeoffset(7) null,
-    ExpiredAt               datetimeoffset(7) null,
-    IsProcessing            INT DEFAULT 0
-)
+CREATE TABLE dbo.Outbox(
+    Id INT NOT NULL,
+    DateTimestamp DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    RawData TEXT NOT NULL,
+    MessageType varchar(255) NOT NULL ,
+    Topic VARCHAR(255) NOT NULL,
+    PartitionBy VARCHAR(255) NULL,
+    IsProcessed INT DEFAULT 0,
+    IsSequential INT DEFAULT 0,
+    Metadata TEXT NULL,
+    ReservedAt DATETIME(6) NULL,
+    ExpiredAt DATETIME(6) NULL,
+    IsProcessing INT DEFAULT 0,
+    PRIMARY KEY (Id)
+);
 
-IF NOT EXISTS (SELECT name FROM sysindexes WHERE name = 'IX_Outbox_IsProcessed_IsProcessing')
-	CREATE NONCLUSTERED  INDEX IX_Outbox_IsProcessed_IsProcessing ON Outbox (IsProcessed, IsProcessing)
 
-end;

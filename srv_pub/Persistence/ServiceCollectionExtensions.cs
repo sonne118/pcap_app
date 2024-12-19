@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Pomelo.EntityFrameworkCore.MySql;
 
 namespace srv_pub.Persistence
 {
@@ -20,11 +21,21 @@ namespace srv_pub.Persistence
             services.AddDbContext<TContext>((sp, options) =>
             {
                 options
-                    .UseSqlServer(
+                    .UseMySql(
                         connectionString,
+                        new MySqlServerVersion(new Version(9, 1, 0)), // Use your MySQL server version
                         cfg => cfg.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName))
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
             });
+
+            //services.AddDbContext<TContext>((sp, options) =>
+            //{
+            //    options
+            //        .UseSqlServer(
+            //            connectionString,
+            //            cfg => cfg.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName))
+            //        .UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
+            //});
         }
     }
 }
