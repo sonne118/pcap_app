@@ -2,4 +2,6 @@
 /dotnet_Ptr
 /output_data
 /header/WpdPack
+header/
+header/WpdPack
 *.lib
