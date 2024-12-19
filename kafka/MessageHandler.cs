@@ -15,9 +15,9 @@ namespace kafka
 
         public Task HandleAsync(Message message, CancellationToken cancellationToken)
         {
-            var type = Type.GetType(message.PayloadType);
+            //var type = Type.GetType(message.Payload);
 
-            if (type == typeof(SnapshotMessage))
+            //if (type == typeof(SnapshotMessage))
             {
                 var CreatedEvent = _serializer.Deserialize<SnapshotMessage>(message.Payload);
                 _logger.LogInformation("Received dest_ip created event with ID {Id}", CreatedEvent.dest_ip);

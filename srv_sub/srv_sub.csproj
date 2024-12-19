@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\pcap_app\kafka\kafka.csproj" />
+    <ProjectReference Include="..\kafka\kafka.csproj" />
   </ItemGroup>
 
 </Project>

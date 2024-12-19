@@ -9,7 +9,7 @@ internal sealed class Relay : IRelay
     private readonly IOutbox _outbox;
     private readonly IKafkaMessagePub _kafkaMessageSender;
     private const int BatchSize = 100;
-    private static readonly TimeSpan ReservationTimeout = TimeSpan.FromSeconds(5);
+    private static readonly TimeSpan ReservationTimeout = TimeSpan.FromSeconds(20);
 
     public Relay(IUnitOfWork unitOfWork, IOutbox outbox, IKafkaMessagePub kafkaMessageSender)
     {

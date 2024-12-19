@@ -1,6 +1,6 @@
 
 CREATE TABLE dbo.Outbox(
-    Id INT NOT NULL,
+    Id INT NOT NULL DEFAULT (UUID()),
     DateTimestamp DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     RawData TEXT NOT NULL,
     MessageType varchar(255) NOT NULL ,

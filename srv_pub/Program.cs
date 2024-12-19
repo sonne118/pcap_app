@@ -41,7 +41,7 @@ builder.Services.AddGrpc();
  builder.Services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
 
 
-builder.Services.AddScoped<IOutboxInitializer, OutboxInitializer>();
+////builder.Services.AddScoped<IOutboxInitializer, OutboxInitializer>();
 builder.Services.AddKafkaPublish("");
 builder.Services.AddOutbox();
 

@@ -32,7 +32,7 @@ public class KafkaMessagePub : IKafkaMessagePub      ///BackgroundService
             BootstrapServers = _configuration["KafkaServer"],
 
             //SecurityProtocol = SecurityProtocol.SaslSsl,
-            SaslMechanism = SaslMechanism.Plain,
+            //SaslMechanism = SaslMechanism.Plain,
 
             //SaslUsername = configuration["SaslUsername"],
             //SaslPassword = configuration["SaslPassword"],

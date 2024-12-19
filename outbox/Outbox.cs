@@ -3,6 +3,8 @@ using System.Collections.Immutable;
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using System.Data;
+using System.Threading;
 
 
 namespace outbox
@@ -11,22 +13,26 @@ namespace outbox
     {
         private readonly DbContext _dbContext;
         private readonly ISerializer _serializer;
+        private readonly IUnitOfWork _unitOfWork;
         private const string InsertInOutboxQueryName = "InsertInOutbox.sql";
         private const string ReservedForProcessingQueryName = "ReserveForProcessing.sql";
         private const string MarkAsProcessedQueryName = "MarkAsProcessed.sql";
         private const string DeleteProcessedQueryName = "DeleteProcessed.sql";
 
-        public Outbox(DbContext dbContext, ISerializer serializer)
+        public Outbox(DbContext dbContext, ISerializer serializer, IUnitOfWork unitOfWork)
         {
             _dbContext = dbContext;
             _serializer = serializer;
+            _unitOfWork = unitOfWork;
         }
 
-        public async Task AddAsync<T>(T data, string topic, Func<T, string>? partitionBy, bool isSequential, Dictionary<string, string>? metadata, CancellationToken cancellationToken) 
+        public async Task AddAsync<T>(T data, string topic, Func<T, string>? partitionBy, bool isSequential, Dictionary<string, string>? metadata, CancellationToken cancellationToken)
             where T : class
         {
-            var transaction = GetTransaction();
-            var connection = transaction.Connection;
+            await using var transaction = await _unitOfWork.BeginSnapshotTransactionAsync(cancellationToken);
+
+            var transactionRow = transaction.GetDbTransaction();
+            var connection = transactionRow.Connection;
             var query = SqlQueriesReader.ReadWithCache(InsertInOutboxQueryName);
             var json = _serializer.Serialize(data);
 
@@ -38,16 +44,36 @@ namespace outbox
                 PartitionBy = partitionBy?.Invoke(data) ?? null,
                 IsSequential = isSequential,
                 Metadata = metadata != null ? _serializer.Serialize(metadata) : null
-            }, cancellationToken: cancellationToken, transaction: transaction);
+            }, cancellationToken: cancellationToken, transaction: transactionRow);
 
-            await connection.ExecuteAsync(commandDefinition);
+            try
+            {
+                await connection.ExecuteAsync(commandDefinition);
+                await transaction.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+
+
         }
 
         public async Task<ImmutableArray<OutboxRecord>> ReserveAsync(int top, TimeSpan reservationTimeout,
             CancellationToken cancellationToken)
         {
-            var query = SqlQueriesReader.ReadWithCache(ReservedForProcessingQueryName);
-            return await GetByQueryAsync(query, cancellationToken,
+            //string query = string.Empty;
+            //if (!SqlQueriesReader.Queries.ContainsKey(ReservedForProcessingQueryName))
+            //{
+            //     query = SqlQueriesReader.ReadWithCache(ReservedForProcessingQueryName);
+            //}
+            //else
+            //{
+            //    SqlQueriesReader.Queries.TryGetValue(ReservedForProcessingQueryName, out query);
+            //}
+
+            return await GetByQueryAsync("dbo.GetDataFromTempTable", cancellationToken,
                 new { MaxLimit = top, ReservationSeconds = reservationTimeout.Seconds });
         }
 
@@ -80,7 +106,7 @@ namespace outbox
             var transaction = GetTransaction();
             var connection = transaction.Connection;
             var commandDefinition = new CommandDefinition(query, queryData, cancellationToken: cancellationToken,
-                transaction: transaction);
+                transaction: transaction, commandType: CommandType.StoredProcedure);
             var rows = await connection
                 .QueryAsync<(Guid Id, DateTimeOffset DateTimestamp, string RawData, string
                     MessageType, string Topic, string? PartitionBy, bool IsProcessed, bool IsSequential, string Metadata)>(commandDefinition);

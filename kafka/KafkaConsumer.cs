@@ -12,6 +12,7 @@ public sealed class KafkaConsumer(
     ILogger<KafkaConsumer> logger,
     ISerializerer serializer,
     IEnumerable<IMessageHandler> messageHandlers,
+    IMessageHandler handler,
     string topic) : BackgroundService
 {
     private ConsumerConfig _consumerConfig = default!;
@@ -43,82 +44,50 @@ public sealed class KafkaConsumer(
 
     private async Task StartConsumer(CancellationToken stoppingToken)
     {
-        using (var consumer = new ConsumerBuilder<int, string>(_consumerConfig).Build())
+  
+        using var consumer = new ConsumerBuilder<string, string>(_consumerConfig).Build();
         {
-            consumer.Subscribe("SnapshotTopic");
 
-            try
+            consumer.Subscribe(_topic);
+            while (!stoppingToken.IsCancellationRequested)
             {
-                while (!stoppingToken.IsCancellationRequested)
+                try
                 {
-                    try
-                    {
-                        var consumeResult = consumer.Consume(stoppingToken);
-                        Console.WriteLine($"Consumed message '{consumeResult.Value}' at: '{consumeResult.TopicPartitionOffset}'.");
+                    var payloads = consumer.ConsumeBatch(TimeSpan.FromMinutes(1), _maxConsumeBatchSize, stoppingToken);
 
-                        //if (!TryConsume(consumeResult, stoppingToken))
-                        //{
-                        //    await _retryQueueProducer.RetryAsync(consumeResult);
-                        //}
-                    }
-                    catch (ConsumeException e)
+                    if (payloads.Count == 0)
+                        continue;
+
+                    foreach (var payload in payloads)
                     {
-                        Console.WriteLine($"Error occured: {e.Error.Reason}");
+                        var message = serializer.Deserialize<Message>(payload.Message.Value);
+                        await handler.HandleAsync(message, stoppingToken);
+                    }
+
+                    consumer.Commit();
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+                catch (ConsumeException e)
+                {
+                    if (e.Error.IsFatal)
+                    {
+                        // https://github.com/edenhill/librdkafka/blob/master/INTRODUCTION.md#fatal-consumer-errors
+                        logger.LogCritical(e, "Fatal error consuming message");
+                        break;
+                    }
+                    else
+                    {
+                        logger.LogError(e, "Error consuming message");
                     }
                 }
+                catch (Exception e)
+                {
+                    logger.LogError(e, "Error consuming message");
+                }
             }
-            finally
-            {
-                // Ensure the consumer leaves the group cleanly and final offsets are committed.
-                consumer.Close();
-            }
-
-
-            //using var consumer = new ConsumerBuilder<string, string>(_consumerConfig).Build();
-            //consumer.Subscribe(_topic);
-
-            //while (!stoppingToken.IsCancellationRequested)
-            //{
-            //    try
-            //    {
-            //        var payloads = consumer.ConsumeBatch(TimeSpan.FromMinutes(1), _maxConsumeBatchSize, stoppingToken);
-
-            //        if (payloads.Count == 0)
-            //            continue;
-
-            //        foreach (var payload in payloads)
-            //        {
-            //            var message = serializer.Deserialize<Message>(payload.Message.Value);
-
-            //            foreach (var handler in messageHandlers)
-            //            {
-            //                await handler.HandleAsync(message, stoppingToken);
-            //            }
-            //        }
-
-            //        consumer.Commit();
-            //    }
-            //    catch (OperationCanceledException)
-            //    {
-            //        break;
-            //    }
-            //    catch (ConsumeException e)
-            //    {
-            //        if (e.Error.IsFatal)
-            //        {
-            //            // https://github.com/edenhill/librdkafka/blob/master/INTRODUCTION.md#fatal-consumer-errors
-            //            logger.LogCritical(e, "Fatal error consuming message");
-            //            break;
-            //        }
-            //        else
-            //        {
-            //            logger.LogError(e, "Error consuming message");
-            //        }
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        logger.LogError(e, "Error consuming message");
-            //    }
         }
     }
 }

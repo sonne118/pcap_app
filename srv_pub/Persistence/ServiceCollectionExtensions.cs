@@ -1,7 +1,6 @@
-﻿using System.Reflection;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Pomelo.EntityFrameworkCore.MySql;
+using System.Reflection;
 
 namespace srv_pub.Persistence
 {
@@ -11,7 +10,7 @@ namespace srv_pub.Persistence
             where TContext : DbContext
         {
             services.AddApplicationDbContext<TContext>(connectionString);
-            services.TryAddTransient<DbContext>(sp => sp.GetRequiredService<TContext>());
+            services.TryAddScoped<DbContext>(sp => sp.GetRequiredService<TContext>());
             return services;
         }
 
@@ -27,15 +26,6 @@ namespace srv_pub.Persistence
                         cfg => cfg.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName))
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
             });
-
-            //services.AddDbContext<TContext>((sp, options) =>
-            //{
-            //    options
-            //        .UseSqlServer(
-            //            connectionString,
-            //            cfg => cfg.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName))
-            //        .UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
-            //});
         }
     }
 }

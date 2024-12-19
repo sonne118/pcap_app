@@ -5,7 +5,7 @@ namespace outbox;
 
 internal static class SqlQueriesReader
 {
-    private static readonly ConcurrentDictionary<string, string> Queries = new();
+    public static readonly ConcurrentDictionary<string, string> Queries = new();
 
     public static string ReadWithCache(string fileName)
     {
