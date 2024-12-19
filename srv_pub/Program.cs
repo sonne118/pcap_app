@@ -1,6 +1,5 @@
 using kafka;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.EntityFrameworkCore;
 using outbox;
 using Server.Map;
 using Server.Model;
