@@ -1,2 +1,4 @@
 header/** linguist-vendored=false
 header/** linguist-documentation=false
+header/WpdPack/** linguist-vendored=false
+header/WpdPack/** linguist-documentation=fals
