@@ -10,6 +10,7 @@
     <DockerServiceName>loadbalancer</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="docker-compose-consul.yml" />
     <None Include="docker-compose-kafka.yml" />
     <None Include="docker-compose-mysql.yml" />
     <None Include="docker-compose.override.yml">
