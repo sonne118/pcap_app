@@ -6,8 +6,7 @@ using wpfapp.models;
 using wpfapp.Services.BackgroundJob;
 using wpfapp.Services.Worker;
 using wpfapp.Utilities;
-///using GalaSoft.MvvmLight.CommandWpf;
-using  wpfapp.IPC.Grpc; 
+using wpfapp.IPC.Grpc;
 
 namespace wpfapp.ViewModel
 {
@@ -20,19 +19,20 @@ namespace wpfapp.ViewModel
         protected readonly CancellationTokenSource _stoppingCts = new CancellationTokenSource();
 
         public ClosingCommand _closingCommand;
-        //public DataGridDoubleClickCommand DataGridDoubleClickCommand;
 
         public ICommand HomeCommand { get; set; }
         public ICommand DashboardCommand { get; set; }
         public ICommand FileCommand { get; set; }
         public ICommand TreeCommand { get; set; }
         public ICommand SettingsCommand { get; set; }
-        public ICommand OnClosingCommand { get { return _closingCommand.ExitCommand; } }
-        //public ICommand OnDataGridDoubleClickCommand { get { return DataGridDoubleClickCommand.ShowCommand; } }
+        public ICommand OnClosingCommand
+        {
+            get { return _closingCommand.ExitCommand; }
+        }
 
-         public GalaSoft.MvvmLight.CommandWpf.RelayCommand<Boolean> OnSetGrpcService { get; private set; }
-         public ICommand OnStartStreamService { get; private set; }
-         public ICommand OnStopStreamService { get; private set; }
+        public GalaSoft.MvvmLight.CommandWpf.RelayCommand<Boolean> OnSetGrpcService { get; private set; }
+        public ICommand OnStartStreamService { get; private set; }
+        public ICommand OnStopStreamService { get; private set; }
 
 
         private void Home(object obj) => CurrentView = Singleton<HomeViewModel>.Instance(_scopeFactory); //this
@@ -55,7 +55,6 @@ namespace wpfapp.ViewModel
             OnStopStreamService = new GalaSoft.MvvmLight.CommandWpf.RelayCommand(OnExecuteStopService);
 
             _closingCommand = new ClosingCommand();
-            
 
             // startup page
             CurrentView = Singleton<HomeViewModel>.Instance(_scopeFactory);
@@ -92,7 +91,6 @@ namespace wpfapp.ViewModel
                 service.StopAsync(_stoppingCts.Token);
             }
         }
-
 
         public override void SetDevice(string str)
         {

@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace wpfapp.ViewModel
 {
-    public class ClosingCommand  //:ICommand
+    public class ClosingCommand  
     {
         private RelayCommand<object> _exitCommand;
         private MainWindow _mainWindow = (MainWindow)Application.Current.MainWindow;

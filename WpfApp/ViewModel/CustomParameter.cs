@@ -8,14 +8,7 @@ using System.Windows.Media;
 namespace wpfapp.ViewModel
 {
     public class CustomParameter :DependencyObject
-    {
-        /// <summary>
-       // public EventArgs EventArgs { get; set; }
-        /// </summary
-       //// public object MainWindow{ get; set; }
-
-
-
+    {    
         public EventArgs EventArgs1
         {
             get { return (EventArgs)GetValue(MyPropertyProperty); }

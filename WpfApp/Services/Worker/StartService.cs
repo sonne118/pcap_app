@@ -1,14 +1,11 @@
 ﻿using Microsoft.Extensions.Hosting;
-using System.Threading;
-using System.Threading.Tasks;
-using wpfapp.Services.Worker;
 
 namespace wpfapp.Services.Worker
 {
     public class StartService : IHostedService
     {
         readonly private int timeout = 1;
-        private static EventWaitHandle _eventWaitHandle;     
+        private static EventWaitHandle _eventWaitHandle;
         static StartService()
         {
             _eventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset, @"Global\sniffer");
@@ -23,7 +20,7 @@ namespace wpfapp.Services.Worker
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             _eventWaitHandle.Set();
-             await Task.Delay(timeout, cancellationToken);
+            await Task.Delay(timeout, cancellationToken);
         }
 
         public async Task SetUpDevice(int device, CancellationToken cancellationToken)

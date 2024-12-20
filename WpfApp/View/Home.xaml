@@ -58,7 +58,7 @@
                 <DataGridTemplateColumn Header="Select">
                     <DataGridTemplateColumn.CellTemplate >
                         <DataTemplate>
-                            <CheckBox Style="{StaticResource CustomCheckBox}" MouseRightButtonDown ="CheckBox_MouseRightButtonDown" IsChecked ="{Binding IsSelected,  Mode=OneWay}" />
+                            <CheckBox Style="{StaticResource CustomCheckBox}" IsChecked ="{Binding IsSelected,  Mode=OneWay}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

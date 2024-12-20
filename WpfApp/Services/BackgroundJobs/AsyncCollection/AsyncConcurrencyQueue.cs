@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks.Dataflow;
+﻿using System.Threading.Tasks.Dataflow;
 
 namespace wpfapp.Services.BackgroundJobs
 {
@@ -11,7 +9,7 @@ namespace wpfapp.Services.BackgroundJobs
 
         public void Enqueue(T item)
         {
-            _bufferBlock.Post(item);          
+            _bufferBlock.Post(item);
         }
 
         public async Task<T> TryDequeue(CancellationToken token = default)
@@ -22,11 +20,11 @@ namespace wpfapp.Services.BackgroundJobs
             {
                 while (await _bufferBlock.OutputAvailableAsync())
                 {
-                     return await _bufferBlock.ReceiveAsync();
+                    return await _bufferBlock.ReceiveAsync();
 
                 }
             }
-            finally 
+            finally
             {
                 _enumerationSemaphore.Release();
             }

@@ -8,6 +8,5 @@ namespace wpfapp.Services.BackgroundJob
     {
         public ConcurrentQueue<Snapshot> BackgroundTasks { get; set; } = new();
         public AsyncConcurrencyQueue<Snapshot> BackgroundTaskGrpc { get; set; } = new();
-
     }
 }

@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace wpfapp.Services.Worker
+﻿namespace wpfapp.Services.Worker
 {
     public interface IHostDevice
     {

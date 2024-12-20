@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using wpfapp.Services.IPC.Ptr;
+﻿using wpfapp.Services.IPC.Ptr;
 
 namespace wpfapp.Services.Worker
 {

@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using CoreModel.Model;
-using GalaSoft.MvvmLight.CommandWpf;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Concurrent;
@@ -49,16 +48,11 @@ namespace wpfapp.ViewModel
         public HomeViewModel(IServiceScopeFactory scopeFactory)
         {
             _scopeFactory = scopeFactory;
-          //  OnSetGrpcService = new RelayCommand<bool>(OnExecuteGrpcService);
-           // OnStartStreamService = new RelayCommand(OnExecuteStartService);
-           // OnStopStreamService = new RelayCommand(OnExecuteStopService);
             DataGridDoubleClickCommand = new DataGridDoubleClickCommand();
             BackgroundJobs = _backgroundJobs;
             Mapper = _mapper;
         }
-       // public RelayCommand<Boolean> OnSetGrpcService { get; private set; }
-       // public ICommand OnStartStreamService { get; private set; }
-       // public ICommand OnStopStreamService { get; private set; }
+
         public ICommand OnDataGridDoubleClickCommand { get { return DataGridDoubleClickCommand.ShowCommand; } }
 
         private void OnExecuteGrpcService(bool isChecked)

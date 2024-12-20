@@ -2,12 +2,9 @@
 using Grpc.Core;
 using GrpcClient;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using wpfapp.Services.BackgroundJobs;
 using wpfapp.models;
 using wpfapp.Services.BackgroundJob;
+using wpfapp.Services.BackgroundJobs;
 
 namespace wpfapp.IPC.Grpc
 {

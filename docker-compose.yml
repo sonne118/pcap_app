@@ -107,14 +107,8 @@ services:
       - ASPNETCORE_HTTPS_PORT=5001         
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/server.pfx   
       - ASPNETCORE_Kestrel__Certificates__Default__Password=11111 
-      #- PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/mssql-tools/bin
     volumes:
       - ${USERPROFILE}\.aspnet\https:/https/
-      #- ~/.aspnet/https:/https:ro #this is very important
-      #- ${USERPROFILE}\.aspnet\https:/root/.aspnet/https/:ro
-      # ./https/server.pfx:/https/server.pfx:ro
-      # - ~/.aspnet/https:/https/:ro
-      #- ~/.aspnet/ssl:/ssl:ro #this is very important
     ports:               
       - 5000:5000 
       - 5001:5001   

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using WpfApp.Model;
+﻿using WpfApp.Model;
 
 namespace wpfapp.Services.Reader
 {

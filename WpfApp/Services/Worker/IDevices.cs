@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace wpfapp.Services.Worker
+﻿namespace wpfapp.Services.Worker
 {
     public interface IDevices
     {

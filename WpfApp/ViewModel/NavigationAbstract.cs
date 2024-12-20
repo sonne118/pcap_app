@@ -66,7 +66,6 @@ namespace wpfapp.ViewModel
             }
             return Enumerable.Empty<string>();
         }
-
         public abstract void SetDevice(string str);
 
     }
