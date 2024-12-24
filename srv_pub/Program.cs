@@ -36,11 +36,10 @@ builder.WebHost.ConfigureKestrel(option =>
 
 builder.Services.AddGrpc();
 
-//builder.Services.AddSignalR();
- builder.Services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
+builder.Services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
 
 
-////builder.Services.AddScoped<IOutboxInitializer, OutboxInitializer>();
+//builder.Services.AddScoped<IOutboxInitializer, OutboxInitializer>();
 builder.Services.AddKafkaPublish("");
 builder.Services.AddOutbox();
 
@@ -50,7 +49,6 @@ builder.Services.AddPersistence<ApplicationDbContext>(builder.Configuration["Sql
 
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 
-//builder.Services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
 
 var app = builder.Build();
 

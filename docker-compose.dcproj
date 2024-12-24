@@ -10,6 +10,7 @@
     <DockerServiceName>loadbalancer</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="configsvr.yaml" />
     <None Include="docker-compose-consul.yml" />
     <None Include="docker-compose-kafka.yml" />
     <None Include="docker-compose-mysql.yml" />
@@ -18,5 +19,8 @@
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
+    <None Include="mongos.yaml" />
+    <None Include="shard1svr.yaml" />
+    <None Include="shard2svr.yml" />
   </ItemGroup>
 </Project>

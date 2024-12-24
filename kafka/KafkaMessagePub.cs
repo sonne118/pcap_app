@@ -1,25 +1,23 @@
-﻿using System.Collections.Immutable;
-using System.Text;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Hosting;
-using System.Threading;
+using System.Collections.Immutable;
+using System.Text;
 
 namespace kafka;
 
-public class KafkaMessagePub : IKafkaMessagePub      ///BackgroundService 
+public class KafkaMessagePub : IKafkaMessagePub       
 {
-    private readonly ISerializerer _serializer;
+    private readonly ISerializer _serializer;
     private readonly ILogger<KafkaMessagePub> _logger;
     private readonly IProducer<string, string> _producer;
     private readonly string _defaultKey = Guid.NewGuid().ToString();
     private readonly ITopicRepository _topicRepository;
     private readonly IConfiguration _configuration;
-    ///private ProducerConfig producerConfig;
+    private ProducerConfig _producerConfig;
 
     public KafkaMessagePub(IConfiguration configuration,
-                           ISerializerer serializer,
+                           ISerializer serializer,
                            ILogger<KafkaMessagePub> logger,
                            ITopicRepository topicRepository)
     {
@@ -27,7 +25,7 @@ public class KafkaMessagePub : IKafkaMessagePub      ///BackgroundService
         _topicRepository = topicRepository;
         _serializer = serializer;
         _logger = logger;
-      var  producerConfig = new ProducerConfig
+        _producerConfig = new ProducerConfig
         {
             BootstrapServers = _configuration["KafkaServer"],
 
@@ -56,7 +54,7 @@ public class KafkaMessagePub : IKafkaMessagePub      ///BackgroundService
             //EnableIdempotence = true
         };
 
-        _producer = new ProducerBuilder<string, string>(producerConfig)
+        _producer = new ProducerBuilder<string, string>(_producerConfig)
             .Build();
         //BeginProduction();
     }
