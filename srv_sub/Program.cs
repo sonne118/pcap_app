@@ -4,8 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.json", optional: true);
 
-///builder.Services.AddKafkaSubscribe("");
-///
+
 builder.Services.AddSingleton<ISerializer, Serializer>();
 builder.Services.AddSingleton<IMessageHandler, MessageHandler>();
 builder.Services.AddSingleton<IHostedService>(sp =>

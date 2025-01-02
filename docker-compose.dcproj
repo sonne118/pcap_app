@@ -21,6 +21,6 @@
     <None Include=".dockerignore" />
     <None Include="mongos.yaml" />
     <None Include="shard1svr.yaml" />
-    <None Include="shard2svr.yml" />
+    <None Include="shard2svr.yaml" />
   </ItemGroup>
 </Project>

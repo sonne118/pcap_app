@@ -7,6 +7,8 @@ namespace MongoDbReplicaSet
     {
         static async Task Main(string[] args)
         {
+
+            // mongodb://192.168.88.181:60000/?directConnection=true&appName=mongosh+2.3.7
             var connectionString = "mongodb://<username>:<password>@<cfg1.example.net:27019>,<cfg2.example.net:27019>,<cfg3.example.net:27019>/?replicaSet=<configReplSetName>";
             var client = new MongoClient(connectionString);
 
