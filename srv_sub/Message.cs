@@ -2,10 +2,6 @@
 {
     public sealed class Message
     {
-        public Message()
-        {
-                
-        }
         public string Topic { get; init; } = default!;
         public string? Key { get; init; }
         public string Payload { get; init; } = default!;

@@ -7,11 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="0.11.6" />
+    <PackageReference Include="librdkafka.redist" Version="0.11.6" />
+    <PackageReference Include="Remote.Linq.Newtonsoft.Json" Version="7.2.2" />
     <PackageReference Include="System.Reactive.Linq" Version="6.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\kafka\kafka.csproj" />
   </ItemGroup>
 
 </Project>
