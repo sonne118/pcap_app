@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Akka" Version="1.5.36" />
+    <PackageReference Include="Topshelf" Version="4.3.0" />
+  </ItemGroup>
+
 </Project>

@@ -1,33 +1,23 @@
-﻿using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Topshelf;
 
-public class MasterNodeService
+class Program
 {
-    public static async Task MasterNodeStartAsync()
+    static void Main(string[] args)
     {
-        var listener = new TcpListener(IPAddress.Any, 6142);
-        listener.Start();
-        Console.WriteLine("Master Node is running...");
-
-        while (true)
+        HostFactory.Run(x =>
         {
-            var client = await listener.AcceptTcpClientAsync();
-            _ = HandleClientAsync(client);
-        }
-    }
+            x.Service<StreamTcpService>(s =>
+            {
+                s.ConstructUsing(name => new StreamTcpService());
+                s.WhenStarted(tc => tc.Start(null));
+                s.WhenStopped(tc => tc.Stop(null));
+            });
 
-    private static async Task HandleClientAsync(TcpClient client)
-    {
-      
-    }
+            x.RunAsLocalSystem();
 
-  
-    public static async Task  Main(string[] args)
-    { 
-       await MasterNodeStartAsync();
+            x.SetDescription("TCP Server using Akka.NET and Topshelf");
+            x.SetDisplayName("AkkaTcpServer");
+            x.SetServiceName("AkkaTcpServer");
+        });
     }
 }
-
