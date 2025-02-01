@@ -7,6 +7,16 @@ using outbox;
 using Azure;
 using System.Threading;
 using System.Security;
+using Confluent.Kafka;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
+//using System.Runtime.Remoting;
+//using System.Runtime.Remoting.Channels;
+//using System.Runtime.Remoting.Channels.Tcp;
+//using System.Runtime.Remoting.Messaging;
+//using System.Security.Principal;
+//using System.Security.Permissions;
 
 namespace Server.Services
 {
@@ -39,11 +49,11 @@ namespace Server.Services
             var httpContext = context.GetHttpContext();
             _logger.LogInformation($"Connection id: {httpContext.Connection.Id}");
 
+
             while (await requestStream.MoveNext() && !context.CancellationToken.IsCancellationRequested)
             {
-                _message = requestStream.Current;
+                    _message = requestStream.Current;
                 _data = _mapper.Map<Snapshot>(_message);
-                // _backgroundJobs.BackgroundTaskSignalR.Enqueue(_data);
                 await _outbox.AddAsync<Snapshot>(
                 data: _data,
                 topic: _topic,

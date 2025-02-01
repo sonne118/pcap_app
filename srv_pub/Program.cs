@@ -34,7 +34,9 @@ builder.WebHost.ConfigureKestrel(option =>
     });
 });
 
-builder.Services.AddGrpc();
+builder.Services.AddGrpc(option => {
+   ///// option.Interceptors.Add<ServerLoggerInterceptor>();
+});
 
 builder.Services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
 
