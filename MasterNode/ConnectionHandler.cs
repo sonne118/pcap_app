@@ -63,7 +63,7 @@ public class ConnectionHandler : ReceiveActor
             loggingActor.Tell(new LoggingActor.LogData(data));
 
             var shardKey = DetermineShard(message);
-            var mongoDBActor = Context.ActorOf(MongoDBActor.Props("mongodb://localhost:27017", "pcap"));
+            var mongoDBActor = Context.ActorOf(MongoDBActor.Props(_mongoDbShards.GetConnectionString(shardKey), "pcap"));
             mongoDBActor.Ask<string>(new MongoDBActor.WriteToMongoDB(message))
                         .PipeTo(Self, success: writeResult => new WriteResult(writeResult));
         });
