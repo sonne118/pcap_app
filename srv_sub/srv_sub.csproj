@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Confluent.Kafka" Version="2.8.0" />
     <PackageReference Include="librdkafka.redist" Version="2.8.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Remote.Linq.Newtonsoft.Json" Version="7.2.2" />
     <PackageReference Include="System.Reactive.Linq" Version="6.0.1" />
   </ItemGroup>

@@ -16,7 +16,7 @@ namespace srv_sub
         public Task HandleAsync(Message message, CancellationToken cancellationToken)
         {
             var CreatedEvent = _serializer.Deserialize<SnapshotMessage>(message.Payload);
-            _logger.LogInformation("Received dest_ip created event with ID {Id}", CreatedEvent.dest_ip);
+            _logger.LogInformation("Received dest_ip {Id} and {proto} ", CreatedEvent.dest_ip, CreatedEvent.proto);
 
             return Task.CompletedTask;
         }

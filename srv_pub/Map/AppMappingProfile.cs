@@ -14,7 +14,8 @@ namespace Server.Map
                 .ForMember(dest => dest.source_ip, opt => opt.MapFrom(src => src.SourceIp))
                 .ForMember(dest => dest.dest_ip, opt => opt.MapFrom(src => src.DestIp))
                 .ForMember(dest => dest.source_mac, opt => opt.MapFrom(src => src.SourceMac))
-                .ForMember(dest => dest.dest_mac, opt => opt.MapFrom(src => src.DestMac));
+                .ForMember(dest => dest.dest_mac, opt => opt.MapFrom(src => src.DestMac))
+                .ForMember(dest => dest.proto, opt => opt.MapFrom(src => src.Proto));
         }
     }
 }

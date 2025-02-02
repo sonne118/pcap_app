@@ -26,17 +26,18 @@ namespace GrpcClient {
           string.Concat(
             "ChdQcm90b3Mvc25pZmZlcmluZy5wcm90bxIHc25pZmZlchobZ29vZ2xlL3By",
             "b3RvYnVmL2VtcHR5LnByb3RvIh8KDnN0cmVhbWluZ1JlcGx5Eg0KBWluZGV4",
-            "GAEgASgFIogBChBzdHJlYW1pbmdSZXF1ZXN0EhQKC3NvdXJjZV9wb3J0GJA/",
+            "GAEgASgFIpcBChBzdHJlYW1pbmdSZXF1ZXN0EhQKC3NvdXJjZV9wb3J0GJA/",
             "IAEoBRISCglkZXN0X3BvcnQYkT8gASgFEhIKCXNvdXJjZV9pcBjAASABKAkS",
             "EAoHZGVzdF9pcBioASABKAkSEgoKc291cmNlX21hYxgBIAEoCRIQCghkZXN0",
-            "X21hYxgCIAEoCTJaCg5TdHJlYW1pbmdEYXRlcxJIChBHZXRTdHJlYW1pbmdE",
-            "YXRhEhkuc25pZmZlci5zdHJlYW1pbmdSZXF1ZXN0Ghcuc25pZmZlci5zdHJl",
-            "YW1pbmdSZXBseSgBQg2qAgpHcnBjQ2xpZW50YgZwcm90bzM="));
+            "X21hYxgCIAEoCRINCgVwcm90bxgDIAEoCTJaCg5TdHJlYW1pbmdEYXRlcxJI",
+            "ChBHZXRTdHJlYW1pbmdEYXRhEhkuc25pZmZlci5zdHJlYW1pbmdSZXF1ZXN0",
+            "Ghcuc25pZmZlci5zdHJlYW1pbmdSZXBseSgBQg2qAgpHcnBjQ2xpZW50YgZw",
+            "cm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.EmptyReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::GrpcClient.streamingReply), global::GrpcClient.streamingReply.Parser, new[]{ "Index" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::GrpcClient.streamingRequest), global::GrpcClient.streamingRequest.Parser, new[]{ "SourcePort", "DestPort", "SourceIp", "DestIp", "SourceMac", "DestMac" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::GrpcClient.streamingRequest), global::GrpcClient.streamingRequest.Parser, new[]{ "SourcePort", "DestPort", "SourceIp", "DestIp", "SourceMac", "DestMac", "Proto" }, null, null, null, null)
           }));
     }
     #endregion
@@ -282,6 +283,7 @@ namespace GrpcClient {
       destIp_ = other.destIp_;
       sourceMac_ = other.sourceMac_;
       destMac_ = other.destMac_;
+      proto_ = other.proto_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -363,6 +365,18 @@ namespace GrpcClient {
       }
     }
 
+    /// <summary>Field number for the "proto" field.</summary>
+    public const int ProtoFieldNumber = 3;
+    private string proto_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string Proto {
+      get { return proto_; }
+      set {
+        proto_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -384,6 +398,7 @@ namespace GrpcClient {
       if (DestIp != other.DestIp) return false;
       if (SourceMac != other.SourceMac) return false;
       if (DestMac != other.DestMac) return false;
+      if (Proto != other.Proto) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -397,6 +412,7 @@ namespace GrpcClient {
       if (DestIp.Length != 0) hash ^= DestIp.GetHashCode();
       if (SourceMac.Length != 0) hash ^= SourceMac.GetHashCode();
       if (DestMac.Length != 0) hash ^= DestMac.GetHashCode();
+      if (Proto.Length != 0) hash ^= Proto.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -422,6 +438,10 @@ namespace GrpcClient {
       if (DestMac.Length != 0) {
         output.WriteRawTag(18);
         output.WriteString(DestMac);
+      }
+      if (Proto.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Proto);
       }
       if (DestIp.Length != 0) {
         output.WriteRawTag(194, 10);
@@ -456,6 +476,10 @@ namespace GrpcClient {
       if (DestMac.Length != 0) {
         output.WriteRawTag(18);
         output.WriteString(DestMac);
+      }
+      if (Proto.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(Proto);
       }
       if (DestIp.Length != 0) {
         output.WriteRawTag(194, 10);
@@ -501,6 +525,9 @@ namespace GrpcClient {
       if (DestMac.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(DestMac);
       }
+      if (Proto.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Proto);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -531,6 +558,9 @@ namespace GrpcClient {
       if (other.DestMac.Length != 0) {
         DestMac = other.DestMac;
       }
+      if (other.Proto.Length != 0) {
+        Proto = other.Proto;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -556,6 +586,10 @@ namespace GrpcClient {
           }
           case 18: {
             DestMac = input.ReadString();
+            break;
+          }
+          case 26: {
+            Proto = input.ReadString();
             break;
           }
           case 1346: {
@@ -599,6 +633,10 @@ namespace GrpcClient {
           }
           case 18: {
             DestMac = input.ReadString();
+            break;
+          }
+          case 26: {
+            Proto = input.ReadString();
             break;
           }
           case 1346: {

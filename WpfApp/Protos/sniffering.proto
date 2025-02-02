@@ -21,5 +21,6 @@ message streamingRequest {
      string source_ip = 192;
      string dest_ip = 168;
      string source_mac = 1;
-     string dest_mac = 2;         
+     string dest_mac = 2;   
+     string proto = 3;
 }

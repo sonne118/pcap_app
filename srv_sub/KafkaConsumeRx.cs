@@ -1,4 +1,5 @@
 ﻿using Confluent.Kafka;
+using Newtonsoft.Json.Linq;
 using System.Net.Sockets;
 using System.Reactive.Linq;
 using System.Text;
@@ -141,7 +142,10 @@ namespace srv_sub
             {
                 if (_checkApiKey)
                 {
-                    var messageBytes = Encoding.UTF8.GetBytes(message.Message.Value + "\n");
+                    var json = JObject.Parse(message.Message.Value);
+                    var payload = json["Payload"]?.ToString();
+
+                    var messageBytes = Encoding.UTF8.GetBytes(payload + "\n");
                     await _tcpClient.Client.GetStream().WriteAsync(messageBytes, 0, messageBytes.Length, stoppingToken);
 
                     var buffer = new byte[1024];
@@ -150,7 +154,7 @@ namespace srv_sub
 
                     Console.WriteLine($"Server response: {response}");
 
-                    if (response.Contains(message.Message.Value))
+                    if (response.Contains("Ok"))
                     {
                         return true;
                     }
