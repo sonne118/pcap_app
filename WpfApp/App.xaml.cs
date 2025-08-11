@@ -6,6 +6,7 @@ using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Windows;
+using wpfapp.Infrastructure.DependencyInjection;
 using wpfapp.IPC.Grpc;
 using wpfapp.Map;
 using wpfapp.models;
@@ -37,32 +38,9 @@ namespace wpfapp
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddSingleton<MainWindow>();
-                    services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
-                    services.AddHostedService<Worker>();
-                    services.AddSingleton<IStreamData, StreamData>();
-                    services.AddSingleton<IHostedService, StartService>();
-                    services.AddHostedService(s => s.GetRequiredService<StartService>());
-                    services.AddScoped<IDevices, Devices>();
-                    services.AddTransient<IPutDevice, PutDevice>();
-                    services.AddSingleton<IHostedGrpcService, GrpcService>();
-                    services.AddGrpcClient<StreamingDates.StreamingDatesClient>(options =>
-                    {
-                        options.Address = new Uri("https://localhost:5001");
-                    })
-                     .ConfigurePrimaryHttpMessageHandler(() =>
-                     {
-                         var serviceProvider = services.BuildServiceProvider();
-                         var _configuration = serviceProvider.GetRequiredService<IConfiguration>();
-                         var path = _configuration["Certificate:Path"];
-                         var certPassword = _configuration["Certificate:Password"];
-                         var certPath = Path.GetFullPath(path, basePath);
-                         var handler = new HttpClientHandler();
-                         handler.ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator;
-                         handler.ClientCertificates.Add(new X509Certificate2(certPath, certPassword));
-                         return handler;
-                     });
-                    services.AddSingleton<NavigationViewModel>();
+                    services.AddApplicationServices(hostContext.Configuration); // Fix: Use hostContext.Configuration instead of undefined 'configuration'
 
+                    services.AddGrpcServices(hostContext.Configuration);
                     services.AddAutoMapper(typeof(AppMappingProfile));
                 })
                 .Build();

@@ -140,36 +140,37 @@
 
                 <StackPanel HorizontalAlignment="Left"  VerticalAlignment="Center"  Height="40" Orientation="Horizontal" FlowDirection="LeftToRight" Width="562" Margin="80,0,0,0" >
                     <!--<StackPanel Width="100"   >-->
-                    <Button Margin="30,6,0,0" Style="{StaticResource TriangleButtonStyle}" Width="30" Height="30" Command="{Binding OnStartStreamService}"  x:Name="btn_g"  RenderTransformOrigin="-0.85,-8.699" Click="btn_g_Click"  >
+                    <Button Margin="30,6,0,0" Style="{StaticResource TriangleButtonStyle}" Width="30" Height="30" Command="{Binding OnStartStreamServiceCommand}"  x:Name="btn_g"  RenderTransformOrigin="-0.85,-8.699" Click="btn_g_Click"  >
                         <Button.RenderTransform>
                             <ScaleTransform ScaleX="1" ScaleY="1"/>
                         </Button.RenderTransform>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="click">
-                                <cmd:EventToCommand Command="{Binding OnStartStreamService}" />
+                                <cmd:EventToCommand Command="{Binding OnStartStreamServiceCommand}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </Button>
 
-                    <Button Margin="10,0,0,0" Style="{StaticResource SquareButtonStyle}"   Width="19" Height="18" x:Name="btn_r" Command="{Binding OnStopStreamService}" RenderTransformOrigin="-0.85,-8.699"  >
+                    <Button Margin="10,0,0,0" Style="{StaticResource SquareButtonStyle}"   Width="19" Height="18" x:Name="btn_r" Command="{Binding OnStopStreamServiceCommand}" RenderTransformOrigin="-0.85,-8.699"  >
                         <Button.RenderTransform>
                             <ScaleTransform ScaleX="1" ScaleY="1"/>
                         </Button.RenderTransform>
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="click">
-                                <cmd:EventToCommand CommandParameter="{Binding ElementName=btn_r}" Command="{Binding OnStopStreamService, Mode=OneWay}" />
+                                <cmd:EventToCommand CommandParameter="{Binding ElementName=btn_r}" Command="{Binding OnStopStreamServiceCommand, Mode=OneWay}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                     </Button>
                     <!--</StackPanel>-->
+                    
                     <ComboBox Margin="30,0,0,0" x:Name="cDevice" Style="{StaticResource ComboBoxFlatStyle}" ItemsSource="{Binding Items}" SelectedItem="{Binding _SelectedItem}"   Width="330" Height="26" RenderTransformOrigin="0.596,0.774" SelectionChanged="cDevice_SelectionChanged" />
                     <toggleSwitch:HorizontalToggleSwitch  x:Name="chk" IsChecked="False" IsEnabled="{Binding IsComboGprcEnable}" Margin="20,0,0,0" CheckedContent="GRPC" Width="87" >
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="Checked">
-                                <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding OnSetGrpcService, Mode=OneWay}" />
+                                <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding OnSetGrpcServiceCommand, Mode=OneWay}" />
                             </i:EventTrigger>
                             <i:EventTrigger EventName="Unchecked">
-                                <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding OnSetGrpcService, Mode=OneWay}" />
+                                <cmd:EventToCommand CommandParameter="{Binding IsChecked, ElementName=chk}" Command="{Binding OnSetGrpcServiceCommand, Mode=OneWay}" />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <toggleSwitch:HorizontalToggleSwitch.UncheckedContent>

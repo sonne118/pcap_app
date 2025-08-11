@@ -4,9 +4,14 @@ namespace wpfapp.Services.Worker
 {
     public class PutDevice : IPutDevice
     {
-        public void PutDevices(int dev)
+        public async Task? PutDeviceAsync(int dev)
         {
             PutdevPtr.PutDev(dev);
+        }
+
+        public void PutDevices(int dev)
+        {
+            throw new NotImplementedException();
         }
     }
 }

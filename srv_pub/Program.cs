@@ -29,7 +29,21 @@ builder.WebHost.ConfigureKestrel(option =>
     {
         var certPath = builder.Configuration["Certificate:Path"];
         var certPassword = builder.Configuration["Certificate:Password"];
-        listenOptions.UseHttps(certPath, certPassword);
+        
+        if (string.IsNullOrEmpty(certPath))
+        {
+            throw new InvalidOperationException("Certificate:Path is not configured");
+        }
+        
+        // Resolve the full path relative to the content root
+        var fullCertPath = Path.Combine(builder.Environment.ContentRootPath, certPath);
+        
+        if (!File.Exists(fullCertPath))
+        {
+            throw new FileNotFoundException($"Certificate file not found at: {fullCertPath}");
+        }
+        
+        listenOptions.UseHttps(fullCertPath, certPassword);
         listenOptions.Protocols = HttpProtocols.Http2;
     });
 });
@@ -64,5 +78,3 @@ app.MapGrpcService<StreamingService>();
 app.UseRouting();
 
 app.Run();
-
-

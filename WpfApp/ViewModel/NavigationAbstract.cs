@@ -2,11 +2,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using wpfapp.Infrastructure.ViewModels;
 using wpfapp.Services.Worker;
 
 namespace wpfapp.ViewModel
 {
-    public abstract class NavigationAbstract : ViewModelBase
+    public abstract class NavigationAbstract : BaseViewModel//ViewModelBase
     {
         private object _currentView;
         private IDevices? _devices;

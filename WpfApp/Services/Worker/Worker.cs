@@ -58,7 +58,7 @@ namespace wpfapp.Services.Worker
                         result = pool.Get();
                         try
                         {
-                            res = await result(stream);
+                             res = await result(stream);
                             _backgroundJobs.BackgroundTasks.Enqueue(res);
                             _backgroundJobs.BackgroundTaskGrpc.Enqueue(res);
                         }

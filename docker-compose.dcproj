@@ -20,4 +20,8 @@
     <None Include=".dockerignore" />
     <None Include="mongo_shards.yml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="MainWindow.xaml" />
+    <Content Include="PcapViewer.csproj" />
+  </ItemGroup>
 </Project>

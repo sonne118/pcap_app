@@ -7,7 +7,7 @@ namespace wpfapp
 {
     public partial class MainWindow : Window
     {
-        public RoutedEvent ClosingEvent { get; private set; }
+        private RoutedEvent ClosingEvent { get;  set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -95,7 +95,7 @@ namespace wpfapp
             else
                 WindowState = WindowState.Normal;
         }
-
+         
         private void btnMinimize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;

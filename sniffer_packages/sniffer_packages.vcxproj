@@ -35,6 +35,7 @@
     <ProjectGuid>{E3671798-1BAC-4B94-80F8-0A567758C0B8}</ProjectGuid>
     <RootNamespace>snifferpackages</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformMinVersion>7.0</WindowsTargetPlatformMinVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

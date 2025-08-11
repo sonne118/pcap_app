@@ -130,7 +130,7 @@ services:
 
   sqlite:
     container_name: sqlite-container
-    image: sqlite:latest
+    image: nouchka/sqlite3
     volumes:
       - sqlite-data:/mydatabase
     ports:
