@@ -15,6 +15,7 @@
 #include <string>
 #include <cstring>
 
+
 int mainFunc(HANDLE eventHandle);
 
 std::atomic_bool quit_flag(false);

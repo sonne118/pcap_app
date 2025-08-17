@@ -6,3 +6,4 @@ header/
 header/WpdPack
 *.lib
 *.h
+!sniffer_packages/ipc.h

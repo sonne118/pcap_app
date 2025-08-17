@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="handleProto.h" />
     <ClCompile Include="mainFunc.cpp" />
+    <ClCompile Include="x64\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ether_ntoa.h" />
@@ -28,6 +29,38 @@
     <ClInclude Include="builderDevice.h" />
     <ClInclude Include="packages.h" />
     <ClInclude Include="struct.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
+    <Text Include="Debug\sniffer_packages.Build.CppClean.log" />
+    <Text Include="Debug\sniffer_packages.log" />
+    <Text Include="Debug\sniffer_packages.vcxproj.FileListAbsolute.txt" />
+    <Text Include="x64\Debug\sniffer_packages.Build.CppClean.log" />
+    <Text Include="x64\Debug\sniffer_packages.log" />
+    <Text Include="x64\Debug\sniffer_packages.vcxproj.FileListAbsolute.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CMakePresets.json" />
+    <None Include="Debug\sniffer_packages.tlog\CL.command.1.tlog" />
+    <None Include="Debug\sniffer_packages.tlog\CL.read.1.tlog" />
+    <None Include="Debug\sniffer_packages.tlog\CL.write.1.tlog" />
+    <None Include="Debug\sniffer_packages.tlog\sniffer_packages.lastbuildstate" />
+    <None Include="Debug\sniffer_packages.tlog\unsuccessfulbuild" />
+    <None Include="Debug\vc143.idb" />
+    <None Include="Debug\vc143.pdb" />
+    <None Include="x64\Debug\handleProto.h.ifc" />
+    <None Include="x64\Debug\handleProto.h.ifc.d.json" />
+    <None Include="x64\Debug\handleproto.h.module.json" />
+    <None Include="x64\Debug\handleProto.h_33B97AE900A91620.ifc.dt.d.json" />
+    <None Include="x64\Debug\handleProto.h_33B97AE900A91620.ifc.dt.module.json" />
+    <None Include="x64\Debug\handleProto.h_33B97AE900A91620.ifc.dt.module.json.command" />
+    <None Include="x64\Debug\sniffer_packages.dll.recipe" />
+    <None Include="x64\Debug\vc143.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Debug\handleProto.obj" />
+    <Object Include="x64\Debug\handleProto.h.obj" />
+    <Object Include="x64\Debug\mainFunc.obj" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -56,7 +89,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <CLRSupport>false</CLRSupport>
+    <CLRSupport>true</CLRSupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>

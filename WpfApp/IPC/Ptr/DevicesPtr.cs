@@ -1,4 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
+using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -7,11 +7,8 @@ namespace wpfapp.Services.IPC.Ptr
 {
     public static class DevicesPtr
     {
-        //[DllImport("sniffer_packages.dll")]
-        [DllImport(@"C:\repo\cppp\1\proj\pcap_app\x64\Debug\sniffer_packages.dll", EntryPoint =
-        "fnDevCPPDLL", CallingConvention = CallingConvention.Cdecl)]
-        public extern static void fnDevCPPDLL(IntPtr[] data, int[] sizes, ref int count);
-
+        [DllImport("sniffer_packages.dll", EntryPoint = "fnDevCPPDLL", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
+        public extern static void fnDevCPPDLL(IntPtr[]? data, int[]? sizes, ref int count);
         public static IEnumerable<string> GetAllDevices()
         {
             int count = 0;

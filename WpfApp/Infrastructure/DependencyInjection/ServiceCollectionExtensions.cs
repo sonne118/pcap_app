@@ -45,7 +45,7 @@ namespace wpfapp.Infrastructure.DependencyInjection
 
         public static IServiceCollection AddGrpcServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var basePath = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName;
+            var basePath = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.Parent?.FullName;
 
             services.AddGrpcClient<StreamingDates.StreamingDatesClient>(options =>
             {
