@@ -1,8 +1,9 @@
-﻿using Confluent.Kafka;
+using Confluent.Kafka;
 using Newtonsoft.Json.Linq;
 using System.Net.Sockets;
 using System.Reactive.Linq;
 using System.Text;
+using System.IO;
 
 namespace srv_sub
 {
@@ -145,23 +146,58 @@ namespace srv_sub
                     var json = JObject.Parse(message.Message.Value);
                     var payload = json["Payload"]?.ToString();
 
-                    var messageBytes = Encoding.UTF8.GetBytes(payload + "\n");
-                    await _tcpClient.Client.GetStream().WriteAsync(messageBytes, 0, messageBytes.Length, stoppingToken);
-
-                    var buffer = new byte[1024];
-                    var bytesRead = await _tcpClient.Client.GetStream().ReadAsync(buffer, 0, buffer.Length, stoppingToken);
-                    var response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-
-                    Console.WriteLine($"Server response: {response}");
-
-                    if (response.Contains("Ok"))
+                    if (string.IsNullOrWhiteSpace(payload))
                     {
-                        return true;
+                        _logger.LogWarning("Received message with empty Payload. Skipping.");
+                        return false;
                     }
-                    else
+
+                    if (stoppingToken.IsCancellationRequested)
                     {
                         return false;
                     }
+                    var stream = _tcpClient?.Client?.GetStream();
+
+
+                    var messageBytes = Encoding.UTF8.GetBytes(payload + "\n");
+                    
+
+                    if (stream == null || !stream.CanWrite)
+                    {
+                                _logger.LogError("TCP client is not connected and reconnection failed.");
+                                return false;
+                    }
+                    int bytesRead = 0;
+                    string response = string.Empty;
+                    var buffer = new byte[1024];
+                   
+                    try
+                    {
+                        await stream.WriteAsync(messageBytes, 0, messageBytes.Length, stoppingToken);
+                        bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, stoppingToken);
+                         response = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return GetTrueOrFalse(response);
+                    }
+                    catch (IOException ioEx)
+                    {
+                        _logger.LogWarning(ioEx, "IO error while writing to TCP stream. Will attempt one reconnect and retry.");
+                        return GetTrueOrFalse(response);
+                    }
+                    catch (ObjectDisposedException odEx)
+                    {
+                        _logger.LogWarning(odEx, "TCP stream disposed. Will attempt one reconnect and retry.");
+                        return GetTrueOrFalse(response);
+                    }
+                    catch (SocketException sockEx)
+                    {
+                        _logger.LogWarning(sockEx, "Socket error while writing. Will attempt one reconnect and retry.");
+                        return GetTrueOrFalse(response);
+                    }
+
+                   return GetTrueOrFalse(response);
                 }
                 else
                 {
@@ -174,6 +210,21 @@ namespace srv_sub
                 return false;
             }
         }
+
+        private bool GetTrueOrFalse( string response)
+        {
+            if (response.Contains("Ok"))
+            {
+                Console.WriteLine($"Server response: {response}");
+                return true;
+            }
+            else
+            {
+                Console.WriteLine($"Server response: {response}");
+                return false;
+            }
+        }
+
 
         void IDisposable.Dispose()
         {

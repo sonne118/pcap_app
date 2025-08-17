@@ -21,6 +21,7 @@
     <None Include="mongo_shards.yml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="docker-compose-mysql-fixed.yml" />
     <Content Include="MainWindow.xaml" />
     <Content Include="PcapViewer.csproj" />
   </ItemGroup>

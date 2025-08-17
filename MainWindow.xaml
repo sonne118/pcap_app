@@ -1,1 +1,70 @@
-﻿
+﻿<Window x:Class="PcapViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PcapViewer"
+        mc:Ignorable="d"
+        Title="PCAP Viewer" Height="600" Width="1000">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Click="OpenFile_Click"/>
+                <Separator/>
+                <MenuItem Header="_Exit" Click="Exit_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Capture">
+                <MenuItem Header="Start _Capture" Click="StartCapture_Click"/>
+                <MenuItem Header="_Stop Capture" Click="StopCapture_Click" IsEnabled="{Binding IsCapturing}"/>
+            </MenuItem>
+            <MenuItem Header="_Help">
+                <MenuItem Header="_About" Click="About_Click"/>
+            </MenuItem>
+        </Menu>
+        <ToolBarTray DockPanel.Dock="Top">
+            <ToolBar>
+                <Button Content="Open" Click="OpenFile_Click"/>
+                <Button Content="Start" Click="StartCapture_Click"/>
+                <Button Content="Stop" Click="StopCapture_Click" IsEnabled="{Binding IsCapturing}"/>
+            </ToolBar>
+        </ToolBarTray>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Text="{Binding StatusText}"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock Text="{Binding PacketCount, StringFormat='Packets: {0}'}"/>
+            </StatusBarItem>
+        </StatusBar>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="0.4*"/>
+            </Grid.RowDefinitions>
+            
+            <DataGrid Grid.Row="0" x:Name="packetsDataGrid" 
+                      AutoGenerateColumns="False"
+                      SelectionChanged="PacketsDataGrid_SelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="No." Binding="{Binding Number}" Width="Auto"/>
+                    <DataGridTextColumn Header="Time" Binding="{Binding Timestamp}" Width="Auto"/>
+                    <DataGridTextColumn Header="Source" Binding="{Binding Source}" Width="Auto"/>
+                    <DataGridTextColumn Header="Destination" Binding="{Binding Destination}" Width="Auto"/>
+                    <DataGridTextColumn Header="Protocol" Binding="{Binding Protocol}" Width="Auto"/>
+                    <DataGridTextColumn Header="Length" Binding="{Binding Length}" Width="Auto"/>
+                    <DataGridTextColumn Header="Info" Binding="{Binding Info}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            
+            <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch"/>
+            
+            <TextBox Grid.Row="2" x:Name="packetDetailsTextBox" 
+                     IsReadOnly="True" 
+                     FontFamily="Consolas"
+                     VerticalScrollBarVisibility="Auto"
+                     HorizontalScrollBarVisibility="Auto"/>
+        </Grid>
+    </DockPanel>
+</Window>
+

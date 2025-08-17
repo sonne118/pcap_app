@@ -56,7 +56,7 @@ public class KafkaMessagePub : IKafkaMessagePub
 
         _producer = new ProducerBuilder<string, string>(_producerConfig)
             .Build();
-        //BeginProduction();
+        BeginProduction();
     }
 
 

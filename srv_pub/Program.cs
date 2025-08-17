@@ -25,27 +25,34 @@ builder.Services.AddCors(options =>
 
 builder.WebHost.ConfigureKestrel(option =>
 {
-    option.ListenAnyIP(5001, listenOptions =>
+    option.ListenAnyIP(5000, listenOptions =>
     {
-        var certPath = builder.Configuration["Certificate:Path"];
-        var certPassword = builder.Configuration["Certificate:Password"];
-        
-        if (string.IsNullOrEmpty(certPath))
-        {
-            throw new InvalidOperationException("Certificate:Path is not configured");
-        }
-        
-        // Resolve the full path relative to the content root
-        var fullCertPath = Path.Combine(builder.Environment.ContentRootPath, certPath);
-        
-        if (!File.Exists(fullCertPath))
-        {
-            throw new FileNotFoundException($"Certificate file not found at: {fullCertPath}");
-        }
-        
-        listenOptions.UseHttps(fullCertPath, certPassword);
+        // Use HTTP/2 over cleartext (h2c). Do not enable HTTPS here.
         listenOptions.Protocols = HttpProtocols.Http2;
     });
+
+    // Only configure HTTPS if certificate exists
+    var certPath = builder.Configuration["Certificate:Path"];
+    var certPassword = builder.Configuration["Certificate:Password"];
+    
+    if (!string.IsNullOrEmpty(certPath))
+    {
+        // Resolve the full path relative to the content root
+        var fullCertPath = Path.Combine(builder.Environment.ContentRootPath, certPath);
+
+        if (File.Exists(fullCertPath))
+        {
+            option.ListenAnyIP(5001, listenOptions =>
+            {
+                listenOptions.UseHttps(fullCertPath, certPassword);
+                listenOptions.Protocols = HttpProtocols.Http2;
+            });
+        }
+        else
+        {
+            Console.WriteLine($"WARNING: Certificate file not found at: {fullCertPath}. HTTPS endpoint will not be available.");
+        }
+    }
 });
 
 builder.Services.AddGrpc(option => {
@@ -59,9 +66,10 @@ builder.Services.AddSingleton<IBackgroundJobs<Snapshot>, BackgroundJobs>();
 builder.Services.AddKafkaPublish("");
 builder.Services.AddOutbox();
 
-builder.Services.AddPersistence<ApplicationDbContext>(builder.Configuration["SqlConnStr"] ?? throw new ArgumentException());
-
-
+// Add retry capability to MySQL connection
+builder.Services.AddPersistence<ApplicationDbContext>(builder.Configuration["SqlConnStr"] ?? throw new ArgumentException(), 
+    retryOnFailure: true, 
+    maxRetryCount: 5);
 
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
 

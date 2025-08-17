@@ -1,112 +1,190 @@
 version: '3.8'
 
-services:  
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: zookeeper1
+    ports:
+      - "2181:2181"
+    networks:
+      - proxybackend
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    expose:
+      - "9093"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9093,OUTSIDE://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9093,OUTSIDE://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "my-topic:1:1"
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_MIN_INSYNC_REPLICAS: 1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - proxybackend
+    depends_on:
+      - zookeeper
+
+  mysql:
+    image: mysql:9.1.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: '11111'
+      MYSQL_ROOT_PASSWORD: '11111'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - proxybackend
+    #command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
   loadbalancing.api:
     image: ${DOCKER_REGISTRY-}loadbalancing.api
     container_name: loadbalancing.api
-    hostname: http://localhost:5010
     build:
       context: .
-      dockerfile: server/Dockerfile
+      dockerfile: srv_pub/Dockerfile
     #cpus: 1
     #mem_limit: "0.5G"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=https://+:;http://+
-      - ASPNETCORE_HTTPS_PORT=5000  
+      - ASPNETCORE_URLS=http://+:5000
+      - KafkaServer=kafka:9093
     ports:   
-      - 5010:5000    
+      - 5010:5000
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
     networks:
       - proxybackend
 
   loadbalancing.api2:
     image: ${DOCKER_REGISTRY-}loadbalancing.api2
     container_name: loadbalancing.api2
-    hostname: http://localhost:5011
     build:
       context: .
-      dockerfile: server/Dockerfile
+      dockerfile: srv_pub/Dockerfile
     #cpus: 1
     #mem_limit: "0.5G"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=https://+:;http://+
-      - ASPNETCORE_HTTPS_PORT=5000 
+      - ASPNETCORE_URLS=http://+:5000
+      - KafkaServer=kafka:9093
     ports:           
       - 5011:5000
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
     networks:
       - proxybackend
 
   loadbalancing.api3:
     image: ${DOCKER_REGISTRY-}loadbalancing.api3
     container_name: loadbalancing.api3
-    hostname: http://localhost:5012
+  #  KafkaServer=kafka:9093
     build:
       context: .
-      dockerfile: server/Dockerfile
+      dockerfile: srv_pub/Dockerfile
     #cpus: 1
     #mem_limit: "0.5G"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=https://+:;http://+
-      - ASPNETCORE_HTTPS_PORT=5000 
+      - ASPNETCORE_URLS=http://+:5000
+      - KafkaServer=kafka:9093
     ports:           
-       - 5012:5000
+      - 5012:5000
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
     networks:
       - proxybackend
 
   loadbalancing.api4:
     image: ${DOCKER_REGISTRY-}loadbalancing.api4
     container_name: loadbalancing.api4
-    hostname: http://localhost:5013
     build:
       context: .
-      dockerfile: server/Dockerfile
-   # cpus: 1
-    #mem_limit: "0.5G"
+      dockerfile: srv_pub/Dockerfile
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production 
-      - ASPNETCORE_URLS=https://+:;http://+
-      - ASPNETCORE_HTTPS_PORT=5000  
-    ports:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5000
+      - KafkaServer=kafka:9093
+    ports:           
       - 5013:5000
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
     networks:
       - proxybackend
 
   loadbalancing.api5:
     image: ${DOCKER_REGISTRY-}loadbalancing.api5
     container_name: loadbalancing.api5
-    hostname: http://localhost:5014
     build:
       context: .
-      dockerfile: server/Dockerfile
+      dockerfile: srv_pub/Dockerfile
     #cpus: 1
     #mem_limit: "0.5G"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=https://+:;http://+
-      - ASPNETCORE_HTTPS_PORT=5000 - 
+      - ASPNETCORE_URLS=http://+:5000
+      - KafkaServer=kafka:9093
     ports:
      - 5014:5000
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
     networks:
       - proxybackend
- 
+
   loadbalancer:
     image: ${DOCKER_REGISTRY-}loadbalancer
-    #volumes:       
+    #volumes:
     #  - "./ssl:/ssl"
     container_name: loadbalancer
     build:
       context: .
       dockerfile: loadbalancer/Dockerfile
-    cpus: 1
+    #cpus: 1
     #mem_limit: "0.5G"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:;http://+
-      - ASPNETCORE_HTTPS_PORT=5001         
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/server.pfx   
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=11111 
+      - ASPNETCORE_HTTPS_PORT=5001
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/server.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=11111
     volumes:
       - ${USERPROFILE}\.aspnet\https:/https/
     ports:               
@@ -123,25 +201,77 @@ services:
       condition: service_started
      loadbalancing.api5:
       condition: service_started
+     kafka:
+      condition: service_started
+      #mysql:
+      #  condition: service_healthy
+      #kafka:
+       # condition: service_started
     networks:
       - proxybackend
-  
 
 
-  sqlite:
-    container_name: sqlite-container
-    image: nouchka/sqlite3
-    volumes:
-      - sqlite-data:/mydatabase
-    ports:
-      - "5432:5432"
-    restart: always
+#  db:
+#    image: mysql:latest
+#    restart: always
+#    environment:
+#      MYSQL_DATABASE: 'db'
+#      MYSQL_USER: 'user'
+#      MYSQL_PASSWORD: '11111'
+#      MYSQL_ROOT_PASSWORD: '11111'
+#    ports:
+#      - '3306:3306'
+#    expose:
+#      - '3306'
+#    volumes:
+#      - mysql-data:/var/lib/mysql
+#volumes:
+#  mysql-data:
+
+#   sqlite:
+#     image: nouchka/sqlite3
+#     container_name: sqlite-container
+#     volumes:
+#       - sqlite-data:/db
+#       - ./sqlite-init:/docker-entrypoint-initdb.d:ro
+#     entrypoint: []
+#     command: ["sh", "-c", "sqlite3 /db/app.db < /docker-entrypoint-initdb.d/init.sql || true; tail -f /dev/null"]  # Seed then keep alive
+#     stdin_open: true
+#     tty: true
+#     restart: unless-stopped
+
+# volumes:
+#   sqlite-data:
+
+#   sqlite:
+#     container_name: sqlite-container
+#     image: keinos/sqlite3:latest
+#     volumes:
+#       - sqlite-data:/mydatabase
+#     ports:
+#       - "5432:5432"
+#     restart: always
+#     deploy:
+#       restart_policy:
+#         condition: any
+# volumes:
+#    sqlite-data:
+
+  # sqlite:
+  #   container_name: sqlite-container
+  #   image: nouchka/sqlite3
+  #   volumes:
+  #     - sqlite-data:/mydatabase
+  #   ports:
+  #     - "5432:5432"
+  #   restart: always
+
+# volumes:
+#   sqlite-data:
 
 volumes:
-  sqlite-data:
+    mysql-data:    
 
 networks:
   proxybackend:
-    name: proxybackend
     driver: bridge
-

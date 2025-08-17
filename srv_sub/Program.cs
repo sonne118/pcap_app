@@ -23,15 +23,15 @@ builder.Services.AddHostedService(s => s.GetRequiredService<KafkaConsumerRx>());
 //            ));
 
 
-//builder.WebHost.ConfigureKestrel(options =>
-//{
-//    options.ListenAnyIP(5000); // HTTP
-//    // Uncomment and configure below for HTTPS
-//    // options.ListenAnyIP(5001, listenOptions =>
-//    // {
-//    //     listenOptions.UseHttps("path/to/cert.pfx", "certPassword");
-//    // });
-//});
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5005); // HTTP
+    // Uncomment and configure below for HTTPS
+    // options.ListenAnyIP(5001, listenOptions =>
+    // {
+    //     listenOptions.UseHttps("path/to/cert.pfx", "certPassword");
+    // });
+});
 var app = builder.Build();
 
 app.Run();

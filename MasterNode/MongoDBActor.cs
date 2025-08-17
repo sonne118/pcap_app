@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
+using static DataProcessingActor;
 
 public class MongoDBActor : ReceiveActor
 {
@@ -26,22 +27,26 @@ public class MongoDBActor : ReceiveActor
         _client = new MongoClient(connectionString);
         _database = _client.GetDatabase(databaseName);
 
+        //Receive<ProcessData>(data =>
+        //{
+        //    var message = Encoding.UTF8.GetString(data.Data);
+
+        //});
+
         ReceiveAsync<WriteToMongoDB>(async write =>
         {
             var collection = _database.GetCollection<Note>("Notes");
-            // var document = new BsonDocument { { "message", write.Message } };
-
-            //var document = JsonSerializer.Deserialize<Note>(write.Message);
-            // var document = BsonDocument.Parse(write.Message);
-            var document = JsonSerializer.Deserialize<Note>(write.Message, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                AllowTrailingCommas = true
-            });
 
             try
             {
-                await collection.InsertOneAsync(document);
+                var document = JsonSerializer.Deserialize<Note>(write.Message, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    PropertyNameCaseInsensitive = true
+                });
+                var message = BsonDocument.Parse(write.Message);
+                Console.WriteLine($"Writed Data: {document}");
+                // await collection.InsertOneAsync(document);
                 Sender.Tell("Ok");
             }
             catch (Exception)
