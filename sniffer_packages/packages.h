@@ -1,34 +1,88 @@
 #pragma once
 #ifndef PACKAGES_H
 #define PACKAGES_H
+
+// Platform specific includes
+#ifdef _WIN32
+#include <WinSock2.h>
+#include <windows.h>
+#else
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+#include <netinet/udp.h>
+#include <net/ethernet.h>
+#include <unistd.h>
+typedef void* HANDLE;
+#endif
 #include <pcap.h>
 #include <vector>
 #include <string>
 #include <atomic>
 #include <mutex>
-#include <ether_ntoa.h>
-#include <WinSock2.h>
-#include <struct.h>
-#include <pcap.h>
-#include <ipc.h>
 #include <list>
-#include <vector>
 #include <iostream>
-#include <atomic>
-#include <handleProto.h>
-#include <ipc.h>
 
-#pragma warning(disable:4996) 
+#include "struct.h"
+#include "ipc.h"
+#include "handleProto.h"
+#include "ether_ntoa.h"
+
+#ifdef __APPLE__
+// Ensure ETHER_HDR_LEN exists
+#ifndef ETHER_HDR_LEN
+#define ETHER_HDR_LEN 14
+#endif
+#endif
+
+// Provide cross-platform aliases used in code
+#ifndef SIZE_ETHERNET
+#define SIZE_ETHERNET ETHER_HDR_LEN
+#endif
+#ifndef IPv4_ETHERTYPE
+#define IPv4_ETHERTYPE ETHERTYPE_IP
+#endif
+
+// IP header helpers expected by code
+#ifndef IP_HL
+#define IP_HL(ip) ((ip)->ip_hl)
+#endif
+#ifndef IP_V
+#define IP_V(ip) ((ip)->ip_v)
+#endif
+
+// Some code uses ip_vhl (Linux/Windows). On BSD/macOS map to ip_hl
+#ifdef __APPLE__
+#ifndef ip_vhl
+#define ip_vhl ip_hl
+#endif
+#endif
+
+// TCP field name aliases
+#ifndef sport
+#define sport th_sport
+#endif
+#ifndef dport
+#define dport th_dport
+#endif
+
+#ifdef _WIN32
+#pragma warning(disable:4996)
 #pragma comment(lib, "wpcap.lib")
 #pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "iphlpapi.lib")
+#pragma comment(lib, "Packet.lib")
+#pragma comment(lib, "pthreadVC2.lib")
+#endif
 
 #define buff_max 5
 #define mod %
 
-tagSnapshot shared_buff[buff_max];
-std::atomic<int> free_index(0);
-std::atomic<int> full_index(0);
-std::mutex mtx;
+extern tagSnapshot shared_buff[buff_max];
+extern std::atomic<int> free_index;
+extern std::atomic<int> full_index;
+extern std::mutex mtx;
 
 class Packages
 {
@@ -62,6 +116,7 @@ public:
 	int* dst_porth;
 };
 
+// Inline implementations (Windows-specific parts guarded)
 inline Packages::Packages():i(0), src_port(0),dst_port(0),d(nullptr),src_porth(nullptr),dst_porth(nullptr),_adhandle(nullptr), _eventHandles(nullptr), packetd_ptr(nullptr), _pkthdr(nullptr), alldevs(nullptr), descr(nullptr), protoh(nullptr),proto('\0')
 {
 	//new_proto[22] ='\0';	
@@ -79,8 +134,6 @@ inline Packages::Packages(handleProto pp) :_proto(&_proto) {
 inline Packages ::~Packages() {
 	_adhandle = NULL;
 	_eventHandles = NULL;
-	delete _adhandle;
-	delete _eventHandles;
 };
 
 inline void Packages::setHandler(HANDLE eventHandle) {
@@ -102,14 +155,19 @@ inline void* Packages::consumer() {
 			consumed_item = shared_buff[full_index];
 			full_index = (full_index + 1) mod buff_max;
 			snapshot = consumed_item;
+#ifdef _WIN32
 			std::this_thread::sleep_for(std::chrono::milliseconds(100));
 			WriteFile(hPipe, &snapshot, sizeof(tagSnapshot), NULL, NULL);
+#endif
 		}
 		mtx.unlock();
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
+#ifdef _WIN32
 	CloseHandle(hPipe);
+#endif
+	return nullptr;
 }
 
 inline void* Packages::producer(std::atomic<bool>& on) {
@@ -132,9 +190,11 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 		std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
 		while ((res = pcap_next_ex(_adhandle, &_pkthdr, &packetd_ptr)) >= 0 && on.load()) {
-			tagSnapshot new_item;u_int size_ip;
+			tagSnapshot new_item; u_int size_ip;
 
+#ifdef _WIN32
 			WaitForSingleObject(_eventHandles, INFINITE);
+#endif
 			if (res == 0) {
 				Packages::defaultToStruct(new_item);
 				shared_buff[free_index] = new_item;
@@ -160,8 +220,8 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 
 			char packet_srcip[INET_ADDRSTRLEN];
 			char packet_dstip[INET_ADDRSTRLEN];
-			strcpy_s(packet_srcip, inet_ntoa(ip_hdr->ip_src));
-			strcpy_s(packet_dstip, inet_ntoa(ip_hdr->ip_dst));
+			strcpy(packet_srcip, inet_ntoa(ip_hdr->ip_src));
+			strcpy(packet_dstip, inet_ntoa(ip_hdr->ip_dst));
 
 			dst_ptr_mac = eptr->ether_shost;
 			src_ptr_mac = eptr->ether_dhost;
@@ -232,7 +292,7 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 		}
 	}
 	return 0;
-};
+}
 
 inline void Packages::addToStruct(char proto[22], char packet_srcip[22], char packet_dstip[22], char source_mac[32],
 	char dest_mac[32], int packet_id, int dst_port, int src_port, char host_names[22], tagSnapshot& item)
@@ -259,4 +319,4 @@ inline void Packages::defaultToStruct(tagSnapshot& item) {
 	strcpy(item.host_name, "mx-ll-49.48.52-46.dynamic.3bb.in.th");
 };
 
-#endif
+#endif // PACKAGES_H

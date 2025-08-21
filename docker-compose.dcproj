@@ -21,7 +21,11 @@
     <None Include="mongo_shards.yml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="build.bat" />
+    <Content Include="build.sh" />
+    <Content Include="CMakeLists.txt" />
     <Content Include="docker-compose-mysql-fixed.yml" />
+    <Content Include="INSTALL.md" />
     <Content Include="MainWindow.xaml" />
     <Content Include="PcapViewer.csproj" />
   </ItemGroup>

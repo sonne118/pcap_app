@@ -7,3 +7,7 @@ header/WpdPack
 *.lib
 *.h
 !sniffer_packages/ipc.h
+!sniffer_packages/packages.h
+!sniffer_packages/handleProto.h
+!sniffer_packages/builderDevice.h
+!compat_net.h

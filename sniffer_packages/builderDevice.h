@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-char errbuf[PCAP_ERRBUF_SIZE];
+extern char errbuf[PCAP_ERRBUF_SIZE];
 
 class  builderDevice {
 public:

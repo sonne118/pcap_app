@@ -20,7 +20,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="handleProto.h" />
+    <ClCompile Include="ipc.cpp" />
     <ClCompile Include="mainFunc.cpp" />
+    <ClCompile Include="packages_globals.cpp" />
     <ClCompile Include="x64\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cpp" />
   </ItemGroup>
   <ItemGroup>

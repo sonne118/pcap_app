@@ -4,7 +4,7 @@
 #include <iostream>
 #include <map>
 #include <functional>
-#include <cstringt.h>
+#include <cstring>
 
 #pragma warning(disable:4996) 
 
