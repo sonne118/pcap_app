@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC -Xlinker --dependency-file=CMakeFiles/sniffer_packages.dir/link.d -shared -Wl,-soname,libsniffer_packages.so -o libsniffer_packages.so CMakeFiles/sniffer_packages.dir/mainFunc.cpp.o  -lws2_32 -liphlpapi -lwpcap -lPacket -lpthread -lPcap++ -lPacket++ -lCommon++

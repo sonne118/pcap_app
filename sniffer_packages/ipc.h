@@ -5,7 +5,6 @@
 #include <thread> 
 #include <memory>
 #include <ipc.h>
-#include <atlsafe.h>
 #include <random>
 #include <functional>
 #include <builderDevice.h>

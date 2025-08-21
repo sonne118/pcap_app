@@ -1,0 +1,3 @@
+/workspace/sniffer_packages/build-w64/CMakeFiles/sniffer_packages.dir
+/workspace/sniffer_packages/build-w64/CMakeFiles/edit_cache.dir
+/workspace/sniffer_packages/build-w64/CMakeFiles/rebuild_cache.dir
