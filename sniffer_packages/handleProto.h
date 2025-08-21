@@ -1,10 +1,9 @@
-﻿#pragma once
+#pragma once
 #ifndef HANDLE_PROTO_H
 #define HANDLE_PROTO_H
 #include <iostream>
 #include <map>
 #include <functional>
-#include <cstringt.h>
 
 #pragma warning(disable:4996) 
 

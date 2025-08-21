@@ -1,7 +1,7 @@
 #ifndef STRUCT_H
 #define STRUCT_H
 #include <iostream>
-#include <WinSock2.h>
+#include <winsock2.h>
 
 #define SIZE_ETHERNET 14
 #define ETHER_ADDR_LEN 6

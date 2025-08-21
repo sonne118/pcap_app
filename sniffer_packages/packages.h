@@ -7,7 +7,7 @@
 #include <atomic>
 #include <mutex>
 #include <ether_ntoa.h>
-#include <WinSock2.h>
+#include <winsock2.h>
 #include <struct.h>
 #include <pcap.h>
 #include <ipc.h>
