@@ -1,0 +1,8 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/vitah/repo/pcap_app/pcap_app/build/cmake_install.cmake",
+		"/Users/vitah/repo/pcap_app/pcap_app/build/sniffer_packages/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
