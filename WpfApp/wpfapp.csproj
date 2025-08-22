@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -66,18 +66,16 @@
     <Folder Include="ssl\" />
   </ItemGroup> 
 
-  <ItemGroup>
-    <!-- Removed ProjectReference to native vcxproj; native DLL is built by CMake and copied via CopyNativeSnifferDll target -->
-  </ItemGroup> 
-
-  <!-- Copy native DLL(s) built by CMake into the WPF output directory -->
+  <!-- Copy native DLL(s) built by MSVC vcxproj into the WPF output directory -->
   <PropertyGroup>
-    <NativeDllSourceDir>$(MSBuildThisFileDirectory)..\sniffer_packages\out\build\x64-msvc-vcpkg-vs\$(Configuration)\</NativeDllSourceDir>
+    <NativeDllSourceDir>$(MSBuildThisFileDirectory)..\sniffer_packages\x64\$(Configuration)\</NativeDllSourceDir>
   </PropertyGroup>
 
   <Target Name="CopyNativeSnifferDll" AfterTargets="Build">
     <ItemGroup>
-      <NativeCopy Include="$(NativeDllSourceDir)sniffer_packages.dll" />
+      <NativeCopy Include="$(NativeDllSourceDir)sniffer_packages.dll" Condition="Exists('$(NativeDllSourceDir)sniffer_packages.dll')" />
+      <NativeCopy Include="$(NativeDllSourceDir)Packet.dll" Condition="Exists('$(NativeDllSourceDir)Packet.dll')" />
+      <NativeCopy Include="$(NativeDllSourceDir)wpcap.dll" Condition="Exists('$(NativeDllSourceDir)wpcap.dll')" />
     </ItemGroup>
     <Copy SourceFiles="@(NativeCopy)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" ContinueOnError="false" />
   </Target>

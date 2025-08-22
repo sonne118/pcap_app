@@ -23,6 +23,7 @@ typedef void* HANDLE;
 #include <mutex>
 #include <list>
 #include <iostream>
+#include <cstdint>
 
 #include "struct.h"
 #include "ipc.h"
@@ -59,13 +60,25 @@ typedef void* HANDLE;
 #endif
 #endif
 
-// TCP field name aliases
-#ifndef sport
-#define sport th_sport
-#endif
-#ifndef dport
-#define dport th_dport
-#endif
+// Portable TCP/UDP header definitions to avoid platform-specific field names
+struct sniff_tcp {
+    uint16_t th_sport;   // source port
+    uint16_t th_dport;   // destination port
+    uint32_t th_seq;
+    uint32_t th_ack;
+    uint8_t  th_offx2;   // data offset, rsvd
+    uint8_t  th_flags;
+    uint16_t th_win;
+    uint16_t th_sum;
+    uint16_t th_urp;
+};
+
+struct sniff_udp {
+    uint16_t uh_sport;   // source port
+    uint16_t uh_dport;   // destination port
+    uint16_t uh_len;
+    uint16_t uh_sum;
+};
 
 #ifdef _WIN32
 #pragma warning(disable:4996)
@@ -206,11 +219,11 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 			char* host_names;
 			std::string str = "Not found";
 			struct ether_header* eptr{};
-			struct tcphdr* tcp_header;
-			struct udphdr* udp_header;
+			struct sniff_tcp* tcp_header;
+			struct sniff_udp* udp_header;
 			struct icmp* icmp_header;
 			struct ip* ip_hdr;
-			struct tcphdr* tcpip_header;
+			struct sniff_tcp* tcpip_header;
 			const unsigned char* dst_ptr_mac;
 			const unsigned char* src_ptr_mac;
 			char source_mac[32]; char dest_mac[32];
@@ -223,17 +236,18 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 			strcpy(packet_srcip, inet_ntoa(ip_hdr->ip_src));
 			strcpy(packet_dstip, inet_ntoa(ip_hdr->ip_dst));
 
-			dst_ptr_mac = eptr->ether_shost;
-			src_ptr_mac = eptr->ether_dhost;
+			// MACs: source from shost, destination from dhost
+			src_ptr_mac = eptr->ether_shost;
+			dst_ptr_mac = eptr->ether_dhost;
 			ether_ntoa(src_ptr_mac, source_mac, sizeof source_mac);
-			ether_ntoa(src_ptr_mac, dest_mac, sizeof dest_mac);
+			ether_ntoa(dst_ptr_mac, dest_mac, sizeof dest_mac);
 
 			// Perform a reverse DNS lookup
-			host = gethostbyaddr(packet_dstip, sizeof(ip_hdr->ip_dst), AF_INET);
+			host = gethostbyaddr((const char*)&ip_hdr->ip_dst, sizeof(ip_hdr->ip_dst), AF_INET);
 			if (host != nullptr) {
 				host_names = host->h_name;
 			}
-			else {				
+			else {                
 				host_names = str.data();
 			}
 
@@ -244,19 +258,20 @@ inline void* Packages::producer(std::atomic<bool>& on) {
 				packet_hlen = ip_hdr->ip_vhl;
 
 			int protocol_type = ip_hdr->ip_p;
-			*dst_porth = std::stoi(inet_ntoa(ip_hdr->ip_dst));
-			*src_porth = std::stoi(inet_ntoa(ip_hdr->ip_src));
+			// Initialize ports to 0 before parsing L4 headers
+			*dst_porth = 0;
+			*src_porth = 0;
 
 			switch (protocol_type) {
 			case IPPROTO_TCP:
-				tcpip_header = (tcphdr*)(packetd_ptr + sizeof(struct ether_header) + sizeof(struct ip));
-				*dst_porth = ntohs(tcpip_header->dport);
-				*src_porth = ntohs(tcpip_header->sport);
+				tcpip_header = (sniff_tcp*)(packetd_ptr + sizeof(struct ether_header) + sizeof(struct ip));
+				*dst_porth = ntohs(tcpip_header->th_dport);
+				*src_porth = ntohs(tcpip_header->th_sport);
 				break;
 			case IPPROTO_UDP:
-				udp_header = (struct udphdr*)packetd_ptr;
-				*src_porth = udp_header->uh_sport;
-				*dst_porth = udp_header->uh_dport;
+				udp_header = (sniff_udp*)(packetd_ptr + sizeof(struct ether_header) + sizeof(struct ip));
+				*src_porth = ntohs(udp_header->uh_sport);
+				*dst_porth = ntohs(udp_header->uh_dport);
 				break;
 			case IPPROTO_ICMP:
 				icmp_header = (struct icmp*)packetd_ptr;

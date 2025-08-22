@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="handleProto.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="mainFunc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="x64\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cpp">
+    <ClCompile Include="ipc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="packages_globals.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -40,6 +40,9 @@
     </ClInclude>
     <ClInclude Include="builderDevice.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="handleProto.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -68,10 +71,5 @@
     <None Include="x64\Debug\handleProto.h_33B97AE900A91620.ifc.dt.module.json" />
     <None Include="x64\Debug\handleProto.h_33B97AE900A91620.ifc.dt.module.json.command" />
     <None Include="x64\Debug\vc143.pdb" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Debug\handleProto.obj" />
-    <Object Include="x64\Debug\handleProto.h.obj" />
-    <Object Include="x64\Debug\mainFunc.obj" />
   </ItemGroup>
 </Project>

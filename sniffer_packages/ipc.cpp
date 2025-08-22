@@ -23,12 +23,8 @@ std::mutex m;
 std::condition_variable cv;
 pcap_t* _adhandle1 = nullptr;
 
-// Create named pipe handle
-HANDLE hPipe = ::CreateNamedPipe(_T("\\.\\pipe\\testpipe"),
-    PIPE_ACCESS_DUPLEX,
-    PIPE_TYPE_BYTE | PIPE_READMODE_BYTE,
-    PIPE_UNLIMITED_INSTANCES,
-    4096, 4096, 0, NULL);
+// Named pipe server handle (created later in fnCPPDLL)
+HANDLE hPipe = INVALID_HANDLE_VALUE;
 
 // Exported functions
 IPC_EXPORT void fnDevCPPDLL(char** data, int* sizes, int* count) {
@@ -52,6 +48,34 @@ IPC_EXPORT void __stdcall fnCPPDLL(int d) {
         Sleep(1000); ++attempt;
         std::cout << "Attempt: " << attempt << std::endl;
     }
+
+    // Create and connect the named pipe server if not already done
+    if (hPipe == INVALID_HANDLE_VALUE) {
+        hPipe = CreateNamedPipeW(
+            L"\\\\.\\pipe\\testpipe",
+            PIPE_ACCESS_DUPLEX,
+            PIPE_TYPE_BYTE | PIPE_READMODE_BYTE | PIPE_WAIT,
+            1,                 // max instances
+            4096, 4096,        // out/in buffer sizes
+            0,                 // default timeout
+            NULL);             // default security
+
+        if (hPipe == INVALID_HANDLE_VALUE) {
+            DWORD le = GetLastError();
+            std::cout << "CreateNamedPipe failed. GLE=" << le << std::endl;
+        } else {
+            BOOL connected = ConnectNamedPipe(hPipe, NULL) ? TRUE : (GetLastError() == ERROR_PIPE_CONNECTED);
+            if (!connected) {
+                DWORD le = GetLastError();
+                std::cout << "ConnectNamedPipe failed. GLE=" << le << std::endl;
+                CloseHandle(hPipe);
+                hPipe = INVALID_HANDLE_VALUE;
+            } else {
+                std::cout << "Named pipe connected" << std::endl;
+            }
+        }
+    }
+
     std::thread t(mainFunc, eventHandle);
     t.detach();
     std::cout << "main thread started" << std::endl;
